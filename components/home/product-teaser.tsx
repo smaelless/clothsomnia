@@ -19,7 +19,7 @@ export function ProductTeaser() {
       <div className="relative mx-auto max-w-[1600px] px-4 md:px-8">
         <div className="flex flex-wrap items-end justify-between gap-8">
           <div>
-            <SectionLabel index="07" className="mb-8">
+            <SectionLabel index="05" className="mb-8">
               The product page
             </SectionLabel>
             <SplitLines

@@ -26,15 +26,15 @@ type Row = {
 };
 
 const ROWS: Row[] = [
-  { text: "MADE FOR THE HOURS THAT NEVER END", speed: 64, size: "clamp(3rem,9vw,8rem)", opacity: 0.055 },
-  { text: "Sleep can wait", speed: 48, reverse: true, size: "clamp(2.5rem,7vw,6rem)", opacity: 0.05, italic: true },
-  { text: "UNIFORM FOR THE WIDE-AWAKE", speed: 78, size: "clamp(3.5rem,11vw,10rem)", opacity: 0.045 },
-  { text: "Dress the static", speed: 42, reverse: true, size: "clamp(2rem,6vw,5rem)", opacity: 0.06, italic: true },
-  { text: "AFTER DARK EVERYTHING SHARPENS", speed: 70, size: "clamp(3rem,9vw,8rem)", opacity: 0.04 },
-  { text: "The night changes shape", speed: 55, reverse: true, size: "clamp(2.5rem,7.5vw,6.5rem)", opacity: 0.055, italic: true },
-  { text: "TONIGHT'S DROP IS LIVE — 00:00", speed: 88, size: "clamp(3.5rem,10vw,9rem)", opacity: 0.038 },
-  { text: "Sleep never dressed this well", speed: 46, reverse: true, size: "clamp(2rem,6.5vw,5.5rem)", opacity: 0.05, italic: true },
-  { text: "CLOTHSOMNIA — CHAPTER 01", speed: 74, size: "clamp(3rem,9.5vw,8.5rem)", opacity: 0.042 },
+  { text: "LBESS QEDEK IWATIK", speed: 64, size: "clamp(3rem,9vw,8rem)", opacity: 0.10 },
+  { text: "Clothsomnia", speed: 48, reverse: true, size: "clamp(2.5rem,7vw,6rem)", opacity: 0.095, italic: true },
+  { text: "DREAM", speed: 78, size: "clamp(3.5rem,11vw,10rem)", opacity: 0.09 },
+  { text: "Dress the static", speed: 42, reverse: true, size: "clamp(2rem,6vw,5rem)", opacity: 0.105, italic: true },
+  { text: "AFTER DARK EVERYTHING SHARPENS", speed: 70, size: "clamp(3rem,9vw,8rem)", opacity: 0.085 },
+  { text: "The night changes shape", speed: 55, reverse: true, size: "clamp(2.5rem,7.5vw,6.5rem)", opacity: 0.10, italic: true },
+  { text: "EXCLUSIVE", speed: 88, size: "clamp(3.5rem,10vw,9rem)", opacity: 0.08 },
+  { text: "Sleep never dressed this well", speed: 46, reverse: true, size: "clamp(2rem,6.5vw,5.5rem)", opacity: 0.095, italic: true },
+  { text: "CLOTHSOMNIA", speed: 74, size: "clamp(3rem,9.5vw,8.5rem)", opacity: 0.085 },
 ];
 
 export function TypeField() {
@@ -85,7 +85,7 @@ export function TypeField() {
         for the whole effect: lower the alpha to make the type field louder,
         raise it to push the type further back.
       */}
-      <div className="absolute inset-0 bg-ink/35" />
+      <div className="absolute inset-0 bg-ink/12" />
     </div>
   );
 }

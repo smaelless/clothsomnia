@@ -11,8 +11,6 @@ import { useFocusTrap } from "@/lib/use-focus-trap";
 import { formatPrice } from "@/lib/utils";
 import { useStore } from "@/providers/store";
 
-const FREE_SHIPPING_THRESHOLD = 15000;
-
 /**
  * BAG — a drawer that behaves like a garment bag: it slides, it weighs
  * something, and it tells you exactly where you stand.
@@ -25,8 +23,6 @@ export function BagDrawer() {
 
   useFocusTrap(panelRef, open);
 
-  const remaining = Math.max(FREE_SHIPPING_THRESHOLD - subtotal, 0);
-  const progress = Math.min(subtotal / FREE_SHIPPING_THRESHOLD, 1);
 
   return (
     <AnimatePresence>
@@ -75,25 +71,11 @@ export function BagDrawer() {
               </button>
             </div>
 
-            {/* Shipping meter */}
-            <div className="border-b border-bone/10 px-5 py-4">
-              <div className="h-px w-full bg-bone/12">
-                <motion.div
-                  className="h-full bg-lime"
-                  initial={false}
-                  animate={{ width: `${progress * 100}%` }}
-                  transition={{ duration: reduced ? 0 : 0.7, ease: EASE_OUT }}
-                />
-              </div>
-              <p className="label mt-3 text-silver">
-                {remaining > 0 ? (
-                  <>
-                    {formatPrice(remaining)} from complimentary shipping
-                  </>
-                ) : (
-                  <span className="text-lime">Shipping is on us</span>
-                )}
-              </p>
+            {/* Shipping — free nationwide, so this reassures rather than
+                dangling a spend threshold the store no longer has. */}
+            <div className="flex items-center gap-3 border-b border-bone/10 px-5 py-4">
+              <span aria-hidden className="size-1.5 shrink-0 rounded-full bg-lime" />
+              <p className="label text-lime">Free shipping — anywhere in Morocco</p>
             </div>
 
             {/* Lines */}

@@ -5,7 +5,7 @@ import { Heart, Menu, Search, ShoppingBag, User } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
-import { PRIMARY_NAV } from "@/lib/nav";
+import { HEADER_NAV } from "@/lib/nav";
 import { EASE_OUT } from "@/lib/motion";
 import { cn } from "@/lib/utils";
 import { useStore } from "@/providers/store";
@@ -61,9 +61,9 @@ export function Header() {
         </Link>
 
         {/* Desktop navigation */}
-        <nav aria-label="Primary" className="hidden xl:block">
+        <nav aria-label="Primary" className="hidden lg:block">
           <ul className="flex items-center gap-1">
-            {PRIMARY_NAV.map((link) => {
+            {HEADER_NAV.map((link) => {
               const active =
                 link.href === "/" ? pathname === "/" : pathname.startsWith(link.href);
               return (
@@ -132,7 +132,7 @@ export function Header() {
             <ShoppingBag className="size-[18px]" strokeWidth={1.5} />
           </IconAction>
 
-          <div className="xl:hidden">
+          <div className="lg:hidden">
             <IconAction label="Open menu" onClick={() => openOverlay("menu")}>
               <Menu className="size-5" strokeWidth={1.5} />
             </IconAction>

@@ -48,21 +48,30 @@ export function IntroSlats({ onComplete }: IntroProps) {
         animate={lifting ? { opacity: 0, y: -18 } : { opacity: 1, y: 0 }}
         transition={{ duration: 0.5, ease: EASE_OUT }}
       >
-        <div className="w-full max-w-md text-center">
-          <Wordmark className="text-[clamp(2.75rem,11vw,9rem)]" />
+        {/* Full width, not max-w-md: the wordmark is far wider than 448px at
+            this size, and capping the box made it overflow and read
+            off-centre. Only the rule below is constrained. */}
+        <div className="flex w-full flex-col items-center text-center">
+          <Wordmark className="text-[clamp(2.5rem,10vw,8.5rem)]" />
 
-          <div className="mx-auto mt-9 h-px w-full max-w-[320px] bg-bone/15">
-            <div
-              className="h-full bg-lime"
-              style={{ width: `${count}%` }}
-            />
+          <motion.p
+            className="label-wide mt-7 text-lime"
+            initial={{ opacity: 0, y: 8 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, ease: EASE_OUT, delay: 0.35 }}
+          >
+            Something worth the wait
+          </motion.p>
+
+          <div className="mt-9 h-px w-[min(320px,72vw)] bg-bone/15">
+            <div className="h-full bg-lime" style={{ width: `${count}%` }} />
           </div>
 
-          <p className="label-wide mt-5 text-smoke">
+          <p className="label-wide mt-5 flex items-center gap-3 text-smoke">
             <span className="display text-base tabular-nums text-bone">
               {String(count).padStart(3, "0")}
             </span>
-            <span className="ml-3">Call time</span>
+            <span>Call time</span>
           </p>
         </div>
       </motion.div>

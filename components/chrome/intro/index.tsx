@@ -47,6 +47,17 @@ export function Intro({
       setVisible(false);
       return;
     }
+
+    /**
+     * In development the intro plays on every load, so it can actually be
+     * worked on — gating it to once per session made it look deleted.
+     * In production it still plays only once per session.
+     */
+    if (process.env.NODE_ENV !== "production") {
+      setVisible(true);
+      return;
+    }
+
     let seen = false;
     try {
       seen = window.sessionStorage.getItem(INTRO_SESSION_KEY) === "1";

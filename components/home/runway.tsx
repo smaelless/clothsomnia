@@ -24,7 +24,7 @@ export function Runway() {
       <div className="mx-auto max-w-[1600px] px-4 md:px-8">
         <div className="flex flex-wrap items-end justify-between gap-8">
           <div>
-            <SectionLabel index="03" className="mb-8">
+            <SectionLabel index="01" className="mb-8">
               The sequence
             </SectionLabel>
             <SplitLines

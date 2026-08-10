@@ -4,11 +4,17 @@ import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { useEffect, useState } from "react";
 import { EASE_OUT } from "@/lib/motion";
 
+/**
+ * Each line pulls a different lever: risk reversal (shipping, returns),
+ * scarcity (small runs, never restocked), and urgency (ships tomorrow).
+ * Kept in the brand's voice — a bar that shouts stops being believed.
+ */
 const MESSAGES = [
-  "Tonight's drop is live — 00:00 CET",
-  "Enter the after-hours collection",
-  "Complimentary shipping over €150",
-  "Midnight pieces available now",
+  "Wear what you dream of",
+  "If you know, you know",
+  "Order tonight → ships tomorrow.",
+  "Don't dress to fit in",
+  "Your size won't wait",
 ];
 
 /**
@@ -26,9 +32,20 @@ export function AnnouncementBar() {
   }, [reduced]);
 
   return (
-    <div className="relative z-50 border-b border-bone/10 bg-ink">
+    <div className="relative z-50 overflow-hidden border-b border-bone/10 bg-ink">
+      {/* Light travelling along the bottom rule — the runway rig, still on. */}
+      <span
+        aria-hidden
+        className="pointer-events-none absolute inset-x-0 bottom-0 h-px w-full bg-gradient-to-r from-transparent via-lime/70 to-transparent animate-sweep"
+      />
+
       <div className="mx-auto flex h-9 max-w-[1600px] items-center justify-between gap-4 px-4 md:px-8">
-        <span className="label-wide hidden shrink-0 text-smoke sm:block">Est. 00:00</span>
+        {/* Left mark — carries the wordmark's flicker so the bar reads as
+            part of the same identity rather than a strip bolted on top. */}
+        <span className="label-wide hidden shrink-0 items-center gap-2 text-smoke sm:flex">
+          <span aria-hidden className="inline-block size-1 rounded-full bg-lime animate-flicker" />
+          Clothsomnia
+        </span>
 
         <div className="relative h-9 flex-1 overflow-hidden text-center">
           <AnimatePresence mode="wait" initial={false}>
@@ -45,7 +62,12 @@ export function AnnouncementBar() {
           </AnimatePresence>
         </div>
 
-        <span className="label-wide hidden shrink-0 text-lime sm:block">Free returns</span>
+        {/* Right mark — a slow breathing dot. Different rhythm from the left
+            flicker on purpose, so the two ends of the bar never sync up. */}
+        <span className="label-wide hidden shrink-0 items-center gap-2 text-lime sm:flex">
+          <span aria-hidden className="inline-block size-1 rounded-full bg-lime animate-breathe" />
+          Shipping is free
+        </span>
       </div>
     </div>
   );

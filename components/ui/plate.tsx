@@ -1,7 +1,8 @@
 import Image from "next/image";
 import type { ReactNode } from "react";
 import type { Tone } from "@/lib/catalog";
-import { cn, hash, rand } from "@/lib/utils";
+import { cn, hash, pick, rand } from "@/lib/utils";
+import { CAMPAIGN_IMAGES, TEASER_BLUR, TEASER_CAPTIONS, TEASER_MODE } from "@/lib/teaser";
 
 /**
  * PLATE — the site's image system.
@@ -29,6 +30,7 @@ type PlateProps = {
   className?: string;
   children?: ReactNode;
 };
+
 
 const TONES: Record<Tone, { key: string; edge: string; deep: string }> = {
   violet: { key: "#7C3BFF", edge: "#C9B0FF", deep: "#1A0B3D" },
@@ -94,6 +96,24 @@ export function Plate({
   className,
   children,
 }: PlateProps) {
+  /**
+   * Campaign image. Until each product has its own shot, every garment frame
+   * falls back to this one, so the site shows real photography instead of the
+   * procedural stand-in. `field` plates stay procedural — they are atmosphere
+   * behind menus and section bands, not product shots.
+   *
+   * To give a product its own image later, pass `src` at the call site.
+   */
+  const resolvedSrc = src ?? (variant === "figure" ? pick(CAMPAIGN_IMAGES, seed, 11) : undefined);
+
+  /**
+   * Stable per plate, so a product keeps the same line everywhere it appears.
+   * Salt 18 is not arbitrary: across the real seed set it spreads the ten lines
+   * far more evenly than the default and leaves none unused, so no single line
+   * dominates a page.
+   */
+  const teaserLine = TEASER_MODE ? pick(TEASER_CAPTIONS, seed, 18) : null;
+
   const t = TONES[tone];
   const uid = `p${hash(seed).toString(36)}`;
   const figure = FIGURES[hash(seed + "fig") % FIGURES.length];
@@ -109,20 +129,42 @@ export function Plate({
   return (
     <div
       className={cn(
-        "grain relative overflow-hidden bg-ink",
+        // @container lets the caption size and hide itself against the plate's
+        // own width rather than the viewport's.
+        "@container grain relative overflow-hidden bg-ink",
         // The plate itself is the hover surface — children animate against it.
         className,
       )}
     >
-      {src ? (
-        <Image
-          src={src}
-          alt={alt}
-          fill
-          sizes={sizes}
-          priority={priority}
-          className="object-cover"
-        />
+      {resolvedSrc ? (
+        <>
+          <Image
+            src={resolvedSrc}
+            alt={TEASER_MODE ? "" : alt}
+            fill
+            sizes={sizes}
+            priority={priority}
+            /* Scaled up so the blur cannot drag transparent edges inward. */
+            className={cn("object-cover", TEASER_MODE && "scale-[1.15]")}
+            style={TEASER_MODE ? { filter: `blur(${TEASER_BLUR}px)` } : undefined}
+          />
+
+          {TEASER_MODE && (
+            <>
+              {/* Darkens the photo so the line always has contrast to sit on,
+                  whatever the underlying shot happens to be. */}
+              <div aria-hidden className="absolute inset-0 bg-ink/55" />
+
+              {/* Hidden on plates under ~190px — the line would be illegible
+                  on bag and search thumbnails. Container query, not viewport. */}
+              <div className="absolute inset-0 hidden place-items-center p-4 @[190px]:grid">
+                <p className="display text-center uppercase leading-[1.15] tracking-[0.02em] text-bone text-[clamp(0.85rem,4.2cqw,2.1rem)]">
+                  {teaserLine}
+                </p>
+              </div>
+            </>
+          )}
+        </>
       ) : (
         <>
           {/* Layer 1 — atmospheric haze fields */}

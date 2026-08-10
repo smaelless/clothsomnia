@@ -41,7 +41,7 @@ export function PrivateList() {
 
       <div className="relative mx-auto max-w-[1600px] px-4 md:px-8">
         <div className="mx-auto max-w-3xl text-center">
-          <SectionLabel index="09" className="mb-8 justify-center">
+          <SectionLabel index="07" className="mb-8 justify-center">
             Access
           </SectionLabel>
 

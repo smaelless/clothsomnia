@@ -60,7 +60,7 @@ export function AboutBlock() {
 
         {/* Copy column */}
         <div className="lg:pt-10">
-          <SectionLabel index="08" className="mb-8">
+          <SectionLabel index="06" className="mb-8">
             About
           </SectionLabel>
 

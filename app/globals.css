@@ -30,8 +30,11 @@
   --ease-in-out-expo: cubic-bezier(0.83, 0, 0.17, 1);
 
   /* ---- Editorial scale (clamped, mobile stays dramatic) ---- */
-  --text-mega: clamp(3.5rem, 15vw, 15rem);
-  --text-mega--line-height: 0.82;
+  /* Sized so the longest single word still fits beside the hero collage.
+     15vw overflowed its reveal mask and clipped the last line. Caps also need
+     more leading than lowercase, hence 0.92 rather than 0.82. */
+  --text-mega: clamp(2.5rem, 8.2vw, 8.5rem);
+  --text-mega--line-height: 0.92;
   --text-giant: clamp(2.75rem, 9vw, 8rem);
   --text-giant--line-height: 0.88;
   --text-huge: clamp(2rem, 5.5vw, 4.5rem);
@@ -39,6 +42,40 @@
 
   --animate-drift: drift 22s ease-in-out infinite;
   --animate-flicker: flicker 6s steps(1) infinite;
+  --animate-breathe: breathe 3.4s ease-in-out infinite;
+  /* One shared clock for the orbit. The ring runs it forwards, each label runs
+     the identical animation in reverse, so the label's rotation always cancels
+     the ring's exactly and the text never tips over. */
+  --animate-orbit: orbit 44s linear infinite;
+  --animate-sweep: sweep 7s linear infinite;
+}
+
+@keyframes orbit {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes breathe {
+  0%,
+  100% {
+    opacity: 0.35;
+    transform: scale(0.85);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.15);
+  }
+}
+
+/* A faint light travelling along the announcement rule */
+@keyframes sweep {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
 }
 
 @keyframes drift {
@@ -216,11 +253,16 @@
   }
 
   /* Text that reveals by clipping — used by SplitText */
+  /* The mask that lets a line rise into place. It must clip vertically, but
+     clipping horizontally shaves italic overhang off the last glyph — so the
+     box is padded on the right and pulled back by the same amount. */
   .clip-line {
     display: block;
     overflow: hidden;
     padding-bottom: 0.08em;
     margin-bottom: -0.08em;
+    padding-right: 0.12em;
+    margin-right: -0.12em;
   }
 
   /* Never pauses — not on hover, not on touch. The motion is continuous by

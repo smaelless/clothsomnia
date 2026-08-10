@@ -2,7 +2,6 @@ import { AboutBlock } from "@/components/home/about-block";
 import { CollectionWorlds } from "@/components/home/collection-worlds";
 import { Hero } from "@/components/home/hero";
 import { LookbookGallery } from "@/components/home/lookbook-gallery";
-import { Manifesto } from "@/components/home/manifesto";
 import { NewDrop } from "@/components/home/new-drop";
 import { PrivateList } from "@/components/home/private-list";
 import { ProductTeaser } from "@/components/home/product-teaser";
@@ -17,7 +16,6 @@ export default function HomePage() {
   return (
     <>
       <Hero />
-      <Manifesto />
       <Runway />
       <CollectionWorlds />
       <NewDrop />

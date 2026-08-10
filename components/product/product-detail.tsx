@@ -341,7 +341,7 @@ export function ProductDetail({
         <ul className="mt-8 grid gap-3 border-t border-bone/10 pt-8">
           <li className="flex items-start gap-3 text-sm text-silver">
             <Truck className="mt-0.5 size-4 shrink-0 text-lime" strokeWidth={1.5} />
-            Free shipping over €150. Dispatched within 24 hours, tracked door to door.
+            Free shipping anywhere in Morocco. Dispatched within 24 hours, tracked door to door.
           </li>
           <li className="flex items-start gap-3 text-sm text-silver">
             <Undo2 className="mt-0.5 size-4 shrink-0 text-lime" strokeWidth={1.5} />

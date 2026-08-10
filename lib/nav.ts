@@ -1,5 +1,17 @@
 export type NavLink = { label: string; href: string; note?: string };
 
+/**
+ * Desktop header — deliberately short. The five category worlds are one tap
+ * away in the mobile menu, the footer, and the Collection Worlds section, so
+ * keeping them out of the top bar buys clarity without costing reach.
+ */
+export const HEADER_NAV: NavLink[] = [
+  { label: "Home", href: "/" },
+  { label: "New Drop", href: "/collections/new" },
+  { label: "Lookbook", href: "/lookbook" },
+  { label: "About", href: "/about" },
+];
+
 /** Primary navigation — shared by the header, the mobile tunnel and the footer. */
 export const PRIMARY_NAV: NavLink[] = [
   { label: "Home", href: "/", note: "Enter" },

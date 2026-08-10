@@ -8,16 +8,24 @@ import {
   useTransform,
   useReducedMotion,
 } from "framer-motion";
-import { ArrowDown } from "lucide-react";
 import { useRef } from "react";
 import { ActionButton } from "@/components/ui/magnetic";
-import { Marquee } from "@/components/ui/marquee";
 import { Plate } from "@/components/ui/plate";
 import { EASE_OUT } from "@/lib/motion";
+import { cn } from "@/lib/utils";
 
-const ORBIT = ["Look 01", "After hours", "SS/26", "Midnight runway", "No exit", "Chapter 01"];
+const ORBIT = [
+  "You'll notice the difference.",
+  "Let the details speak.",
+  "The quieter the better.",
+  "Less to prove. More to wear.",
+  "Quietly different.",
+  "Chapter 01",
+];
 
-const HEADLINE = ["Made for", "the hours", "that never end"];
+/* Broken across three lines so the stagger still reads as a build, and so the
+   payoff word lands alone on the last line in the italic silver treatment. */
+const HEADLINE = ["T'LBESS WHAT", "THEY'LL", "REMEMBER"];
 
 /**
  * HERO — the opening frame of the fashion film.
@@ -143,21 +151,28 @@ export function Hero() {
       {/* Plane 3 — type */}
       <motion.div
         style={reduced ? undefined : { y: yType, opacity: fade }}
-        className="relative mx-auto flex min-h-[80svh] max-w-[1600px] flex-col justify-center px-4 md:px-8"
+        /* Starts at the top rather than centring in an 80svh box — centring
+           left a large dead band between the header and the first line. */
+        className="relative mx-auto flex min-h-[72svh] max-w-[1600px] flex-col justify-start px-4 md:px-8"
       >
         <motion.p
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.9, duration: 0.8 }}
-          className="label-wide mb-8 flex items-center gap-3 text-lime"
+          className="label mb-8 flex items-start gap-3 text-lime"
         >
-          <span className="inline-block size-1.5 rounded-full bg-lime animate-flicker" />
-          Chapter 01 — After Hours
+          <span className="mt-1 inline-block size-1.5 shrink-0 rounded-full bg-lime animate-flicker" />
+          {/* Held on one line from sm up — the type scales with the viewport so
+              it always fits. Below sm there is no size that keeps 57 characters
+              on one line and still readable, so it wraps there. */}
+          <span className="whitespace-normal text-[clamp(8px,0.82vw,11px)] leading-[1.7] tracking-[0.16em] sm:whitespace-nowrap">
+            It&apos;s not necessary tlbess qadek iwatik, sometimes khassek
+          </span>
         </motion.p>
 
         {/* Capped on lg+ so the headline and the collage occupy separate
             columns rather than fighting for the same pixels. */}
-        <h1 className="display text-mega lg:max-w-[68%]">
+        <h1 className="display text-mega">
           {HEADLINE.map((line, i) => (
             <span key={line} className="clip-line">
               <motion.span
@@ -183,8 +198,7 @@ export function Hero() {
             transition={{ duration: 1, ease: EASE_OUT, delay: 0.8 }}
             className="max-w-[40ch] text-base leading-relaxed text-silver md:text-lg"
           >
-            Forty-one pieces cut for the part of the night that doesn&apos;t get photographed.
-            Released at midnight, held for nobody.
+            Kolchi kaylbes. Machi kolchi kay3ref ykhtar.
           </motion.p>
 
           <motion.div
@@ -193,10 +207,8 @@ export function Hero() {
             transition={{ duration: 1, ease: EASE_OUT, delay: 0.95 }}
             className="flex flex-wrap items-center gap-3"
           >
-            <ActionButton href="/collections/new">Shop the drop</ActionButton>
-            <ActionButton href="/lookbook" tone="outline">
-              Enter the lookbook
-            </ActionButton>
+            {/* Single CTA — one unambiguous next step out of the hero. */}
+            <ActionButton href="/collections/new">Meet the drop</ActionButton>
           </motion.div>
         </div>
       </motion.div>
@@ -205,13 +217,9 @@ export function Hero() {
       <motion.div
         aria-hidden
         style={reduced ? undefined : { opacity: fade }}
-        className="pointer-events-none absolute right-[6%] top-1/2 hidden -translate-y-1/2 lg:block"
+        className="pointer-events-none absolute right-[8%] top-1/2 hidden -translate-y-1/2 lg:block"
       >
-        <motion.div
-          className="relative size-[19rem]"
-          animate={reduced ? undefined : { rotate: 360 }}
-          transition={{ duration: 44, ease: "linear", repeat: Infinity }}
-        >
+        <div className={cn("relative size-[22rem]", !reduced && "animate-orbit")}>
           <div className="absolute inset-0 rounded-full border border-dashed border-bone/15" />
           {ORBIT.map((word, i) => {
             const angle = (i / ORBIT.length) * 360;
@@ -219,44 +227,31 @@ export function Hero() {
               <span
                 key={word}
                 className="absolute left-1/2 top-1/2 origin-[0_0]"
-                style={{ transform: `rotate(${angle}deg) translate(9.5rem)` }}
+                style={{ transform: `rotate(${angle}deg) translate(11rem)` }}
               >
-                <motion.span
-                  className="label block -translate-x-1/2 -translate-y-1/2 whitespace-nowrap rounded-full bg-ink/70 px-3 py-2 text-silver backdrop-blur-sm"
-                  animate={reduced ? undefined : { rotate: -360 }}
-                  transition={{ duration: 44, ease: "linear", repeat: Infinity }}
-                >
-                  {word}
-                </motion.span>
+                <span className="block -translate-x-1/2 -translate-y-1/2">
+                  {/* Undoes the tilt this label inherits from its position on
+                      the ring, so it starts horizontal. */}
+                  <span className="block" style={{ transform: `rotate(${-angle}deg)` }}>
+                    <span
+                      /* Runs the ring's own animation in reverse, cancelling
+                         the rotation frame for frame. Smaller than the house
+                         label because these lines are full sentences. */
+                      className={cn(
+                        "label block whitespace-nowrap rounded-full bg-ink/75 px-2.5 py-1.5 text-[9px] tracking-[0.08em] text-silver backdrop-blur-sm",
+                        !reduced && "animate-orbit [animation-direction:reverse]",
+                      )}
+                    >
+                      {word}
+                    </span>
+                  </span>
+                </span>
               </span>
             );
           })}
-        </motion.div>
+        </div>
       </motion.div>
 
-      {/* Base rail */}
-      <div className="absolute inset-x-0 bottom-0 border-t border-bone/10 bg-ink/40 backdrop-blur-sm">
-        <div className="flex items-center gap-6 py-3">
-          <span className="label-wide hidden shrink-0 pl-4 text-lime md:block md:pl-8">
-            Scroll
-          </span>
-          <ArrowDown className="hidden size-3.5 shrink-0 animate-bounce text-lime md:block" />
-          <Marquee duration={38} className="flex-1">
-            <span className="label flex shrink-0 items-center gap-6 whitespace-nowrap pr-6 text-smoke">
-              Tonight&apos;s drop is live
-              <span className="text-violet">✦</span>
-              41 pieces
-              <span className="text-lime">✦</span>
-              After-hours collection
-              <span className="text-magenta">✦</span>
-              Free shipping over €150
-              <span className="text-violet">✦</span>
-              Sleep can wait
-              <span className="text-lime">✦</span>
-            </span>
-          </Marquee>
-        </div>
-      </div>
     </section>
   );
 }
