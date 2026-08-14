@@ -9,8 +9,14 @@ import { formatPrice } from "@/lib/utils";
 
 type Params = { params: Promise<{ slug: string }> };
 
+/**
+ * Both the colourway slugs and the shared product page. `dreams-hoodie` is the
+ * URL every card actually links to, and it was missing here — the colourway
+ * slugs were generated but the page people land on was not.
+ */
 export function generateStaticParams() {
-  return PRODUCTS.map((p) => ({ slug: p.slug }));
+  const slugs = new Set(PRODUCTS.flatMap((p) => [p.slug, p.pdpSlug]));
+  return Array.from(slugs, (slug) => ({ slug }));
 }
 
 export async function generateMetadata({ params }: Params): Promise<Metadata> {
@@ -59,7 +65,9 @@ export default async function ProductPage({ params }: Params) {
         <ol className="flex flex-wrap items-center gap-2">
           {[
             { label: "Home", href: "/" },
-            { label: CATEGORY_LABEL[product.category], href: `/collections/${product.category}` },
+            // The category worlds no longer exist as pages — this pointed at
+            // /collections/unisex, which is a 404. The drop is the real parent.
+            { label: "Chapter 1", href: "/collections/new" },
           ].map((crumb) => (
             <li key={crumb.href} className="flex items-center gap-2">
               <Link
