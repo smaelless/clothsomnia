@@ -228,8 +228,28 @@ export async function notifyTelegram(order: NormalisedOrder): Promise<boolean> {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ chat_id: chatId, text, parse_mode: "Markdown" }),
     });
-    return res.ok;
-  } catch {
+
+    if (res.ok) return true;
+
+    // Telegram explains itself in the body. Swallowing that made a failure
+    // impossible to diagnose, so surface it — the customer still succeeds.
+    const detail = await res.text().catch(() => "");
+    console.error(`[telegram] ${res.status} ${detail}`);
+
+    // Markdown is strict: one stray *, _, [ or ` in a customer's name or
+    // address rejects the whole message. Retry as plain text so a notification
+    // is never lost to punctuation someone typed into a form.
+    const retry = await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ chat_id: chatId, text }),
+    });
+    if (!retry.ok) {
+      console.error(`[telegram] plain-text retry also failed: ${await retry.text().catch(() => "")}`);
+    }
+    return retry.ok;
+  } catch (err) {
+    console.error("[telegram] request threw", err);
     return false;
   }
 }
