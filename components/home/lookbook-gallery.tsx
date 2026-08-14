@@ -8,28 +8,22 @@ import { ActionButton } from "@/components/ui/magnetic";
 import { SplitLines } from "@/components/ui/reveal";
 import { SectionLabel } from "@/components/ui/wordmark";
 import { EASE_OUT, inView } from "@/lib/motion";
-import { FRAMES, type Frame } from "@/lib/worlds";
+import { HOME_FRAMES, type Frame } from "@/lib/worlds";
 import { cn } from "@/lib/utils";
 
 /**
- * LOOKBOOK — an editorial spread, not a gallery grid.
+ * LOOKBOOK
  *
- * Placement is authored per position rather than uniform, so the page reads
- * like a magazine layout. Each frame drifts at its own rate on scroll.
+ * Aligned to a twelve column grid. The rhythm comes from scale — full-width
+ * detail bands cutting between columns of portraits — rather than from tilting
+ * or overlapping, which read as noise at this size.
+ *
+ * Captions sit under their frames instead of on top of them: an overlay looks
+ * good in a mockup and hides the garment in practice, which is the one thing
+ * this page exists to show.
  */
-
-/** Explicit placement — the asymmetry is the design, not a side effect. */
-const LAYOUT = [
-  "lg:col-span-5 lg:col-start-1 aspect-[3/4]",
-  "lg:col-span-6 lg:col-start-7 lg:mt-6 aspect-[16/10]",
-  "lg:col-span-4 lg:col-start-2 lg:-mt-10 aspect-[3/4]",
-  "lg:col-span-3 lg:col-start-7 lg:mt-8 aspect-[2/3]",
-  "lg:col-span-5 lg:col-start-1 lg:mt-6 aspect-[16/11]",
-  "lg:col-span-4 lg:col-start-9 lg:-mt-9 aspect-[3/4]",
-];
-
 export function LookbookGallery({
-  frames = FRAMES,
+  frames = HOME_FRAMES,
   heading = true,
 }: {
   frames?: Frame[];
@@ -42,7 +36,7 @@ export function LookbookGallery({
           <div className="flex flex-wrap items-end justify-between gap-8">
             <div>
               <SectionLabel index="02" className="mb-8">
-                Lookbook — 12 frames
+                Lookbook — Chapter 1
               </SectionLabel>
               <SplitLines
                 lines={["The night", "changes shape"]}
@@ -56,7 +50,12 @@ export function LookbookGallery({
           </div>
         )}
 
-        <div className={cn("grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-12 lg:gap-6", heading && "mt-10 md:mt-9")}>
+        <div
+          className={cn(
+            "grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-12 lg:gap-5",
+            heading && "mt-10 md:mt-14",
+          )}
+        >
           {frames.map((frame, i) => (
             <GalleryFrame key={frame.id} frame={frame} index={i} />
           ))}
@@ -69,48 +68,47 @@ export function LookbookGallery({
 function GalleryFrame({ frame, index }: { frame: Frame; index: number }) {
   const ref = useRef<HTMLDivElement>(null);
   const reduced = useReducedMotion();
+
   const { scrollYProgress } = useScroll({ target: ref, offset: ["start end", "end start"] });
-  // Alternating drift direction gives the spread its float.
-  const y = useTransform(scrollYProgress, [0, 1], index % 2 === 0 ? [40, -40] : [-30, 30]);
+  /**
+   * The image drifts inside its frame rather than the frame moving on the page.
+   * Moving the frames themselves breaks the grid alignment that makes this
+   * layout read as considered.
+   */
+  const y = useTransform(scrollYProgress, [0, 1], ["-6%", "6%"]);
 
   return (
     <motion.figure
       ref={ref}
-      style={reduced ? undefined : { y }}
-      initial={reduced ? { opacity: 0 } : { opacity: 0, y: 50, scale: 0.97 }}
-      whileInView={{ opacity: 1, y: 0, scale: 1 }}
+      initial={reduced ? { opacity: 0 } : { opacity: 0, y: 40 }}
+      whileInView={{ opacity: 1, y: 0 }}
       viewport={inView}
-      transition={{ duration: 1, ease: EASE_OUT }}
-      className={cn("group relative", LAYOUT[index % LAYOUT.length])}
+      transition={{ duration: 0.9, ease: EASE_OUT, delay: reduced ? 0 : (index % 3) * 0.06 }}
+      className={cn("group relative", frame.span)}
     >
-      <Link
-        href="/lookbook"
-        className="block h-full"
-        data-cursor="Open frame"
-        aria-label={`${frame.caption} — ${frame.meta}`}
-      >
-        <div className="relative h-full overflow-hidden">
-          <div className="h-full transition-transform duration-[1200ms] ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:scale-105">
+      <Link href="/lookbook" className="block" data-cursor="Open frame" aria-label={frame.caption}>
+        <div className={cn("relative overflow-hidden bg-charcoal", frame.ratio)}>
+          {/* Oversized so the drift never exposes an edge. */}
+          <motion.div
+            style={reduced ? undefined : { y }}
+            className="absolute inset-0 scale-[1.12]"
+          >
             <Plate
               seed={frame.id}
-              tone={frame.tone}
-              variant={index % 3 === 1 ? "field" : "figure"}
+              src={frame.src}
               alt={frame.caption}
-              sizes="(max-width: 640px) 92vw, (max-width: 1024px) 46vw, 40vw"
-              className="h-full w-full"
+              sizes="(max-width: 640px) 92vw, (max-width: 1024px) 46vw, 55vw"
+              className="h-full w-full transition-transform duration-[1400ms] ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:scale-[1.04]"
             />
-          </div>
-
-          {/* Caption — rides up on hover, always readable */}
-          <figcaption className="absolute inset-x-0 bottom-0 z-10 p-5 md:p-6">
-            <p className="label-wide mb-3 text-lime opacity-0 transition-opacity duration-500 group-hover:opacity-100">
-              {frame.meta}
-            </p>
-            <p className="display text-2xl leading-tight transition-transform duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:-translate-y-1 md:text-3xl">
-              {frame.caption}
-            </p>
-          </figcaption>
+          </motion.div>
         </div>
+
+        <figcaption className="mt-4 flex items-baseline gap-4">
+          <span className="label-wide shrink-0 text-smoke">{frame.meta}</span>
+          <span className="display text-lg leading-tight text-bone transition-colors duration-500 group-hover:text-lime md:text-xl">
+            {frame.caption}
+          </span>
+        </figcaption>
       </Link>
     </motion.figure>
   );

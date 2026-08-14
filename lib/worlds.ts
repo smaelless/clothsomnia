@@ -111,38 +111,48 @@ export const LOOKS: Look[] = [
   },
 ];
 
-/** Lookbook gallery — mixed portrait / landscape editorial grid. */
+/**
+ * LOOKBOOK
+ *
+ * Real frames, laid out on a twelve column grid. Everything is aligned — the
+ * variety comes from scale and from wide detail bands cutting across the
+ * portraits, not from tilting or overlapping things.
+ *
+ * The source photography is all portrait, so the portraits stay portrait; the
+ * wide frames are genuine detail crops of the curved seam rather than
+ * landscape crops that would slice off heads and hems.
+ */
 export type Frame = {
   id: string;
+  src: string;
   caption: string;
   meta: string;
-  tone: Tone;
-  orientation: "portrait" | "landscape" | "tall";
+  /** Column span at lg and up. */
+  span: string;
+  /** Frame shape. */
+  ratio: string;
 };
 
+const F = (id: string, src: string, caption: string, meta: string, span: string, ratio: string): Frame =>
+  ({ id, src: `/chapter1/${src}.jpg`, caption, meta, span, ratio });
+
+/** The full book. */
 export const FRAMES: Frame[] = [
-  { id: "f1", caption: "After midnight", meta: "Frame 01 / 12", tone: "pine", orientation: "tall" },
-  {
-    id: "f2",
-    caption: "Sleep never dressed this well",
-    meta: "Frame 02 / 12",
-    tone: "wine",
-    orientation: "landscape",
-  },
-  { id: "f3", caption: "Soft chaos", meta: "Frame 03 / 12", tone: "cream", orientation: "portrait" },
-  {
-    id: "f4",
-    caption: "Last light / first look",
-    meta: "Frame 04 / 12",
-    tone: "silver",
-    orientation: "portrait",
-  },
-  {
-    id: "f5",
-    caption: "Made for the hours that don't end",
-    meta: "Frame 05 / 12",
-    tone: "pine",
-    orientation: "landscape",
-  },
-  { id: "f6", caption: "Dress the static", meta: "Frame 06 / 12", tone: "lime", orientation: "tall" },
+  F('f1','detail-pine-seam','The seam that does the work','01','lg:col-span-12','aspect-[16/6]'),
+  F('f2','pine-front','Pine, front','02','lg:col-span-6','aspect-[2/3]'),
+  F('f3','pine-back','Pine, back','03','lg:col-span-6','aspect-[2/3]'),
+  F('f4','wine-three','After dark, everything sharpens','04','lg:col-span-7','aspect-[4/5]'),
+  F('f5','detail-wine-seam','Cream on burgundy','05','lg:col-span-12','aspect-[16/6]'),
+  F('f6','wine-full','Wine, full length','06','lg:col-span-4','aspect-[2/3]'),
+  F('f7','wine-walk','The long way home','07','lg:col-span-4','aspect-[2/3]'),
+  F('f8','wine-front','Wine, front','08','lg:col-span-4','aspect-[2/3]'),
+  F('f9','pine-pair','Both ways, pine','09','lg:col-span-6','aspect-[4/5]'),
+  F('f10','wine-pair','Both ways, wine','10','lg:col-span-6','aspect-[4/5]'),
+  F('f11','detail-back-panel','The back is the whole idea','11','lg:col-span-12','aspect-[16/6]'),
+  F('f12','pair-wine','Sleep can wait','12','lg:col-span-8 lg:col-start-3','aspect-[4/5]'),
+];
+
+/** A shorter cut for the homepage — the strongest six. */
+export const HOME_FRAMES: Frame[] = [
+  FRAMES[0], FRAMES[1], FRAMES[2], FRAMES[4], FRAMES[8], FRAMES[9],
 ];

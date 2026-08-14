@@ -4,12 +4,12 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "cross-env NEXT_DIST_DIR=.next-build next build",
+    "build": "next build",
     "start": "next start",
     "lint": "next lint",
     "typecheck": "tsc --noEmit",
     "telegram:setup": "node scripts/telegram-setup.mjs",
-    "build:check": "next build"
+    "build:local": "cross-env NEXT_DIST_DIR=.next-build next build"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.112.3",
