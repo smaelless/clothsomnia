@@ -183,8 +183,8 @@ export function BagDrawer() {
                 <p className="label-wide mt-3 text-smoke">
                   Duties and taxes calculated at checkout
                 </p>
-                <ActionButton className="mt-5 w-full" onClick={() => undefined}>
-                  Checkout
+                <ActionButton className="mt-5 w-full" href="/checkout" onClick={closeOverlay}>
+                  Checkout — cash on delivery
                 </ActionButton>
                 <button
                   type="button"

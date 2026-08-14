@@ -105,7 +105,9 @@ export function ActionButton({
   if (href) {
     return (
       <Magnetic>
-        <Link href={href} className={classes} aria-label={ariaLabel}>
+        {/* onClick is forwarded here too — a link that also has to dismiss an
+            overlay is common, and silently dropping the handler is a trap. */}
+        <Link href={href} onClick={onClick} className={classes} aria-label={ariaLabel}>
           {inner}
         </Link>
       </Magnetic>
