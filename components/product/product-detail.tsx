@@ -6,7 +6,7 @@ import Link from "next/link";
 import { useState } from "react";
 import { ActionButton } from "@/components/ui/magnetic";
 import { Plate } from "@/components/ui/plate";
-import { CATEGORY_LABEL, type Product } from "@/lib/catalog";
+import { CATEGORY_LABEL, LOW_STOCK_AT, stockFor, type Product } from "@/lib/catalog";
 import { EASE_OUT } from "@/lib/motion";
 import { cn, formatPrice } from "@/lib/utils";
 import { useStore } from "@/providers/store";
@@ -207,7 +207,9 @@ export function ProductDetail({
 
           <div className="flex flex-wrap gap-2">
             {product.sizes.map((s) => {
-              const out = product.soldOut?.includes(s);
+              // Stock is per colourway, so switching colour can change what is
+              // available — the size run has to read from the live selection.
+              const out = stockFor(color, s) <= 0;
               return (
                 <button
                   key={s}
@@ -232,6 +234,12 @@ export function ProductDetail({
               );
             })}
           </div>
+
+          {size && stockFor(color, size) > 0 && stockFor(color, size) <= LOW_STOCK_AT && (
+            <p className="label mt-4 text-lime">
+              Only {stockFor(color, size)} left in {size}
+            </p>
+          )}
 
           <AnimatePresence>
             {error && (

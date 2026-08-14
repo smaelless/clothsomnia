@@ -42,7 +42,7 @@ export function LookbookGallery({
           <div className="flex flex-wrap items-end justify-between gap-8">
             <div>
               <SectionLabel index="03" className="mb-8">
-                Lookbook — 24 frames
+                Lookbook — 12 frames
               </SectionLabel>
               <SplitLines
                 lines={["The night", "changes shape"]}

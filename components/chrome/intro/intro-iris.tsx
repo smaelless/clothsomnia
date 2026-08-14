@@ -39,7 +39,7 @@ export function IntroIris({ onComplete }: IntroProps) {
         >
           <div>
             <Wordmark className="text-[clamp(2.5rem,10vw,8rem)]" />
-            <p className="label-wide mt-6 text-smoke">Rotterdam — 00:00</p>
+            <p className="label-wide mt-6 text-smoke">Morocco — 00:00</p>
           </div>
         </motion.div>
       </motion.div>

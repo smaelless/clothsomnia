@@ -15,13 +15,9 @@ export const HEADER_NAV: NavLink[] = [
 /** Primary navigation — shared by the header, the mobile tunnel and the footer. */
 export const PRIMARY_NAV: NavLink[] = [
   { label: "Home", href: "/", note: "Enter" },
-  { label: "New Drop", href: "/collections/new", note: "Tonight" },
-  { label: "Unisex", href: "/collections/unisex", note: "No gate" },
-  { label: "Men", href: "/collections/men", note: "Hard tailoring" },
-  { label: "Girls", href: "/collections/girls", note: "Light leak" },
-  { label: "Sport", href: "/collections/sport", note: "Full speed" },
-  { label: "School", href: "/collections/school", note: "Soft rebellion" },
-  { label: "Lookbook", href: "/lookbook", note: "24 frames" },
+  { label: "New Drop", href: "/collections/new", note: "Chapter 1" },
+  { label: "Lookbook", href: "/lookbook", note: "12 frames" },
+  { label: "Wishlist", href: "/wishlist", note: "Saved" },
   { label: "About", href: "/about", note: "The sleepless" },
 ];
 
@@ -30,11 +26,8 @@ export const FOOTER_NAV: { title: string; links: NavLink[] }[] = [
     title: "Shop",
     links: [
       { label: "New Drop", href: "/collections/new" },
-      { label: "Unisex", href: "/collections/unisex" },
-      { label: "Men", href: "/collections/men" },
-      { label: "Girls", href: "/collections/girls" },
-      { label: "Sport", href: "/collections/sport" },
-      { label: "School", href: "/collections/school" },
+      { label: "Dreams Hoodie", href: "/product/dreams-hoodie" },
+      { label: "Wishlist", href: "/wishlist" },
     ],
   },
   {

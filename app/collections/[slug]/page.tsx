@@ -3,76 +3,48 @@ import { notFound } from "next/navigation";
 import { PrivateList } from "@/components/home/private-list";
 import { PageHero } from "@/components/ui/page-hero";
 import { ProductGrid } from "@/components/collection/product-grid";
-import { CATEGORY_LABEL, PRODUCTS, productsIn, type CategoryId } from "@/lib/catalog";
-import { getWorld, WORLDS } from "@/lib/worlds";
+import { PRODUCTS } from "@/lib/catalog";
 
 type Params = { params: Promise<{ slug: string }> };
 
-/** `new` is a curated view across every world; the rest are category worlds. */
+/**
+ * Chapter 1 has exactly one collection. The five category worlds belonged to
+ * the earlier multi-category concept and are no longer destinations, so any
+ * other slug is a genuine 404 rather than an empty grid.
+ */
 export function generateStaticParams() {
-  return [{ slug: "new" }, ...WORLDS.map((w) => ({ slug: w.id }))];
+  return [{ slug: "new" }];
 }
 
 export async function generateMetadata({ params }: Params): Promise<Metadata> {
   const { slug } = await params;
-  if (slug === "new") {
-    return {
-      title: "Tonight's drop",
-      description: "The after-hours collection, released at midnight and never restocked.",
-    };
-  }
-  const world = getWorld(slug);
-  if (!world) return { title: "Collection" };
+  if (slug !== "new") return { title: "Not found" };
   return {
-    title: `${world.title} — ${world.atmosphere}`,
-    description: world.copy,
+    title: "Chapter 1: Dreams",
+    description:
+      "One oversized hoodie, two colourways. 319 DH, free delivery in Morocco, cash on delivery. Drops 27 September.",
   };
 }
 
 export default async function CollectionPage({ params }: Params) {
   const { slug } = await params;
-
-  if (slug === "new") {
-    return (
-      <>
-        <PageHero
-          label="Chapter 01 — After Hours"
-          lines={["Chapter 1", "Dreams"]}
-          copy="Chapter 1: Dreams. One oversized hoodie built around a single curved seam, in pine and in wine. Fifty pieces per size, per colour. Nothing restocked."
-          tone="pine"
-          seed="collection-new"
-          meta={[
-            { k: "Pieces", v: String(PRODUCTS.length) },
-            { k: "Drops", v: "27 September" },
-            { k: "Restock", v: "Never" },
-          ]}
-        />
-        <ProductGrid products={PRODUCTS} />
-        <PrivateList />
-      </>
-    );
-  }
-
-  const world = getWorld(slug);
-  if (!world) notFound();
-
-  const products = productsIn(world.id as CategoryId);
+  if (slug !== "new") notFound();
 
   return (
     <>
       <PageHero
-        label={`World — ${world.atmosphere}`}
-        lines={[world.title, "after dark"]}
-        copy={world.copy}
-        tone={world.tone}
-        seed={`collection-${world.id}`}
+        label="Chapter 1 — Dreams"
+        lines={["Chapter 1", "Dreams"]}
+        copy="One oversized hoodie built around a single curved seam, in pine and in wine. Fifty pieces per size, per colour. Nothing restocked."
+        tone="pine"
+        seed="collection-new"
         meta={[
-          { k: "Pieces", v: String(products.length) },
-          { k: "Coordinates", v: world.coords },
-          { k: "Hours", v: world.hours },
+          { k: "Colourways", v: String(PRODUCTS.length) },
+          { k: "Drops", v: "27 September" },
+          { k: "Restock", v: "Never" },
         ]}
       />
-      <ProductGrid products={products} emptyLabel={CATEGORY_LABEL[world.id]} />
+      <ProductGrid products={PRODUCTS} />
       <PrivateList />
     </>
   );

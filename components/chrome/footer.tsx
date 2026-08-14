@@ -29,8 +29,8 @@ export function Footer() {
           <div>
             <Wordmark className="text-[clamp(2.5rem,6vw,4rem)]" />
             <p className="mt-6 max-w-[34ch] text-sm leading-relaxed text-smoke">
-              Clothing for the sleepless. Designed after dark in Rotterdam, made in Portugal,
-              worn wherever the night is still going.
+              Clothing for the sleepless. Made in Morocco, worn wherever the night is still
+              going. Chapter 1 drops 27 September.
             </p>
 
             <ul className="mt-8 flex flex-wrap gap-x-6 gap-y-3">
@@ -84,7 +84,7 @@ export function Footer() {
         <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <p className="label-wide text-smoke">© {year} Clothsomnia — All hours reserved</p>
           <p className="label-wide text-smoke">
-            Rotterdam <span className="text-lime">✦</span> 51°55′ N <span className="text-lime">✦</span> Awake
+            Morocco <span className="text-lime">✦</span> Chapter 01 <span className="text-lime">✦</span> Awake
           </p>
         </div>
       </div>

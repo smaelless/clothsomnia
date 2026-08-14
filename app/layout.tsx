@@ -34,15 +34,15 @@ const sans = Inter_Tight({
 export const metadata: Metadata = {
   metadataBase: new URL("https://clothsomnia.com"),
   title: {
-    default: "Clothsomnia — Made for the hours that never end",
+    default: "Clothsomnia — T'lbess what they'll remember",
     template: "%s — Clothsomnia",
   },
   description:
-    "Clothing for the sleepless. A midnight runway of unisex, men's, girls', sport and school pieces, dropped after dark.",
+    "Clothing for the sleepless. Chapter 1: Dreams — one oversized hoodie, two colourways, dropping 27 September. Free delivery across Morocco, cash on delivery.",
   keywords: ["Clothsomnia", "fashion", "streetwear", "after hours", "runway", "unisex"],
   openGraph: {
-    title: "Clothsomnia — Made for the hours that never end",
-    description: "Clothing for the sleepless. Tonight's drop is live.",
+    title: "Clothsomnia — Chapter 1: Dreams",
+    description: "One oversized hoodie, two colourways. Drops 27 September.",
     type: "website",
     locale: "en_GB",
     siteName: "Clothsomnia",

@@ -121,28 +121,28 @@ export type Frame = {
 };
 
 export const FRAMES: Frame[] = [
-  { id: "f1", caption: "After midnight", meta: "Frame 01 / 24", tone: "pine", orientation: "tall" },
+  { id: "f1", caption: "After midnight", meta: "Frame 01 / 12", tone: "pine", orientation: "tall" },
   {
     id: "f2",
     caption: "Sleep never dressed this well",
-    meta: "Frame 04 / 24",
+    meta: "Frame 04 / 12",
     tone: "wine",
     orientation: "landscape",
   },
-  { id: "f3", caption: "Soft chaos", meta: "Frame 09 / 24", tone: "cream", orientation: "portrait" },
+  { id: "f3", caption: "Soft chaos", meta: "Frame 09 / 12", tone: "cream", orientation: "portrait" },
   {
     id: "f4",
     caption: "Last light / first look",
-    meta: "Frame 13 / 24",
+    meta: "Frame 13 / 12",
     tone: "silver",
     orientation: "portrait",
   },
   {
     id: "f5",
     caption: "Made for the hours that don't end",
-    meta: "Frame 18 / 24",
+    meta: "Frame 18 / 12",
     tone: "pine",
     orientation: "landscape",
   },
-  { id: "f6", caption: "Dress the static", meta: "Frame 22 / 24", tone: "lime", orientation: "tall" },
+  { id: "f6", caption: "Dress the static", meta: "Frame 22 / 12", tone: "lime", orientation: "tall" },
 ];

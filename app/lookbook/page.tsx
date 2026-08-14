@@ -5,34 +5,34 @@ import { PageHero } from "@/components/ui/page-hero";
 import { FRAMES, type Frame } from "@/lib/worlds";
 
 export const metadata: Metadata = {
-  title: "Lookbook — 24 frames",
+  title: "Lookbook — Chapter 1",
   description:
-    "Chapter 01, After Hours. Twenty-four frames shot between midnight and first light.",
+    "Chapter 1: Dreams. The hoodie, both ways, in twelve frames.",
 };
 
 /** The full book — the homepage shows six of these, this page runs all of them. */
 const EXTRA: Frame[] = [
-  { id: "f7", caption: "Nothing opens until we do", meta: "Frame 02 / 24", tone: "cream", orientation: "portrait" },
-  { id: "f8", caption: "Dress the static", meta: "Frame 06 / 24", tone: "pine", orientation: "landscape" },
-  { id: "f9", caption: "After dark, everything sharpens", meta: "Frame 11 / 24", tone: "wine", orientation: "tall" },
-  { id: "f10", caption: "Uniform for the wide-awake", meta: "Frame 15 / 24", tone: "cream", orientation: "portrait" },
-  { id: "f11", caption: "The long way home", meta: "Frame 19 / 24", tone: "pine", orientation: "landscape" },
-  { id: "f12", caption: "Sleep can wait", meta: "Frame 24 / 24", tone: "silver", orientation: "tall" },
+  { id: "f7", caption: "Nothing opens until we do", meta: "Frame 02 / 12", tone: "cream", orientation: "portrait" },
+  { id: "f8", caption: "Dress the static", meta: "Frame 06 / 12", tone: "pine", orientation: "landscape" },
+  { id: "f9", caption: "After dark, everything sharpens", meta: "Frame 11 / 12", tone: "wine", orientation: "tall" },
+  { id: "f10", caption: "Uniform for the wide-awake", meta: "Frame 15 / 12", tone: "cream", orientation: "portrait" },
+  { id: "f11", caption: "The long way home", meta: "Frame 19 / 12", tone: "pine", orientation: "landscape" },
+  { id: "f12", caption: "Sleep can wait", meta: "Frame 24 / 12", tone: "silver", orientation: "tall" },
 ];
 
 export default function LookbookPage() {
   return (
     <>
       <PageHero
-        label="Lookbook — Chapter 01"
-        lines={["After midnight,", "twenty-four frames"]}
-        copy="Shot across one night in Rotterdam between 23:00 and first light, on a crew who had all agreed to stay up. No studio, no reshoots, no daylight anywhere in the book."
+        label="Lookbook — Chapter 1: Dreams"
+        lines={["Both ways,", "twelve frames"]}
+        copy="One hoodie, two colourways, front and back. The curved panel does something different from every angle — that is the whole reason the book exists."
         tone="wine"
         seed="lookbook-hero"
         meta={[
-          { k: "Frames", v: "24" },
-          { k: "Shot", v: "23:00 — 05:40" },
-          { k: "Location", v: "Rotterdam" },
+          { k: "Frames", v: "12" },
+          { k: "Colourways", v: "Pine & Wine" },
+          { k: "Drops", v: "27 September" },
         ]}
       />
 

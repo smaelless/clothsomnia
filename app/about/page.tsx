@@ -14,21 +14,21 @@ export const metadata: Metadata = {
 
 const CHAPTERS = [
   {
-    year: "2021",
-    title: "A joke that stuck",
-    copy: "Two people who could not sleep started printing shirts at 4am to have something to do. The name was meant to be temporary.",
+    year: "The name",
+    title: "Clothing plus insomnia",
+    copy: "Clothsomnia is what you get when the two words collide. It was meant to be a placeholder and it stuck, because it turned out to describe exactly who we were making things for.",
     tone: "pine" as const,
   },
   {
-    year: "2023",
-    title: "First chapter",
-    copy: "Twelve pieces, one night, one room above a bike shop. It sold out before the sun came up and we have never restocked anything since.",
+    year: "The cut",
+    title: "One curved seam",
+    copy: "Chapter 1 is a single hoodie. The cream panel sweeps from the shoulder through the sleeve and down the side, so the silhouette changes depending on where you are standing.",
     tone: "wine" as const,
   },
   {
-    year: "2025",
-    title: "The runway",
-    copy: "We stopped calling them collections and started calling them chapters, because that is how they are made — in order, at night, one after another.",
+    year: "Chapter 1",
+    title: "Dreams",
+    copy: "Two colourways, fifty pieces per size, dropping 27 September. We would rather make one thing properly than five things quickly.",
     tone: "cream" as const,
   },
 ];

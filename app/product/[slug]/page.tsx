@@ -86,15 +86,15 @@ export default async function ProductPage({ params }: Params) {
       </div>
 
       {/* Related */}
-      <section className="border-t border-bone/10 py-20" aria-label="Related pieces">
+      <section className="border-t border-bone/10 py-20" aria-label="Other colourways">
         <div className="mx-auto max-w-[1600px] px-4 md:px-8">
           <div className="mb-12 flex flex-wrap items-end justify-between gap-6">
-            <h2 className="display text-huge">Wears well with</h2>
+            <h2 className="display text-huge">Also in</h2>
             <Link
-              href={`/collections/${product.category}`}
+              href="/collections/new"
               className="label inline-flex min-h-11 items-center border-b border-lime/40 pb-2 text-lime transition-colors hover:border-lime"
             >
-              All {CATEGORY_LABEL[product.category]}
+              See the drop
             </Link>
           </div>
 

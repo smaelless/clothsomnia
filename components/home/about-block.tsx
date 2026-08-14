@@ -9,10 +9,10 @@ import { SectionLabel } from "@/components/ui/wordmark";
 import { inView, EASE_OUT } from "@/lib/motion";
 
 const FACTS = [
-  { k: "01", label: "Cut in", value: "Portugal" },
-  { k: "02", label: "Chapters", value: "Four a year" },
+  { k: "01", label: "Made in", value: "Morocco" },
+  { k: "02", label: "Chapter", value: "01 — Dreams" },
   { k: "03", label: "Restocks", value: "Never" },
-  { k: "04", label: "Open", value: "All hours" },
+  { k: "04", label: "Drops", value: "27 Sept" },
 ];
 
 export function AboutBlock() {
@@ -53,7 +53,7 @@ export function AboutBlock() {
             <p className="label-wide mb-3 text-lime">Studio hours</p>
             <p className="display text-3xl leading-none">22:00 — 06:00</p>
             <p className="mt-3 text-sm text-smoke">
-              Rotterdam. The lights stay on because somebody is always still working.
+              The lights stay on because somebody is always still working.
             </p>
           </motion.div>
         </div>
@@ -76,9 +76,8 @@ export function AboutBlock() {
           />
 
           <p className="mt-6 max-w-[46ch] text-base leading-relaxed text-smoke">
-            Everything is made in small runs, in factories we have actually visited, from fabrics
-            chosen because of how they behave under artificial light. Nothing is restocked. If it
-            is gone, it is gone, and the next chapter is already being cut.
+            Chapter 1 is one hoodie in two colourways, cut in small runs. Nothing is restocked.
+            When a size is gone it is gone, and the next chapter is already being drawn.
           </p>
 
           <dl className="mt-12 grid grid-cols-2 gap-px overflow-hidden rounded-2xl border border-bone/12 bg-bone/10 sm:grid-cols-4">

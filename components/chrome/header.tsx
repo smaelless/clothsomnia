@@ -116,7 +116,7 @@ export function Header() {
 
           <IconAction
             label={`Wishlist, ${wishlist.length} saved`}
-            href="/lookbook"
+            href="/wishlist"
             badge={wishlist.length || undefined}
             badgeTone="magenta"
           >

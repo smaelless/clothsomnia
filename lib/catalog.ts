@@ -144,3 +144,23 @@ export function searchProducts(query: string): Product[] {
       .includes(q),
   ).slice(0, 6);
 }
+
+/**
+ * STOCK
+ *
+ * Fifty pieces per size, per colourway, for Chapter 1. Held here rather than
+ * in a database because the run is fixed and nothing is restocked — when this
+ * becomes a real inventory system, only this map moves.
+ *
+ * Key: `${colourName}|${size}`.
+ */
+export const STOCK: Record<string, number> = Object.fromEntries(
+  [PINE, WINE].flatMap((c) => SIZES.map((s) => [`${c.name}|${s}`, STOCK_PER_SIZE])),
+);
+
+export function stockFor(colour: string, size: string): number {
+  return STOCK[`${colour}|${size}`] ?? 0;
+}
+
+/** Under this, the size is called out as nearly gone. */
+export const LOW_STOCK_AT = 10;
