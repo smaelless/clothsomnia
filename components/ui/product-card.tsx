@@ -40,7 +40,7 @@ export function ProductCard({
   const wished = isWished(product.slug);
 
   // Cards alternate their vertical offset so rows never read as a plain grid.
-  const offset = index % 3 === 1 ? "md:mt-16" : index % 3 === 2 ? "md:mt-8" : "";
+  const offset = index % 3 === 1 ? "md:mt-10" : index % 3 === 2 ? "md:mt-8" : "";
 
   function quickAdd(size: string) {
     add(product.slug, size, product.colors[0].name);

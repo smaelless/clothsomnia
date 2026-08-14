@@ -13,7 +13,7 @@ export function ProductTeaser() {
   if (!product) return null;
 
   return (
-    <section className="relative border-y border-bone/10 py-24 md:py-32" aria-label="Product experience">
+    <section className="relative border-y border-bone/10 py-14 md:py-20" aria-label="Product experience">
       <div aria-hidden className="bloom left-[-8%] top-[20%] size-[34rem] bg-pine/20" />
 
       <div className="relative mx-auto max-w-[1600px] px-4 md:px-8">
@@ -35,7 +35,7 @@ export function ProductTeaser() {
         </div>
 
         {/* Stage — corner marks frame the preview like a contact sheet */}
-        <div className="relative mt-16 md:mt-20">
+        <div className="relative mt-10 md:mt-8">
           {(
             [
               "-top-3 -left-3 border-l border-t",

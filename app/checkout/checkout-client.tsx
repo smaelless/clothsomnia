@@ -80,7 +80,7 @@ export function CheckoutClient() {
   /* ---------------- Confirmed ---------------- */
   if (done) {
     return (
-      <section className="py-20 md:py-28" aria-label="Order confirmed">
+      <section className="py-12 md:py-16" aria-label="Order confirmed">
         <div className="mx-auto max-w-2xl px-4 text-center md:px-8">
           <motion.span
             initial={reduced ? { opacity: 0 } : { scale: 0.6, opacity: 0 }}
@@ -105,7 +105,7 @@ export function CheckoutClient() {
             Write the reference down. It is how we find your order if you call.
           </p>
 
-          <div className="mt-12 flex flex-wrap justify-center gap-3">
+          <div className="mt-8 flex flex-wrap justify-center gap-3">
             <ActionButton href="/">Back to Clothsomnia</ActionButton>
           </div>
         </div>
@@ -116,7 +116,7 @@ export function CheckoutClient() {
   /* ---------------- Empty bag ---------------- */
   if (count === 0) {
     return (
-      <section className="py-24" aria-label="Empty bag">
+      <section className="py-14" aria-label="Empty bag">
         <div className="mx-auto max-w-2xl px-4 text-center md:px-8">
           <h1 className="display text-huge leading-[0.95]">Your bag is empty.</h1>
           <p className="mx-auto mt-6 max-w-[40ch] text-base leading-relaxed text-silver">
@@ -132,7 +132,7 @@ export function CheckoutClient() {
 
   /* ---------------- Form ---------------- */
   return (
-    <section className="py-14 md:py-20" aria-label="Checkout">
+    <section className="py-12 md:py-16" aria-label="Checkout">
       <div className="mx-auto grid max-w-[1400px] gap-12 px-4 md:px-8 lg:grid-cols-[1.1fr_1fr] lg:gap-20">
         {/* Details */}
         <form onSubmit={submit} noValidate>

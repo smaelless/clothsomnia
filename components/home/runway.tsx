@@ -20,7 +20,7 @@ import { cn, formatPrice } from "@/lib/utils";
  */
 export function Runway() {
   return (
-    <section className="relative py-24 md:py-36" aria-label="Runway sequence">
+    <section className="relative py-14 md:py-20" aria-label="Runway sequence">
       <div className="mx-auto max-w-[1600px] px-4 md:px-8">
         <div className="flex flex-wrap items-end justify-between gap-8">
           <div>
@@ -39,7 +39,7 @@ export function Runway() {
         </div>
       </div>
 
-      <div className="mt-20 md:mt-28">
+      <div className="mt-8 md:mt-10">
         {LOOKS.map((look, i) => (
           <LookRow key={look.id} look={look} index={i} />
         ))}
@@ -71,7 +71,7 @@ function LookRow({ look, index }: { look: Look; index: number }) {
     >
       <div
         className={cn(
-          "mx-auto grid max-w-[1600px] items-center gap-8 px-4 md:gap-14 md:px-8",
+          "mx-auto grid max-w-[1600px] items-center gap-8 px-4 md:gap-10 md:px-8",
           "md:grid-cols-[1.1fr_1fr]",
           flipped && "md:[&>*:first-child]:order-2",
         )}

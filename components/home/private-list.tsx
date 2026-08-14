@@ -30,7 +30,7 @@ export function PrivateList() {
   }
 
   return (
-    <section className="relative overflow-hidden border-t border-bone/10 py-24 md:py-32" aria-label="Private list">
+    <section className="relative overflow-hidden border-t border-bone/10 py-14 md:py-20" aria-label="Private list">
       <div aria-hidden className="bloom left-1/2 top-0 size-[44rem] -translate-x-1/2 bg-pine/22" />
 
       {/* Ghost type band */}
@@ -57,9 +57,9 @@ export function PrivateList() {
             No campaigns, no discount codes, no reminders that we exist. Just the door code.
           </p>
 
-          <Countdown className="mt-12" />
+          <Countdown className="mt-8" />
 
-          <div className="mx-auto mt-12 max-w-xl">
+          <div className="mx-auto mt-8 max-w-xl">
             <AnimatePresence mode="wait">
               {state === "done" ? (
                 <motion.div

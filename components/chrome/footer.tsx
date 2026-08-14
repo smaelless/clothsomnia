@@ -23,7 +23,7 @@ export function Footer() {
         </Marquee>
       </div>
 
-      <div className="mx-auto max-w-[1600px] px-4 py-16 md:px-8 md:py-20">
+      <div className="mx-auto max-w-[1600px] px-4 py-16 md:px-8 md:py-14">
         <div className="grid gap-12 lg:grid-cols-[1.3fr_2fr]">
           {/* Identity */}
           <div>

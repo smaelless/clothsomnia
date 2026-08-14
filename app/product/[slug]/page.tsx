@@ -94,7 +94,7 @@ export default async function ProductPage({ params }: Params) {
       </div>
 
       {/* Related */}
-      <section className="border-t border-bone/10 py-20" aria-label="Other colourways">
+      <section className="border-t border-bone/10 py-14" aria-label="Other colourways">
         <div className="mx-auto max-w-[1600px] px-4 md:px-8">
           <div className="mb-12 flex flex-wrap items-end justify-between gap-6">
             <h2 className="display text-huge">Also in</h2>
@@ -106,7 +106,7 @@ export default async function ProductPage({ params }: Params) {
             </Link>
           </div>
 
-          <div className="grid grid-cols-1 gap-x-6 gap-y-14 sm:grid-cols-2 lg:grid-cols-4">
+          <div className="grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-4">
             {related.map((p, i) => (
               <ProductCard key={p.slug} product={p} index={i} />
             ))}

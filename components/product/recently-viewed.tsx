@@ -43,10 +43,10 @@ export function RecentlyViewed({ current }: { current: string }) {
   if (items.length === 0) return null;
 
   return (
-    <section className="border-t border-bone/10 py-20" aria-label="Recently viewed">
+    <section className="border-t border-bone/10 py-14" aria-label="Recently viewed">
       <div className="mx-auto max-w-[1600px] px-4 md:px-8">
         <h2 className="display mb-12 text-huge">Where you&apos;ve been</h2>
-        <div className="grid grid-cols-1 gap-x-6 gap-y-14 sm:grid-cols-2 lg:grid-cols-4">
+        <div className="grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-4">
           {items.map((p, i) => (
             <ProductCard key={p.slug} product={p} index={i} />
           ))}

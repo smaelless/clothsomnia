@@ -57,7 +57,7 @@ export default function AboutPage() {
       />
 
       {/* Chapters */}
-      <section className="py-24 md:py-32" aria-label="History">
+      <section className="py-14 md:py-20" aria-label="History">
         <div className="mx-auto max-w-[1600px] px-4 md:px-8">
           <SectionLabel index="01" className="mb-12">
             How we got here
@@ -65,7 +65,7 @@ export default function AboutPage() {
 
           <ul className="grid gap-10 lg:grid-cols-3 lg:gap-8">
             {CHAPTERS.map((c, i) => (
-              <li key={c.year} className={i % 2 === 1 ? "lg:mt-16" : ""}>
+              <li key={c.year} className={i % 2 === 1 ? "lg:mt-10" : ""}>
                 <Plate
                   seed={`about-${c.year}`}
                   tone={c.tone}
@@ -84,7 +84,7 @@ export default function AboutPage() {
       </section>
 
       {/* Principles */}
-      <section className="border-y border-bone/10 py-24 md:py-32" aria-label="How we work">
+      <section className="border-y border-bone/10 py-14 md:py-20" aria-label="How we work">
         <div className="mx-auto max-w-[1600px] px-4 md:px-8">
           <SplitLines
             lines={["Four rules,", "no exceptions"]}
@@ -92,7 +92,7 @@ export default function AboutPage() {
             lineClassName="[&:nth-child(2)]:italic [&:nth-child(2)]:font-light [&:nth-child(2)]:text-silver"
           />
 
-          <dl className="mt-16 grid gap-px overflow-hidden rounded-3xl border border-bone/12 bg-bone/10 sm:grid-cols-2">
+          <dl className="mt-10 grid gap-px overflow-hidden rounded-3xl border border-bone/12 bg-bone/10 sm:grid-cols-2">
             {PRINCIPLES.map((p, i) => (
               <div key={p.k} className="bg-ink p-8 md:p-10">
                 <dt className="flex items-baseline gap-4">

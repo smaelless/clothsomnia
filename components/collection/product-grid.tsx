@@ -34,7 +34,7 @@ export function ProductGrid({
   }, [products, sort]);
 
   return (
-    <section className="py-16 md:py-24">
+    <section className="py-12 md:py-16">
       <div className="mx-auto max-w-[1600px] px-4 md:px-8">
         <div className="flex flex-wrap items-center justify-between gap-4 border-b border-bone/10 pb-5">
           <p className="label text-smoke" aria-live="polite">
@@ -68,13 +68,13 @@ export function ProductGrid({
         </div>
 
         {sorted.length === 0 ? (
-          <p className="py-24 text-center text-base text-smoke">
+          <p className="py-14 text-center text-base text-smoke">
             Nothing in {emptyLabel} yet. The next chapter is already being cut.
           </p>
         ) : (
           <motion.div
             layout={!reduced}
-            className="mt-14 grid grid-cols-1 gap-x-6 gap-y-14 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"
+            className="mt-9 grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"
           >
             <AnimatePresence mode="popLayout">
               {sorted.map((product, i) => (

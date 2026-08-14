@@ -29,7 +29,7 @@ export function NewDrop() {
   );
 
   return (
-    <section className="relative py-24 md:py-32" aria-label="Tonight's drop">
+    <section className="relative py-14 md:py-20" aria-label="Tonight's drop">
       <div aria-hidden className="bloom right-[-10%] top-[10%] size-[36rem] bg-wine/18" />
 
       <div className="relative mx-auto max-w-[1600px] px-4 md:px-8">
@@ -56,7 +56,7 @@ export function NewDrop() {
         </div>
 
         {/* Filters */}
-        <div className="mt-12 flex flex-wrap items-center gap-2 border-y border-bone/10 py-4">
+        <div className="mt-8 flex flex-wrap items-center gap-2 border-y border-bone/10 py-4">
           <span className="label-wide mr-3 text-smoke">Filter</span>
           {FILTERS.map((f) => {
             const activeFilter = filter === f;
@@ -92,7 +92,7 @@ export function NewDrop() {
         {/* Grid */}
         <motion.div
           layout={!reduced}
-          className="mt-12 grid grid-cols-1 gap-x-6 gap-y-14 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"
+          className="mt-8 grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"
         >
           <AnimatePresence mode="popLayout">
             {products.map((product, i) => (
@@ -111,7 +111,7 @@ export function NewDrop() {
         </motion.div>
 
         {products.length === 0 && (
-          <p className="py-20 text-center text-sm text-smoke">
+          <p className="py-14 text-center text-sm text-smoke">
             Nothing from that world made tonight&apos;s cut. Try another.
           </p>
         )}

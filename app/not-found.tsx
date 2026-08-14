@@ -3,7 +3,7 @@ import { Plate } from "@/components/ui/plate";
 
 export default function NotFound() {
   return (
-    <section className="relative grid min-h-[70svh] place-items-center overflow-hidden px-4 py-24">
+    <section className="relative grid min-h-[70svh] place-items-center overflow-hidden px-4 py-14">
       <div aria-hidden className="absolute inset-0 -z-10 opacity-40">
         <Plate seed="404-frame" tone="magenta" variant="field" alt="" sizes="100vw" className="h-full w-full" />
       </div>

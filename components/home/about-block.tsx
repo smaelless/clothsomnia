@@ -22,7 +22,7 @@ export function AboutBlock() {
   const y = useTransform(scrollYProgress, [0, 1], ["12%", "-12%"]);
 
   return (
-    <section ref={ref} className="relative py-24 md:py-32" aria-label="About Clothsomnia">
+    <section ref={ref} className="relative py-14 md:py-20" aria-label="About Clothsomnia">
       <div className="mx-auto grid max-w-[1600px] gap-12 px-4 md:px-8 lg:grid-cols-[1fr_1.1fr] lg:gap-20">
         {/* Plate column */}
         <div className="relative">
@@ -80,7 +80,7 @@ export function AboutBlock() {
             When a size is gone it is gone, and the next chapter is already being drawn.
           </p>
 
-          <dl className="mt-12 grid grid-cols-2 gap-px overflow-hidden rounded-2xl border border-bone/12 bg-bone/10 sm:grid-cols-4">
+          <dl className="mt-8 grid grid-cols-2 gap-px overflow-hidden rounded-2xl border border-bone/12 bg-bone/10 sm:grid-cols-4">
             {FACTS.map((fact) => (
               <div key={fact.k} className="bg-ink p-5">
                 <dt className="label-wide text-smoke">{fact.label}</dt>

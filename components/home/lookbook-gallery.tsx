@@ -21,11 +21,11 @@ import { cn } from "@/lib/utils";
 /** Explicit placement — the asymmetry is the design, not a side effect. */
 const LAYOUT = [
   "lg:col-span-5 lg:col-start-1 aspect-[3/4]",
-  "lg:col-span-6 lg:col-start-7 lg:mt-28 aspect-[16/10]",
-  "lg:col-span-4 lg:col-start-2 lg:-mt-16 aspect-[3/4]",
-  "lg:col-span-3 lg:col-start-7 lg:mt-20 aspect-[2/3]",
-  "lg:col-span-5 lg:col-start-1 lg:mt-10 aspect-[16/11]",
-  "lg:col-span-4 lg:col-start-9 lg:-mt-24 aspect-[3/4]",
+  "lg:col-span-6 lg:col-start-7 lg:mt-6 aspect-[16/10]",
+  "lg:col-span-4 lg:col-start-2 lg:-mt-10 aspect-[3/4]",
+  "lg:col-span-3 lg:col-start-7 lg:mt-8 aspect-[2/3]",
+  "lg:col-span-5 lg:col-start-1 lg:mt-6 aspect-[16/11]",
+  "lg:col-span-4 lg:col-start-9 lg:-mt-9 aspect-[3/4]",
 ];
 
 export function LookbookGallery({
@@ -36,7 +36,7 @@ export function LookbookGallery({
   heading?: boolean;
 }) {
   return (
-    <section className="relative py-24 md:py-32" aria-label="Lookbook">
+    <section className="relative py-14 md:py-20" aria-label="Lookbook">
       <div className="mx-auto max-w-[1600px] px-4 md:px-8">
         {heading && (
           <div className="flex flex-wrap items-end justify-between gap-8">
@@ -56,7 +56,7 @@ export function LookbookGallery({
           </div>
         )}
 
-        <div className={cn("grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-12 lg:gap-8", heading && "mt-16 md:mt-24")}>
+        <div className={cn("grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-12 lg:gap-6", heading && "mt-10 md:mt-9")}>
           {frames.map((frame, i) => (
             <GalleryFrame key={frame.id} frame={frame} index={i} />
           ))}
