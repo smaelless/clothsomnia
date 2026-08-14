@@ -12,12 +12,12 @@ export const metadata: Metadata = {
 
 /** The full book — the homepage shows six of these, this page runs all of them. */
 const EXTRA: Frame[] = [
-  { id: "f7", caption: "Nothing opens until we do", meta: "Frame 02 / 12", tone: "cream", orientation: "portrait" },
-  { id: "f8", caption: "Dress the static", meta: "Frame 06 / 12", tone: "pine", orientation: "landscape" },
-  { id: "f9", caption: "After dark, everything sharpens", meta: "Frame 11 / 12", tone: "wine", orientation: "tall" },
-  { id: "f10", caption: "Uniform for the wide-awake", meta: "Frame 15 / 12", tone: "cream", orientation: "portrait" },
-  { id: "f11", caption: "The long way home", meta: "Frame 19 / 12", tone: "pine", orientation: "landscape" },
-  { id: "f12", caption: "Sleep can wait", meta: "Frame 24 / 12", tone: "silver", orientation: "tall" },
+  { id: "f7", caption: "Nothing opens until we do", meta: "Frame 07 / 12", tone: "cream", orientation: "portrait" },
+  { id: "f8", caption: "Dress the static", meta: "Frame 08 / 12", tone: "pine", orientation: "landscape" },
+  { id: "f9", caption: "After dark, everything sharpens", meta: "Frame 09 / 12", tone: "wine", orientation: "tall" },
+  { id: "f10", caption: "Uniform for the wide-awake", meta: "Frame 10 / 12", tone: "cream", orientation: "portrait" },
+  { id: "f11", caption: "The long way home", meta: "Frame 11 / 12", tone: "pine", orientation: "landscape" },
+  { id: "f12", caption: "Sleep can wait", meta: "Frame 12 / 12", tone: "silver", orientation: "tall" },
 ];
 
 export default function LookbookPage() {
