@@ -1,26 +1,23 @@
-import { AboutBlock } from "@/components/home/about-block";
 import { Hero } from "@/components/home/hero";
 import { LookbookGallery } from "@/components/home/lookbook-gallery";
 import { NewDrop } from "@/components/home/new-drop";
-import { PrivateList } from "@/components/home/private-list";
-import { ProductTeaser } from "@/components/home/product-teaser";
-import { Runway } from "@/components/home/runway";
 
 /**
- * HOMEPAGE — the fashion show, in order.
- * Every section is self-contained and reusable; this file is only the running
- * order, which is exactly how it should read.
+ * HOMEPAGE
+ *
+ * Three sections and the footer: the opening frame, the drop, the lookbook.
+ * A single-product launch does not need a runway, a product-page teaser and a
+ * brand essay before it shows the thing it is selling — those pages still
+ * exist and are still linked, they just are not in the way.
+ *
+ * The longer running order is preserved at app/_backup/home-full.tsx.
  */
 export default function HomePage() {
   return (
     <>
       <Hero />
-      <Runway />
       <NewDrop />
       <LookbookGallery />
-      <ProductTeaser />
-      <AboutBlock />
-      <PrivateList />
     </>
   );
 }

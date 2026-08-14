@@ -66,7 +66,7 @@ export function Hero() {
     <section
       ref={ref}
       onPointerMove={onPointerMove}
-      className="relative min-h-[92svh] overflow-hidden pb-10 pt-6 md:pb-14"
+      className="relative min-h-[78svh] overflow-hidden pb-6 pt-6 md:pb-8"
       aria-label="Clothsomnia — Autumn/Winter after-hours campaign"
     >
       {/* Plane 1 — atmosphere */}
@@ -153,7 +153,7 @@ export function Hero() {
         style={reduced ? undefined : { y: yType, opacity: fade }}
         /* Starts at the top rather than centring in an 80svh box — centring
            left a large dead band between the header and the first line. */
-        className="relative mx-auto flex min-h-[66svh] max-w-[1600px] flex-col justify-start px-4 md:px-8"
+        className="relative mx-auto flex max-w-[1600px] flex-col justify-start px-4 md:px-8"
       >
         <motion.p
           initial={{ opacity: 0 }}

@@ -35,7 +35,7 @@ export function NewDrop() {
       <div className="relative mx-auto max-w-[1600px] px-4 md:px-8">
         <div className="flex flex-wrap items-end justify-between gap-x-12 gap-y-8">
           <div>
-            <SectionLabel index="02" className="mb-8">
+            <SectionLabel index="01" className="mb-8">
               Tonight&apos;s drop
             </SectionLabel>
             <SplitLines

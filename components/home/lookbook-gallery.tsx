@@ -41,7 +41,7 @@ export function LookbookGallery({
         {heading && (
           <div className="flex flex-wrap items-end justify-between gap-8">
             <div>
-              <SectionLabel index="03" className="mb-8">
+              <SectionLabel index="02" className="mb-8">
                 Lookbook — 12 frames
               </SectionLabel>
               <SplitLines

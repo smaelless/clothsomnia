@@ -20,7 +20,7 @@ import { cn, formatPrice } from "@/lib/utils";
  */
 export function Runway() {
   return (
-    <section className="relative py-14 md:py-20" aria-label="Runway sequence">
+    <section className="relative pb-14 pt-8 md:pb-20 md:pt-10" aria-label="Runway sequence">
       <div className="mx-auto max-w-[1600px] px-4 md:px-8">
         <div className="flex flex-wrap items-end justify-between gap-8">
           <div>
