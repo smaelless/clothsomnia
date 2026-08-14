@@ -6,6 +6,7 @@ import { useState, type FormEvent } from "react";
 import { Marquee } from "@/components/ui/marquee";
 import { SplitLines } from "@/components/ui/reveal";
 import { SectionLabel } from "@/components/ui/wordmark";
+import { Countdown } from "@/components/ui/countdown";
 import { EASE_OUT } from "@/lib/motion";
 import { cn } from "@/lib/utils";
 
@@ -30,7 +31,7 @@ export function PrivateList() {
 
   return (
     <section className="relative overflow-hidden border-t border-bone/10 py-24 md:py-32" aria-label="Private list">
-      <div aria-hidden className="bloom left-1/2 top-0 size-[44rem] -translate-x-1/2 bg-violet/20" />
+      <div aria-hidden className="bloom left-1/2 top-0 size-[44rem] -translate-x-1/2 bg-pine/22" />
 
       {/* Ghost type band */}
       <Marquee duration={46} className="pointer-events-none absolute inset-x-0 top-1/2 -translate-y-1/2 select-none opacity-[0.05]">
@@ -41,7 +42,7 @@ export function PrivateList() {
 
       <div className="relative mx-auto max-w-[1600px] px-4 md:px-8">
         <div className="mx-auto max-w-3xl text-center">
-          <SectionLabel index="07" className="mb-8 justify-center">
+          <SectionLabel index="06" className="mb-8 justify-center">
             Access
           </SectionLabel>
 
@@ -55,6 +56,8 @@ export function PrivateList() {
             Drops go to the list first, at midnight, before anything is announced anywhere else.
             No campaigns, no discount codes, no reminders that we exist. Just the door code.
           </p>
+
+          <Countdown className="mt-12" />
 
           <div className="mx-auto mt-12 max-w-xl">
             <AnimatePresence mode="wait">

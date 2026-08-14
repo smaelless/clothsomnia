@@ -32,7 +32,41 @@ type PlateProps = {
 };
 
 
+/**
+ * Seeds that map to a real Chapter 1 photograph. Product cards, the gallery and
+ * the runway all pass one of these, so the hoodie shows up wherever it belongs.
+ */
+const CHAPTER_ONE: Record<string, string> = {
+  "dreams-hoodie": "/chapter1/pine-front.jpg",
+  "dreams-hoodie-pine": "/chapter1/pine-front.jpg",
+  "dreams-hoodie-pine-alt": "/chapter1/pine-back.jpg",
+  "dreams-hoodie-wine": "/chapter1/wine-front.jpg",
+  "dreams-hoodie-wine-alt": "/chapter1/wine-three.jpg",
+  "hero-primary": "/chapter1/pine-front.jpg",
+  "hero-secondary": "/chapter1/wine-three.jpg",
+  "look-01": "/chapter1/pine-front.jpg",
+  "look-02": "/chapter1/wine-full.jpg",
+  "look-03": "/chapter1/pair-wine.jpg",
+  // Lookbook frames
+  f1: "/chapter1/wine-walk.jpg",
+  f2: "/chapter1/pair-wine.jpg",
+  f3: "/chapter1/pine-back.jpg",
+  f4: "/chapter1/wine-three.jpg",
+  f5: "/chapter1/pine-pair.jpg",
+  f6: "/chapter1/wine-full.jpg",
+  f7: "/chapter1/pine-front.jpg",
+  f8: "/chapter1/wine-front.jpg",
+  f9: "/chapter1/wine-walk.jpg",
+  f10: "/chapter1/pine-back.jpg",
+  f11: "/chapter1/pair-wine.jpg",
+  f12: "/chapter1/wine-three.jpg",
+  "about-portrait": "/chapter1/pine-front.jpg",
+};
+
 const TONES: Record<Tone, { key: string; edge: string; deep: string }> = {
+  pine: { key: "#1F4C46", edge: "#8FC9BE", deep: "#07100E" },
+  wine: { key: "#5C1F2B", edge: "#E0A3AE", deep: "#150609" },
+  cream: { key: "#E8E2D6", edge: "#FFFDF7", deep: "#1A1814" },
   violet: { key: "#7C3BFF", edge: "#C9B0FF", deep: "#1A0B3D" },
   cobalt: { key: "#1B3BFF", edge: "#8FA6FF", deep: "#060F3A" },
   magenta: { key: "#FF2FA0", edge: "#FFB0D8", deep: "#3B0722" },
@@ -104,7 +138,15 @@ export function Plate({
    *
    * To give a product its own image later, pass `src` at the call site.
    */
-  const resolvedSrc = src ?? (variant === "figure" ? pick(CAMPAIGN_IMAGES, seed, 11) : undefined);
+  /**
+   * Real product photography wins. A seed matching a Chapter 1 frame resolves
+   * to that shot; anything else falls back to the campaign pool, and `field`
+   * plates stay procedural because they are atmosphere, not product.
+   */
+  const resolvedSrc =
+    src ??
+    CHAPTER_ONE[seed] ??
+    (variant === "figure" ? pick(CAMPAIGN_IMAGES, seed, 11) : undefined);
 
   /**
    * Stable per plate, so a product keeps the same line everywhere it appears.

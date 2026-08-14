@@ -30,12 +30,12 @@ export function NewDrop() {
 
   return (
     <section className="relative py-24 md:py-32" aria-label="Tonight's drop">
-      <div aria-hidden className="bloom right-[-10%] top-[10%] size-[36rem] bg-cobalt/15" />
+      <div aria-hidden className="bloom right-[-10%] top-[10%] size-[36rem] bg-wine/18" />
 
       <div className="relative mx-auto max-w-[1600px] px-4 md:px-8">
         <div className="flex flex-wrap items-end justify-between gap-x-12 gap-y-8">
           <div>
-            <SectionLabel index="03" className="mb-8">
+            <SectionLabel index="02" className="mb-8">
               Tonight&apos;s drop
             </SectionLabel>
             <SplitLines
@@ -47,10 +47,10 @@ export function NewDrop() {
 
           <div className="flex flex-col items-start gap-6 pb-2">
             <p className="max-w-[34ch] text-sm leading-relaxed text-smoke">
-              Eight pieces released at midnight. Sizes are cut in small runs and are not restocked.
+              One hoodie, two colourways. Fifty pieces per size — when a size goes, it is gone.
             </p>
             <ActionButton href="/collections/new" tone="outline">
-              View all 41 pieces
+              See the hoodie
             </ActionButton>
           </div>
         </div>

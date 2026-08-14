@@ -1,5 +1,4 @@
 import { AboutBlock } from "@/components/home/about-block";
-import { CollectionWorlds } from "@/components/home/collection-worlds";
 import { Hero } from "@/components/home/hero";
 import { LookbookGallery } from "@/components/home/lookbook-gallery";
 import { NewDrop } from "@/components/home/new-drop";
@@ -17,7 +16,6 @@ export default function HomePage() {
     <>
       <Hero />
       <Runway />
-      <CollectionWorlds />
       <NewDrop />
       <LookbookGallery />
       <ProductTeaser />

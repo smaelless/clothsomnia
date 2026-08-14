@@ -56,7 +56,7 @@ export function ProductCard({
     >
       <div className="relative overflow-hidden bg-charcoal">
         <Link
-          href={`/product/${product.slug}`}
+          href={`/product/${product.pdpSlug}`}
           className="block focus-visible:outline-offset-[-3px]"
           onFocus={() => setSwapped(true)}
           onBlur={() => setSwapped(false)}
@@ -180,7 +180,7 @@ export function ProductCard({
       <div className="flex items-start justify-between gap-4 pt-4">
         <div className="min-w-0">
           <h3 className="display text-xl leading-tight">
-            <Link href={`/product/${product.slug}`} className="transition-colors hover:text-lime">
+            <Link href={`/product/${product.pdpSlug}`} className="transition-colors hover:text-lime">
               {product.name}
             </Link>
           </h3>

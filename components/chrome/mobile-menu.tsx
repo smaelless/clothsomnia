@@ -13,7 +13,7 @@ import { useFocusTrap } from "@/lib/use-focus-trap";
 import { cn } from "@/lib/utils";
 import { useStore } from "@/providers/store";
 
-const TONES = ["violet", "cobalt", "magenta", "lime", "silver", "navy"] as const;
+const TONES = ["pine", "wine", "cream", "pine", "wine", "cream"] as const;
 
 /**
  * MOBILE MENU — "the backstage tunnel".

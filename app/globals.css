@@ -15,11 +15,20 @@
   --color-bone: #edeae4; /* warm off-white — primary text */
   --color-silver: #c9d2e3; /* icy silver — secondary text */
 
-  /* ---- Accents: used sparingly, with intent ---- */
-  --color-violet: #7c3bff; /* electric violet — primary accent */
-  --color-cobalt: #1b3bff; /* deep cobalt — depth accent */
-  --color-magenta: #ff2fa0; /* glowing magenta — restrained moments */
-  --color-lime: #c6ff3d; /* acid lime — micro-doses only */
+  /* ---- Chapter 1 — taken from the garment itself ---- */
+  --color-pine: #1f4c46; /* the hoodie's green */
+  --color-wine: #5c1f2b; /* the hoodie's burgundy */
+  --color-cream: #e8e2d6; /* the panel cream */
+
+  /* ---- Accents ----
+     Lime stays as the single signal colour: it is a near neighbour of pine and
+     a clean complement to wine, so it reads sharp against both. Violet, cobalt
+     and magenta are kept only for legacy surfaces — the product's own colours
+     carry the atmosphere now. */
+  --color-lime: #c6ff3d; /* acid lime — signal only: focus, active, confirm */
+  --color-violet: #7c3bff;
+  --color-cobalt: #1b3bff;
+  --color-magenta: #ff2fa0;
 
   /* ---- Type ---- */
   --font-display: var(--font-display-family), "Bodoni MT", Didot, "Times New Roman", serif;

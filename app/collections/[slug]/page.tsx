@@ -37,13 +37,13 @@ export default async function CollectionPage({ params }: Params) {
       <>
         <PageHero
           label="Chapter 01 — After Hours"
-          lines={["Tonight's drop", "in full"]}
-          copy="Forty-one pieces across five worlds, released at midnight. Cut in small runs, produced in Portugal and Japan, and never restocked once a size is gone."
-          tone="violet"
+          lines={["Chapter 1", "Dreams"]}
+          copy="Chapter 1: Dreams. One oversized hoodie built around a single curved seam, in pine and in wine. Fifty pieces per size, per colour. Nothing restocked."
+          tone="pine"
           seed="collection-new"
           meta={[
             { k: "Pieces", v: String(PRODUCTS.length) },
-            { k: "Released", v: "00:00 CET" },
+            { k: "Drops", v: "27 September" },
             { k: "Restock", v: "Never" },
           ]}
         />

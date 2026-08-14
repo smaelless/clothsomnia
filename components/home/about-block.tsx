@@ -35,7 +35,7 @@ export function AboutBlock() {
             >
               <Plate
                 seed="about-portrait"
-                tone="navy"
+                tone="pine"
                 alt="Clothsomnia studio, after hours"
                 sizes="(max-width: 1024px) 92vw, 44vw"
                 className="aspect-[4/5] w-full"
@@ -60,7 +60,7 @@ export function AboutBlock() {
 
         {/* Copy column */}
         <div className="lg:pt-10">
-          <SectionLabel index="06" className="mb-8">
+          <SectionLabel index="05" className="mb-8">
             About
           </SectionLabel>
 

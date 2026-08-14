@@ -9,7 +9,7 @@ import { SectionLabel } from "@/components/ui/wordmark";
 export const metadata: Metadata = {
   title: "About",
   description:
-    "Clothsomnia makes clothing for the sleepless — designed after dark in Rotterdam, produced in small runs, never restocked.",
+    "Clothsomnia — clothing for the sleepless. Chapter 1: Dreams, launching 27 September.",
 };
 
 const CHAPTERS = [
@@ -17,25 +17,25 @@ const CHAPTERS = [
     year: "2021",
     title: "A joke that stuck",
     copy: "Two people who could not sleep started printing shirts at 4am to have something to do. The name was meant to be temporary.",
-    tone: "violet" as const,
+    tone: "pine" as const,
   },
   {
     year: "2023",
     title: "First chapter",
     copy: "Twelve pieces, one night, one room above a bike shop. It sold out before the sun came up and we have never restocked anything since.",
-    tone: "cobalt" as const,
+    tone: "wine" as const,
   },
   {
     year: "2025",
     title: "The runway",
     copy: "We stopped calling them collections and started calling them chapters, because that is how they are made — in order, at night, one after another.",
-    tone: "magenta" as const,
+    tone: "cream" as const,
   },
 ];
 
 const PRINCIPLES = [
   { k: "Small runs", v: "Sizes are cut in the tens, not the thousands. When a size is gone it is gone." },
-  { k: "Real factories", v: "Portugal and Japan, both visited, both named on every product page." },
+  { k: "One cut", v: "A single silhouette, done properly, before we make anything else." },
   { k: "Night light", v: "Every fabric is chosen for how it behaves under artificial light, not daylight." },
   { k: "No sales", v: "We do not discount. Archive pricing exists, seasonal panic does not." },
 ];
@@ -46,13 +46,13 @@ export default function AboutPage() {
       <PageHero
         label="About — The sleepless"
         lines={["Sleep can wait.", "The clothes cannot."]}
-        copy="Clothsomnia is a fashion house that keeps the wrong hours on purpose. We design for the expressive, the restless, and everyone who only really comes alive once the day is officially over."
-        tone="violet"
+        copy="Clothsomnia is a Moroccan label that keeps the wrong hours on purpose. We design for the expressive and the restless — the ones who only really come alive once the day is officially over. Chapter 1 is the first thing we have made."
+        tone="pine"
         seed="about-hero"
         meta={[
-          { k: "Founded", v: "2021" },
-          { k: "Based", v: "Rotterdam" },
-          { k: "Chapters", v: "11 to date" },
+          { k: "Chapter", v: "01 — Dreams" },
+          { k: "Based", v: "Morocco" },
+          { k: "Drops", v: "27 September" },
         ]}
       />
 

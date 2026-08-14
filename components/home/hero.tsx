@@ -78,9 +78,9 @@ export function Hero() {
         {/* Restrained on purpose. At full strength these wash the whole hero
             violet and the page reads as a gradient, not as a dark room with
             light in it. Accents are meant to be occasional. */}
-        <div className="bloom left-[-14%] top-[-8%] size-[38rem] bg-violet/12 animate-drift" />
-        <div className="bloom right-[-18%] top-[26%] size-[30rem] bg-cobalt/10 animate-drift [animation-delay:-8s]" />
-        <div className="bloom bottom-[-12%] left-[38%] size-[22rem] bg-magenta/[0.06] animate-drift [animation-delay:-15s]" />
+        <div className="bloom left-[-14%] top-[-8%] size-[38rem] bg-pine/25 animate-drift" />
+        <div className="bloom right-[-18%] top-[26%] size-[30rem] bg-wine/20 animate-drift [animation-delay:-8s]" />
+        <div className="bloom bottom-[-12%] left-[38%] size-[22rem] bg-cream/[0.05] animate-drift [animation-delay:-15s]" />
       </motion.div>
 
       {/* Plane 2 — the collage.
@@ -99,8 +99,8 @@ export function Hero() {
           >
             <Plate
               seed="hero-primary"
-              tone="violet"
-              alt="Campaign frame — nocturne trench, full length"
+              tone="pine"
+              alt="Dreams Hoodie in pine, front"
               priority
               sizes="(max-width: 768px) 40vw, 26rem"
               className="aspect-[3/4] w-full"
@@ -119,8 +119,8 @@ export function Hero() {
           >
             <Plate
               seed="hero-secondary"
-              tone="magenta"
-              alt="Campaign frame — satin detail under streetlight"
+              tone="wine"
+              alt="Dreams Hoodie in wine, front"
               sizes="(max-width: 768px) 26vw, 15rem"
               className="aspect-[4/5] w-full"
             />
@@ -138,9 +138,9 @@ export function Hero() {
           >
             <Plate
               seed="hero-tertiary"
-              tone="lime"
+              tone="cream"
               variant="field"
-              alt="Campaign frame — light study"
+              alt=""
               sizes="11rem"
               className="aspect-square w-full"
             />

@@ -12,12 +12,9 @@ import { cn, formatPrice } from "@/lib/utils";
 import { useStore } from "@/providers/store";
 
 const SIZE_GUIDE = [
-  { size: "XS", chest: "86–91", waist: "71–76", length: "68" },
-  { size: "S", chest: "91–97", waist: "76–81", length: "70" },
-  { size: "M", chest: "97–102", waist: "81–86", length: "72" },
-  { size: "L", chest: "102–107", waist: "86–91", length: "74" },
-  { size: "XL", chest: "107–112", waist: "91–97", length: "76" },
-  { size: "XXL", chest: "112–117", waist: "97–102", length: "78" },
+  { size: "S", chest: "104-112", waist: "96-104", length: "66" },
+  { size: "M", chest: "112-120", waist: "104-112", length: "68" },
+  { size: "L", chest: "120-128", waist: "112-120", length: "70" },
 ];
 
 /**
@@ -45,11 +42,17 @@ export function ProductDetail({
   const [error, setError] = useState(false);
 
   const wished = isWished(product.slug);
+
+  /**
+   * The gallery follows the selected colourway — switching colour switches the
+   * photographs, which is the whole point of merging the two cards into one
+   * product page.
+   */
+  const activeColour = product.colors.find((c) => c.name === color) ?? product.colors[0];
   const gallery = [
-    { seed: product.slug, variant: "figure" as const, label: "Full length" },
-    { seed: `${product.slug}-alt`, variant: "field" as const, label: "Fabric" },
-    { seed: `${product.slug}-back`, variant: "figure" as const, label: "Back" },
-    { seed: `${product.slug}-detail`, variant: "field" as const, label: "Detail" },
+    { src: activeColour.images[0], label: "Front" },
+    { src: activeColour.images[1], label: "Back" },
+    { src: activeColour.images[2], label: "Both ways" },
   ];
 
   function addToBag() {
@@ -73,7 +76,7 @@ export function ProductDetail({
         {/* Thumbs */}
         <ul className="flex shrink-0 gap-3 md:flex-col">
           {gallery.map((g, i) => (
-            <li key={g.seed}>
+            <li key={g.src}>
               <button
                 type="button"
                 onClick={() => setFrame(i)}
@@ -84,14 +87,7 @@ export function ProductDetail({
                   frame === i ? "opacity-100" : "opacity-45 hover:opacity-80",
                 )}
               >
-                <Plate
-                  seed={g.seed}
-                  tone={product.tone}
-                  variant={g.variant}
-                  alt=""
-                  sizes="80px"
-                  className="aspect-[3/4] w-full"
-                />
+                <Plate seed={g.src} src={g.src} tone={product.tone} alt="" sizes="80px" className="aspect-[3/4] w-full" />
                 {frame === i && (
                   <motion.span
                     layoutId={`thumb-${product.slug}`}
@@ -117,9 +113,9 @@ export function ProductDetail({
                 className="absolute inset-0"
               >
                 <Plate
-                  seed={gallery[frame].seed}
+                  seed={gallery[frame].src}
+                  src={gallery[frame].src}
                   tone={product.tone}
-                  variant={gallery[frame].variant}
                   alt={`${product.name} — ${gallery[frame].label}`}
                   priority={!compact}
                   sizes="(max-width: 1024px) 92vw, 46vw"
@@ -341,7 +337,7 @@ export function ProductDetail({
         <ul className="mt-8 grid gap-3 border-t border-bone/10 pt-8">
           <li className="flex items-start gap-3 text-sm text-silver">
             <Truck className="mt-0.5 size-4 shrink-0 text-lime" strokeWidth={1.5} />
-            Free shipping anywhere in Morocco. Dispatched within 24 hours, tracked door to door.
+            Free shipping anywhere in Morocco. Cash on delivery available — pay when it reaches your door.
           </li>
           <li className="flex items-start gap-3 text-sm text-silver">
             <Undo2 className="mt-0.5 size-4 shrink-0 text-lime" strokeWidth={1.5} />

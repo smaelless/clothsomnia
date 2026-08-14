@@ -29,11 +29,10 @@ export function pick<T>(list: readonly T[], seed: string, salt = 0): T {
   return list[hash(seed + "#" + salt) % list.length];
 }
 
-export function formatPrice(cents: number, currency = "EUR"): string {
-  return new Intl.NumberFormat("en-GB", {
-    style: "currency",
-    currency,
+/** Prices are stored in centimes and shown in dirhams. */
+export function formatPrice(centimes: number): string {
+  return `${new Intl.NumberFormat("fr-MA", {
     minimumFractionDigits: 0,
     maximumFractionDigits: 0,
-  }).format(cents / 100);
+  }).format(centimes / 100)} DH`;
 }

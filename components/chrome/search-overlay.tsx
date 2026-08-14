@@ -12,7 +12,7 @@ import { useFocusTrap } from "@/lib/use-focus-trap";
 import { cn, formatPrice } from "@/lib/utils";
 import { useStore } from "@/providers/store";
 
-const SUGGESTED = ["Trench", "Ultraviolet", "Sport", "Satin", "Oversized", "School"];
+const SUGGESTED = ["Hoodie", "Pine", "Wine", "Oversized", "Chapter 1"];
 
 /**
  * SEARCH — a full-height sheet that drops from the top like a lighting rig.
@@ -158,7 +158,7 @@ export function SearchOverlay() {
                         transition={{ duration: 0.5, ease: EASE_OUT, delay: i * 0.05 }}
                       >
                         <Link
-                          href={`/product/${p.slug}`}
+                          href={`/product/${p.pdpSlug}`}
                           className="group flex items-center gap-5 border-b border-bone/10 py-4 transition-colors hover:bg-bone/[0.03]"
                         >
                           <Plate
