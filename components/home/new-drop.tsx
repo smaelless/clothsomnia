@@ -29,7 +29,7 @@ export function NewDrop() {
   );
 
   return (
-    <section className="relative py-14 md:py-20" aria-label="Tonight's drop">
+    <section className="relative py-6 md:py-8" aria-label="Tonight's drop">
       <div aria-hidden className="bloom right-[-10%] top-[10%] size-[36rem] bg-wine/18" />
 
       <div className="relative mx-auto max-w-[1600px] px-4 md:px-8">

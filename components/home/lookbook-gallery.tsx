@@ -12,20 +12,36 @@ import { FRAMES, type Frame } from "@/lib/worlds";
 import { cn } from "@/lib/utils";
 
 /**
- * LOOKBOOK — an editorial spread, not a gallery grid.
+ * LOOKBOOK — a pinboard, not a grid.
  *
- * Placement is authored per position rather than uniform, so the page reads
- * like a magazine layout. Each frame drifts at its own rate on scroll.
+ * Frames overlap, sit at different scales, and are tacked down at slight
+ * angles, the way prints get pinned to a wall while a collection is being
+ * edited. Each drifts at its own rate on scroll, so the overlaps open and
+ * close as the page moves, and hovering straightens a frame and lifts it clear
+ * of its neighbours.
+ *
+ * Placement is authored per position rather than generated — the asymmetry is
+ * the design, and a loop would only ever produce a rhythm.
  */
 
-/** Explicit placement — the asymmetry is the design, not a side effect. */
-const LAYOUT = [
-  "lg:col-span-5 lg:col-start-1 aspect-[3/4]",
-  "lg:col-span-6 lg:col-start-7 lg:mt-6 aspect-[16/10]",
-  "lg:col-span-4 lg:col-start-2 lg:-mt-10 aspect-[3/4]",
-  "lg:col-span-3 lg:col-start-7 lg:mt-8 aspect-[2/3]",
-  "lg:col-span-5 lg:col-start-1 lg:mt-6 aspect-[16/11]",
-  "lg:col-span-4 lg:col-start-9 lg:-mt-9 aspect-[3/4]",
+type Slot = {
+  /** Grid placement and shape. */
+  cls: string;
+  /** Degrees off square. Small — a tilt, not a mess. */
+  rot: number;
+  /** Stacking, so overlaps read as deliberate layering. */
+  z: number;
+  /** Caption escapes the frame, which breaks the block open. */
+  outside?: boolean;
+};
+
+const SLOTS: Slot[] = [
+  { cls: "lg:col-span-5 lg:col-start-1 aspect-[3/4]", rot: -1.6, z: 30 },
+  { cls: "lg:col-span-4 lg:col-start-6 lg:mt-32 aspect-[4/5]", rot: 1.2, z: 20, outside: true },
+  { cls: "lg:col-span-3 lg:col-start-10 lg:mt-10 aspect-[2/3]", rot: -0.8, z: 40 },
+  { cls: "lg:col-span-4 lg:col-start-2 lg:-mt-20 aspect-[16/11]", rot: 1.8, z: 50 },
+  { cls: "lg:col-span-5 lg:col-start-6 lg:-mt-10 aspect-[3/4]", rot: -1.2, z: 25, outside: true },
+  { cls: "lg:col-span-3 lg:col-start-10 lg:-mt-28 aspect-[3/4]", rot: 1.5, z: 45 },
 ];
 
 export function LookbookGallery({
@@ -36,7 +52,7 @@ export function LookbookGallery({
   heading?: boolean;
 }) {
   return (
-    <section className="relative py-14 md:py-20" aria-label="Lookbook">
+    <section className="relative pb-14 pt-6 md:pb-20 md:pt-8" aria-label="Lookbook">
       <div className="mx-auto max-w-[1600px] px-4 md:px-8">
         {heading && (
           <div className="flex flex-wrap items-end justify-between gap-8">
@@ -56,7 +72,14 @@ export function LookbookGallery({
           </div>
         )}
 
-        <div className={cn("grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-12 lg:gap-6", heading && "mt-10 md:mt-9")}>
+        {/* Row gap only on small screens — once the pinboard assembles at lg,
+            the negative margins in each slot do the spacing. */}
+        <div
+          className={cn(
+            "grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-12 lg:gap-x-5 lg:gap-y-0",
+            heading && "mt-10 md:mt-14",
+          )}
+        >
           {frames.map((frame, i) => (
             <GalleryFrame key={frame.id} frame={frame} index={i} />
           ))}
@@ -69,19 +92,21 @@ export function LookbookGallery({
 function GalleryFrame({ frame, index }: { frame: Frame; index: number }) {
   const ref = useRef<HTMLDivElement>(null);
   const reduced = useReducedMotion();
+  const slot = SLOTS[index % SLOTS.length];
+
   const { scrollYProgress } = useScroll({ target: ref, offset: ["start end", "end start"] });
-  // Alternating drift direction gives the spread its float.
-  const y = useTransform(scrollYProgress, [0, 1], index % 2 === 0 ? [40, -40] : [-30, 30]);
+  // Uneven, alternating drift — equal amounts would read as one moving block.
+  const y = useTransform(scrollYProgress, [0, 1], index % 2 === 0 ? [56, -56] : [-34, 34]);
 
   return (
     <motion.figure
       ref={ref}
-      style={reduced ? undefined : { y }}
-      initial={reduced ? { opacity: 0 } : { opacity: 0, y: 50, scale: 0.97 }}
+      style={reduced ? { zIndex: slot.z } : { y, zIndex: slot.z }}
+      initial={reduced ? { opacity: 0 } : { opacity: 0, y: 60, scale: 0.94 }}
       whileInView={{ opacity: 1, y: 0, scale: 1 }}
       viewport={inView}
-      transition={{ duration: 1, ease: EASE_OUT }}
-      className={cn("group relative", LAYOUT[index % LAYOUT.length])}
+      transition={{ duration: 1.1, ease: EASE_OUT }}
+      className={cn("group relative", slot.cls)}
     >
       <Link
         href="/lookbook"
@@ -89,28 +114,53 @@ function GalleryFrame({ frame, index }: { frame: Frame; index: number }) {
         data-cursor="Open frame"
         aria-label={`${frame.caption} — ${frame.meta}`}
       >
-        <div className="relative h-full overflow-hidden">
+        {/* The tilt lives in CSS, not in the entrance animation: Framer owns
+            the transform on the figure above (it is driving y), so an animated
+            rotate there is silently dropped. A CSS variable keeps it declarative
+            and lets hover straighten the frame and lift it clear. */}
+        <div
+          style={{ ["--rot" as string]: `${slot.rot}deg` }}
+          className={cn(
+            "relative h-full overflow-hidden shadow-2xl shadow-ink/60",
+            "transition-transform duration-[900ms] ease-[cubic-bezier(0.16,1,0.3,1)]",
+            "[transform:rotate(var(--rot))]",
+            "group-hover:[transform:rotate(0deg)_scale(1.03)]",
+          )}
+        >
           <div className="h-full transition-transform duration-[1200ms] ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:scale-105">
             <Plate
               seed={frame.id}
               tone={frame.tone}
               variant={index % 3 === 1 ? "field" : "figure"}
               alt={frame.caption}
-              sizes="(max-width: 640px) 92vw, (max-width: 1024px) 46vw, 40vw"
+              sizes="(max-width: 640px) 92vw, (max-width: 1024px) 46vw, 34vw"
               className="h-full w-full"
             />
           </div>
 
-          {/* Caption — rides up on hover, always readable */}
-          <figcaption className="absolute inset-x-0 bottom-0 z-10 p-5 md:p-6">
-            <p className="label-wide mb-3 text-lime opacity-0 transition-opacity duration-500 group-hover:opacity-100">
-              {frame.meta}
-            </p>
-            <p className="display text-2xl leading-tight transition-transform duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:-translate-y-1 md:text-3xl">
+          {/* Frame number, tacked to the corner like a contact sheet */}
+          <span className="label-wide absolute left-4 top-4 z-10 text-bone/60">
+            {frame.meta.replace("Frame ", "")}
+          </span>
+
+          {!slot.outside && (
+            <figcaption className="absolute inset-x-0 bottom-0 z-10 p-5 md:p-6">
+              <p className="display text-2xl leading-tight transition-transform duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:-translate-y-1 md:text-3xl">
+                {frame.caption}
+              </p>
+            </figcaption>
+          )}
+        </div>
+
+        {/* Captions that escape the frame entirely, so the block never reads as
+            a tidy set of cards. */}
+        {slot.outside && (
+          <figcaption className="mt-5 max-w-[26ch]">
+            <p className="display text-2xl leading-tight text-bone transition-colors duration-500 group-hover:text-lime md:text-[1.75rem]">
               {frame.caption}
             </p>
           </figcaption>
-        </div>
+        )}
       </Link>
     </motion.figure>
   );
