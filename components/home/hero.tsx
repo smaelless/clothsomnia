@@ -333,8 +333,13 @@ function MobileComposition({ reduced }: { reduced: boolean }) {
               <span className="block -translate-x-1/2 -translate-y-1/2">
                 <span className="block" style={{ transform: `rotate(${-angle}deg)` }}>
                   <span
+                    /* Solid, not backdrop-blurred. A backdrop filter makes the
+                       browser re-sample everything behind the element each
+                       frame, and these move every frame — six of them turning
+                       continuously is a cost a phone pays for an effect nobody
+                       can see behind an opaque pill anyway. */
                     className={cn(
-                      "label block whitespace-nowrap rounded-full bg-ink/80 px-2 py-1 text-[8px] tracking-[0.07em] text-silver backdrop-blur-sm",
+                      "label block whitespace-nowrap rounded-full bg-ink/90 px-2 py-1 text-[8px] tracking-[0.07em] text-silver",
                       !reduced && "animate-orbit [animation-direction:reverse]",
                     )}
                   >

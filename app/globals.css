@@ -324,3 +324,36 @@
     overflow: hidden;
   }
 }
+
+/* ==========================================================
+   PHONES — atmosphere at a price a phone can pay
+
+   Measured on a 375x812 viewport: five blurred bloom layers
+   covering 1.38Mpx, against a 0.41Mpx screen. Three and a half
+   screens of blur(70px), and three of them were being scaled
+   continuously by `drift` — scaling a blurred layer forces the
+   browser to rasterise and re-blur it on every frame, which is
+   what the scroll stutter was.
+
+   Unlayered on purpose: these rules sit outside @layer, so they
+   beat both .bloom in @layer utilities and Tailwind's own
+   animate-drift utility without needing !important.
+
+   Desktop keeps the drift and the full radius.
+   ========================================================== */
+@media (max-width: 1023px) {
+  .bloom {
+    /* A blurred solid circle and a masked one are the same picture:
+       a soft round glow. But a gaussian blur is a convolution over
+       every pixel of a 600px layer, and a mask is a cheap per-pixel
+       alpha the compositor already does. Same look, no blur pass. */
+    filter: none;
+    -webkit-mask-image: radial-gradient(closest-side, #000 25%, transparent 100%);
+    mask-image: radial-gradient(closest-side, #000 25%, transparent 100%);
+
+    /* The drift is a 22s wander nobody consciously notices, and it
+       was the single most expensive thing on the page. */
+    animation: none;
+    transform: none;
+  }
+}

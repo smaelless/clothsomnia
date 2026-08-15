@@ -36,7 +36,12 @@ export function Header() {
       className={cn(
         "sticky top-0 z-50 w-full transition-[background-color,border-color,backdrop-filter] duration-500",
         condensed
-          ? "border-b border-bone/10 bg-ink/72 backdrop-blur-xl backdrop-saturate-150"
+          ? // Nearly opaque on phones, frosted from lg up. A backdrop filter on
+            // a full-width sticky bar makes the browser re-sample and re-blur
+            // everything behind it on every scroll frame — the one place on the
+            // page guaranteed to be doing work while you scroll. Over a near
+            // black page the frost is barely visible anyway.
+            "border-b border-bone/10 bg-ink/95 lg:bg-ink/72 lg:backdrop-blur-xl lg:backdrop-saturate-150"
           : "border-b border-transparent bg-transparent",
       )}
     >
