@@ -123,12 +123,18 @@ export function Countdown({
       </div>
 
       {!compact && (
-        <div className="mx-auto mt-9 h-px w-full max-w-[420px] bg-bone/12">
-          <div
-            className="h-full bg-gradient-to-r from-pine via-lime to-lime transition-[width] duration-1000 ease-linear"
-            style={{ width: `${elapsed * 100}%` }}
-          />
-        </div>
+        <>
+          <div className="mx-auto mt-9 h-px w-full max-w-[420px] bg-bone/12">
+            <div
+              className="h-full bg-gradient-to-r from-pine via-lime to-lime transition-[width] duration-1000 ease-linear"
+              style={{ width: `${elapsed * 100}%` }}
+            />
+          </div>
+
+          <p className="label-wide mt-6 text-smoke">
+            27 September — <span className="text-lime">inchaAllah</span>
+          </p>
+        </>
       )}
     </div>
   );

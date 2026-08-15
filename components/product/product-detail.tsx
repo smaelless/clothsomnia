@@ -298,7 +298,7 @@ export function ProductDetail({
           </AnimatePresence>
         </fieldset>
 
-        <Countdown compact className="mt-10 border-t border-bone/10 pt-8" label="Ships after the drop" />
+        <Countdown compact className="mt-10 border-t border-bone/10 pt-8" label="Ships after the drop, inchaAllah" />
 
         {/* Quantity + add */}
         <div className="mt-10 flex flex-wrap items-center gap-3">

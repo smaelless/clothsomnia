@@ -95,7 +95,7 @@ function DaysToDrop() {
   if (days === 0) return <span>The drop is live</span>;
   return (
     <span>
-      {days} {days === 1 ? "day" : "days"} to the drop
+      {days} {days === 1 ? "day" : "days"} to the drop, inchaAllah
     </span>
   );
 }
