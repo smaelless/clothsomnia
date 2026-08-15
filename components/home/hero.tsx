@@ -213,6 +213,11 @@ export function Hero() {
         </div>
       </motion.div>
 
+      {/* The same composition, rebuilt for a phone.
+          It cannot overlap the headline at this width, so it is given its own
+          band underneath instead of being cut. */}
+      <MobileComposition reduced={Boolean(reduced)} />
+
       {/* Plane 4 — the orbit */}
       <motion.div
         aria-hidden
@@ -253,5 +258,94 @@ export function Hero() {
       </motion.div>
 
     </section>
+  );
+}
+
+/**
+ * THE COLLAGE AND ORBIT, ON A PHONE
+ *
+ * The desktop version overlays the headline because there is a spare third of
+ * the screen to put it in. There is no spare third at 390px, so the same three
+ * elements — the two plates and the labelled ring — get their own band below
+ * the call to action, at a radius chosen so the widest label still clears the
+ * edge of the screen.
+ *
+ * Sized in rem against the ring rather than in viewport units: the labels are
+ * a fixed physical width, so a ring that scaled with the viewport would push
+ * them off the side of the smallest phones.
+ */
+function MobileComposition({ reduced }: { reduced: boolean }) {
+  return (
+    <div
+      aria-hidden
+      className="relative mx-auto mt-14 grid h-[24rem] w-full max-w-[26rem] place-items-center lg:hidden"
+    >
+      {/* The plates sit behind the ring, off-centre, so the composition reads
+          as a collage rather than as a target. */}
+      <motion.div
+        initial={{ opacity: 0, clipPath: "inset(100% 0% 0% 0%)" }}
+        whileInView={{ opacity: 1, clipPath: "inset(0% 0% 0% 0%)" }}
+        viewport={{ once: true, margin: "-15%" }}
+        transition={{ duration: 1.4, ease: EASE_OUT }}
+        className="absolute left-1/2 top-[8%] w-[42%] -translate-x-[36%]"
+      >
+        <Plate
+          seed="hero-primary"
+          tone="pine"
+          alt="Dreams Hoodie in pine, front"
+          priority
+          sizes="45vw"
+          className="aspect-[3/4] w-full"
+        />
+      </motion.div>
+
+      <motion.div
+        initial={{ opacity: 0, y: 40 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true, margin: "-15%" }}
+        transition={{ duration: 1.2, ease: EASE_OUT, delay: 0.25 }}
+        className="absolute bottom-[10%] left-1/2 w-[27%] translate-x-[10%]"
+      >
+        <Plate
+          seed="hero-secondary"
+          tone="wine"
+          alt="Dreams Hoodie in wine, front"
+          sizes="30vw"
+          className="aspect-[4/5] w-full"
+        />
+      </motion.div>
+
+      {/* Radius 6rem, not the desktop 11rem.
+          The longest label measures ~153px, so its far edge sits 96 + 77 =
+          173px from the centre. A 360px phone gives 180px, which clears it.
+          The labels sweep as the ring turns, so this has to hold at every
+          angle, not just the one it happens to load at. */}
+      <div className={cn("relative size-[12rem]", !reduced && "animate-orbit")}>
+        <div className="absolute inset-0 rounded-full border border-dashed border-bone/15" />
+        {ORBIT.map((word, i) => {
+          const angle = (i / ORBIT.length) * 360;
+          return (
+            <span
+              key={word}
+              className="absolute left-1/2 top-1/2 origin-[0_0]"
+              style={{ transform: `rotate(${angle}deg) translate(6rem)` }}
+            >
+              <span className="block -translate-x-1/2 -translate-y-1/2">
+                <span className="block" style={{ transform: `rotate(${-angle}deg)` }}>
+                  <span
+                    className={cn(
+                      "label block whitespace-nowrap rounded-full bg-ink/80 px-2 py-1 text-[8px] tracking-[0.07em] text-silver backdrop-blur-sm",
+                      !reduced && "animate-orbit [animation-direction:reverse]",
+                    )}
+                  >
+                    {word}
+                  </span>
+                </span>
+              </span>
+            </span>
+          );
+        })}
+      </div>
+    </div>
   );
 }
