@@ -212,7 +212,9 @@ export function CheckoutClient() {
           </ActionButton>
 
           <p className="mt-5 text-center text-xs text-smoke">
-            No card, no payment now. You pay in cash when it reaches you.
+            No card, no payment now. You pay in cash when it reaches you.{" "}
+            <Link href="/shipping" className="text-lime underline-offset-4 hover:underline">Shipping</Link>{" and "}
+            <Link href="/returns" className="text-lime underline-offset-4 hover:underline">returns</Link>.
           </p>
         </form>
 

@@ -25,20 +25,3 @@ export const TEASER_CAPTIONS = [
   "Rare by design.",
 ];
 
-/**
- * The campaign shots. A plate picks one by hashing its seed, so a given
- * product always shows the same photograph while the set stays varied.
- */
-export const CAMPAIGN_IMAGES = [
-  "/campaign/shot-01.jpg",
-  "/campaign/shot-02.jpg",
-  "/campaign/shot-03.jpg",
-  "/campaign/shot-04.jpg",
-  "/campaign/shot-05.jpg",
-  "/campaign/shot-06.jpg",
-  "/campaign/shot-07.jpg",
-  "/campaign/shot-08.jpg",
-  "/campaign/shot-09.jpg",
-  "/campaign/shot-10.jpg",
-  "/campaign/shot-11.jpg",
-];

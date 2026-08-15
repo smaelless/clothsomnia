@@ -25,37 +25,26 @@ export const FOOTER_NAV: { title: string; links: NavLink[] }[] = [
   {
     title: "Shop",
     links: [
-      { label: "New Drop", href: "/collections/new" },
+      { label: "Chapter 1", href: "/collections/new" },
       { label: "Dreams Hoodie", href: "/product/dreams-hoodie" },
+      { label: "Lookbook", href: "/lookbook" },
       { label: "Wishlist", href: "/wishlist" },
     ],
   },
   {
-    title: "World",
+    title: "Help",
     links: [
-      { label: "Lookbook", href: "/lookbook" },
+      { label: "Shipping", href: "/shipping" },
+      { label: "Returns & exchanges", href: "/returns" },
+      { label: "Size guide", href: "/product/dreams-hoodie" },
+      { label: "Contact", href: "/contact" },
+    ],
+  },
+  {
+    title: "Brand",
+    links: [
       { label: "About", href: "/about" },
-      { label: "Runway archive", href: "/lookbook" },
-      { label: "Stockists", href: "/about" },
-    ],
-  },
-  {
-    title: "Support",
-    links: [
-      { label: "Shipping", href: "/about" },
-      { label: "Returns & exchanges", href: "/about" },
-      { label: "Size guide", href: "/about" },
-      { label: "Care", href: "/about" },
-      { label: "Contact", href: "/about" },
-    ],
-  },
-  {
-    title: "Legal",
-    links: [
-      { label: "Terms", href: "/about" },
-      { label: "Privacy", href: "/about" },
-      { label: "Cookies", href: "/about" },
-      { label: "Accessibility", href: "/about" },
+      { label: "The after-hours list", href: "/about" },
     ],
   },
 ];

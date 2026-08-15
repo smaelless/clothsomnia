@@ -2,7 +2,7 @@ import Image from "next/image";
 import type { ReactNode } from "react";
 import type { Tone } from "@/lib/catalog";
 import { cn, hash, pick, rand } from "@/lib/utils";
-import { CAMPAIGN_IMAGES, TEASER_BLUR, TEASER_CAPTIONS, TEASER_MODE } from "@/lib/teaser";
+import { TEASER_BLUR, TEASER_CAPTIONS, TEASER_MODE } from "@/lib/teaser";
 
 /**
  * PLATE — the site's image system.
@@ -131,22 +131,11 @@ export function Plate({
   children,
 }: PlateProps) {
   /**
-   * Campaign image. Until each product has its own shot, every garment frame
-   * falls back to this one, so the site shows real photography instead of the
-   * procedural stand-in. `field` plates stay procedural — they are atmosphere
-   * behind menus and section bands, not product shots.
-   *
-   * To give a product its own image later, pass `src` at the call site.
+   * Real product photography wins. A seed mapped to a Chapter 1 frame resolves
+   * to that shot; anything unmapped falls through to the procedural composition
+   * rather than borrowing a photograph of something else.
    */
-  /**
-   * Real product photography wins. A seed matching a Chapter 1 frame resolves
-   * to that shot; anything else falls back to the campaign pool, and `field`
-   * plates stay procedural because they are atmosphere, not product.
-   */
-  const baseSrc =
-    src ??
-    CHAPTER_ONE[seed] ??
-    (variant === "figure" ? pick(CAMPAIGN_IMAGES, seed, 11) : undefined);
+  const baseSrc = src ?? CHAPTER_ONE[seed];
 
   /**
    * In teaser mode we serve a pre-blurred file instead of applying a CSS blur.
@@ -196,7 +185,10 @@ export function Plate({
         <>
           <Image
             src={resolvedSrc}
-            alt={TEASER_MODE ? "" : alt}
+            /* Always described. A blurred photograph is still a photograph of
+               the product — emptying alt in teaser mode left screen reader
+               users with nothing on the lookbook and the whole gallery. */
+            alt={alt}
             fill
             sizes={sizes}
             priority={priority}

@@ -20,6 +20,9 @@ export default function sitemap(): MetadataRoute.Sitemap {
     },
     { url: `${BASE}/lookbook`, lastModified: now, priority: 0.6 },
     { url: `${BASE}/about`, lastModified: now, priority: 0.5 },
+    { url: `${BASE}/shipping`, lastModified: now, priority: 0.4 },
+    { url: `${BASE}/returns`, lastModified: now, priority: 0.4 },
+    { url: `${BASE}/contact`, lastModified: now, priority: 0.4 },
     // Both colourways share one product page, so de-duplicate before listing —
     // a sitemap that repeats a URL is a sitemap search engines distrust.
     ...Array.from(new Set(PRODUCTS.map((p) => p.pdpSlug))).map((slug) => ({
