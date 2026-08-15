@@ -157,7 +157,7 @@ export function Plate({
    * far more evenly than the default and leaves none unused, so no single line
    * dominates a page.
    */
-  const teaserLine = TEASER_MODE ? pick(TEASER_CAPTIONS, seed, 18) : null;
+  const teaserLine = TEASER_MODE ? pick(TEASER_CAPTIONS, seed, 20) : null;
 
   const t = TONES[tone];
   const uid = `p${hash(seed).toString(36)}`;

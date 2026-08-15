@@ -19,9 +19,10 @@ export const TEASER_CAPTIONS = [
   "Not for everyone. For you.",
   "Your new obsession.",
   "Be the reference.",
-  "Built to be noticed.",
   "Wear the difference.",
-  "Look expensive. Feel untouchable.",
   "Rare by design.",
+  "Wear it once, they talk about it saison kamla.",
+  "Dress like you already made it.",
+  "The seam does the talking. Nta ghir lbess.",
 ];
 

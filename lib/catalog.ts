@@ -54,6 +54,9 @@ export const WINE: ColorOption = {
 const PRICE = 31900; // 319,00 MAD
 const SIZES = ["S", "M", "L"];
 
+/** Every size in the run, in order. The admin's stock table walks this. */
+export const SIZES_ALL = SIZES;
+
 const DESCRIPTION =
   "A heavyweight oversized hoodie built around one curved seam. The cream panel sweeps from the shoulder through the sleeve and down the side, so the shape reads different from every angle — the front is calm, the back is the whole idea. Boxy through the body, dropped at the shoulder, ribbed hard at the cuff and hem so the volume holds instead of collapsing.";
 
