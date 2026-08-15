@@ -5,9 +5,17 @@ import { ProductDetail } from "@/components/product/product-detail";
 import { RecentlyViewed } from "@/components/product/recently-viewed";
 import { ProductCard } from "@/components/ui/product-card";
 import { CATEGORY_LABEL, PRODUCTS, getProduct, relatedTo } from "@/lib/catalog";
+import { remainingStock } from "@/lib/stock";
 import { formatPrice } from "@/lib/utils";
 
 type Params = { params: Promise<{ slug: string }> };
+
+/**
+ * Rebuilt at most once a minute. Sizes sell out against a fifty-piece run, so
+ * the page cannot be frozen at build time — but it also does not need to hit
+ * the database for every visitor during a drop.
+ */
+export const revalidate = 60;
 
 /**
  * Both the colourway slugs and the shared product page. `dreams-hoodie` is the
@@ -36,6 +44,10 @@ export default async function ProductPage({ params }: Params) {
   if (!product) notFound();
 
   const related = relatedTo(product, 4);
+  const stock = await remainingStock();
+  const anyLeft = product.sizes.some((s) =>
+    product.colors.some((c) => (stock[`${c.name}|${s}`] ?? 0) > 0),
+  );
 
   // Commerce pages earn their structured data.
   const jsonLd = {
@@ -48,8 +60,12 @@ export default async function ProductPage({ params }: Params) {
     offers: {
       "@type": "Offer",
       price: (product.price / 100).toFixed(2),
-      priceCurrency: "EUR",
-      availability: "https://schema.org/InStock",
+      // Prices are dirhams everywhere else on the site; this said EUR, which
+      // would have shown the wrong currency in Google's search results.
+      priceCurrency: "MAD",
+      availability: anyLeft
+        ? "https://schema.org/InStock"
+        : "https://schema.org/OutOfStock",
     },
   };
 
@@ -90,7 +106,7 @@ export default async function ProductPage({ params }: Params) {
       </nav>
 
       <div className="mx-auto max-w-[1600px] px-4 py-12 md:px-8 md:py-16">
-        <ProductDetail product={product} />
+        <ProductDetail product={product} stock={stock} />
       </div>
 
       {/* Related */}

@@ -7,7 +7,8 @@ import { useState } from "react";
 import { ActionButton } from "@/components/ui/magnetic";
 import { Countdown } from "@/components/ui/countdown";
 import { Plate } from "@/components/ui/plate";
-import { CATEGORY_LABEL, LOW_STOCK_AT, stockFor, type Product } from "@/lib/catalog";
+import { CATEGORY_LABEL, LOW_STOCK_AT, STOCK_PER_SIZE, type Product } from "@/lib/catalog";
+import type { StockMap } from "@/lib/stock";
 import { EASE_OUT } from "@/lib/motion";
 import { cn, formatPrice } from "@/lib/utils";
 import { useStore } from "@/providers/store";
@@ -28,12 +29,21 @@ const SIZE_GUIDE = [
 export function ProductDetail({
   product,
   compact = false,
+  stock,
 }: {
   product: Product;
   compact?: boolean;
+  /**
+   * Remaining pieces per `${colour}|${size}`, read from the orders on the
+   * server. Optional so the component still renders in isolation; when it is
+   * missing every size reads as a full run rather than as sold out.
+   */
+  stock?: StockMap;
 }) {
   const { add, toggleWish, isWished } = useStore();
   const reduced = useReducedMotion();
+
+  const left = (colour: string, s: string) => stock?.[`${colour}|${s}`] ?? STOCK_PER_SIZE;
 
   const [color, setColor] = useState(product.colors[0].name);
   const [size, setSize] = useState<string | null>(null);
@@ -210,7 +220,7 @@ export function ProductDetail({
             {product.sizes.map((s) => {
               // Stock is per colourway, so switching colour can change what is
               // available — the size run has to read from the live selection.
-              const out = stockFor(color, s) <= 0;
+              const out = left(color, s) <= 0;
               return (
                 <button
                   key={s}
@@ -236,9 +246,9 @@ export function ProductDetail({
             })}
           </div>
 
-          {size && stockFor(color, size) > 0 && stockFor(color, size) <= LOW_STOCK_AT && (
+          {size && left(color, size) > 0 && left(color, size) <= LOW_STOCK_AT && (
             <p className="label mt-4 text-lime">
-              Only {stockFor(color, size)} left in {size}
+              Only {left(color, size)} left in {size}
             </p>
           )}
 

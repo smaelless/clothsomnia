@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@supabase/supabase-js";
 import { isConfigured, notifyTelegram, saveOrder, validateOrder } from "@/lib/orders";
+import { remainingStock } from "@/lib/stock";
 
 /**
  * POST /api/orders — place a cash-on-delivery order.
@@ -23,7 +24,11 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "Malformed request." }, { status: 400 });
   }
 
-  const result = validateOrder(body as never);
+  // Read at the moment of the order, not at page load — the browser's copy of
+  // what is left can be minutes old by the time someone finishes the form.
+  const stock = await remainingStock();
+
+  const result = validateOrder(body as never, stock);
   if (!result.ok) {
     return NextResponse.json({ errors: result.errors }, { status: 422 });
   }

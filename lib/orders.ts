@@ -1,5 +1,6 @@
 import { createClient } from "@supabase/supabase-js";
-import { getProduct, stockFor } from "./catalog";
+import { getProduct } from "./catalog";
+import type { StockMap } from "./stock";
 
 /**
  * ORDER PIPELINE — server only.
@@ -80,8 +81,14 @@ function makeReference(): string {
 /**
  * Everything is re-derived from the catalogue rather than trusted from the
  * request: a client could otherwise post its own prices.
+ *
+ * `stock` is the live remaining count, passed in rather than read here so this
+ * function stays synchronous and testable. It used to consult the catalogue's
+ * constant map, which said fifty of everything for ever — meaning a size could
+ * be oversold indefinitely and no one would find out until the pieces ran out
+ * in the flat.
  */
-export function validateOrder(input: OrderInput): ValidationResult {
+export function validateOrder(input: OrderInput, stock: StockMap): ValidationResult {
   const errors: Record<string, string> = {};
 
   const fullName = (input.fullName ?? "").trim();
@@ -100,26 +107,46 @@ export function validateOrder(input: OrderInput): ValidationResult {
   if (items.length === 0) errors.items = "Your bag is empty.";
 
   const lines: NormalisedOrder["items"] = [];
+  // Two lines can name the same colour and size. Counting them together stops
+  // a bag of 5 + 5 slipping past a check that only ever saw one line at a time.
+  const claimed = new Map<string, number>();
+
   for (const line of items) {
     const product = getProduct(line.slug);
     if (!product) {
       errors.items = "One of the pieces is no longer available.";
       break;
     }
+
+    // The colour and size have to belong to the piece being bought — otherwise
+    // a crafted request could book stock against a colourway it never ordered.
+    const colour = product.colors.find((c) => c.name === line.color);
+    if (!colour) {
+      errors.items = `${product.name} does not come in ${line.color}.`;
+      break;
+    }
+    if (!product.sizes.includes(line.size)) {
+      errors.items = `${product.name} does not come in size ${line.size}.`;
+      break;
+    }
+
     const qty = Math.floor(Number(line.qty));
     if (!Number.isFinite(qty) || qty < 1 || qty > 10) {
       errors.items = "Quantity must be between 1 and 10.";
       break;
     }
-    const available = stockFor(line.color, line.size);
+
+    const key = `${colour.name}|${line.size}`;
+    const available = (stock[key] ?? 0) - (claimed.get(key) ?? 0);
     if (available <= 0) {
-      errors.items = `${product.name} in ${line.color}, size ${line.size} just sold out.`;
+      errors.items = `${product.name} in ${colour.name}, size ${line.size} just sold out.`;
       break;
     }
     if (qty > available) {
       errors.items = `Only ${available} left in ${line.size}.`;
       break;
     }
+    claimed.set(key, (claimed.get(key) ?? 0) + qty);
     lines.push({
       slug: product.slug,
       name: product.name,
