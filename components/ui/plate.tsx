@@ -143,10 +143,24 @@ export function Plate({
    * to that shot; anything else falls back to the campaign pool, and `field`
    * plates stay procedural because they are atmosphere, not product.
    */
-  const resolvedSrc =
+  const baseSrc =
     src ??
     CHAPTER_ONE[seed] ??
     (variant === "figure" ? pick(CAMPAIGN_IMAGES, seed, 11) : undefined);
+
+  /**
+   * In teaser mode we serve a pre-blurred file instead of applying a CSS blur.
+   * A full-screen blur filter is one of the most expensive things a phone can
+   * composite, and the lookbook stacks six of them; baking it makes the device
+   * simply draw a picture. The blurred files are also a fraction of the size,
+   * since blurred detail is invisible anyway.
+   */
+  const preBlurred =
+    TEASER_MODE && baseSrc?.startsWith("/chapter1/")
+      ? baseSrc.replace(/\.jpg$/, "-blur.jpg")
+      : null;
+  const resolvedSrc = preBlurred ?? baseSrc;
+  const needsCssBlur = TEASER_MODE && !preBlurred;
 
   /**
    * Stable per plate, so a product keeps the same line everywhere it appears.
@@ -187,8 +201,8 @@ export function Plate({
             sizes={sizes}
             priority={priority}
             /* Scaled up so the blur cannot drag transparent edges inward. */
-            className={cn("object-cover", TEASER_MODE && "scale-[1.15]")}
-            style={TEASER_MODE ? { filter: `blur(${TEASER_BLUR}px)` } : undefined}
+            className={cn("object-cover", needsCssBlur && "scale-[1.15]")}
+            style={needsCssBlur ? { filter: `blur(${TEASER_BLUR}px)` } : undefined}
           />
 
           {TEASER_MODE && (
