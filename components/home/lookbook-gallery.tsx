@@ -1,26 +1,26 @@
 "use client";
 
-import { motion, useScroll, useTransform, useReducedMotion } from "framer-motion";
+import { motion, useReducedMotion } from "framer-motion";
 import Link from "next/link";
-import { useRef } from "react";
 import { Plate } from "@/components/ui/plate";
 import { ActionButton } from "@/components/ui/magnetic";
 import { SplitLines } from "@/components/ui/reveal";
 import { SectionLabel } from "@/components/ui/wordmark";
-import { EASE_OUT, inView } from "@/lib/motion";
 import { HOME_FRAMES, type Frame } from "@/lib/worlds";
 import { cn } from "@/lib/utils";
 
 /**
- * LOOKBOOK
+ * LOOKBOOK — the stack.
  *
- * Aligned to a twelve column grid. The rhythm comes from scale — full-width
- * detail bands cutting between columns of portraits — rather than from tilting
- * or overlapping, which read as noise at this size.
+ * Every frame pins to the top of the viewport and the next one slides up over
+ * it, so scrolling feels like dealing prints onto a pile rather than moving
+ * down a page. The effect is pure CSS sticky positioning with an ascending
+ * z-index — no scroll listener, nothing to keep in sync, and it costs nothing
+ * per frame.
  *
- * Captions sit under their frames instead of on top of them: an overlay looks
- * good in a mockup and hides the garment in practice, which is the one thing
- * this page exists to show.
+ * Note: this relies on no ancestor being a scroll container. `overflow-x:
+ * hidden` on body would kill it silently, which is why globals.css uses
+ * `clip` instead.
  */
 export function LookbookGallery({
   frames = HOME_FRAMES,
@@ -29,10 +29,12 @@ export function LookbookGallery({
   frames?: Frame[];
   heading?: boolean;
 }) {
+  const reduced = useReducedMotion();
+
   return (
-    <section className="relative pb-14 pt-6 md:pb-20 md:pt-8" aria-label="Lookbook">
-      <div className="mx-auto max-w-[1600px] px-4 md:px-8">
-        {heading && (
+    <section className="relative pb-14 pt-6 md:pt-8" aria-label="Lookbook">
+      {heading && (
+        <div className="mx-auto max-w-[1600px] px-4 md:px-8">
           <div className="flex flex-wrap items-end justify-between gap-8">
             <div>
               <SectionLabel index="02" className="mb-8">
@@ -48,68 +50,78 @@ export function LookbookGallery({
               Open the full book
             </ActionButton>
           </div>
-        )}
-
-        <div
-          className={cn(
-            "grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-12 lg:gap-5",
-            heading && "mt-10 md:mt-14",
-          )}
-        >
-          {frames.map((frame, i) => (
-            <GalleryFrame key={frame.id} frame={frame} index={i} />
-          ))}
         </div>
+      )}
+
+      {/*
+        Reduced motion gets a plain stacked list: sticky pinning is disorienting
+        for anyone who asked for less movement, and the frames read fine in
+        sequence.
+      */}
+      <div className={cn("relative", heading && "mt-10 md:mt-14")}>
+        {frames.map((frame, i) => (
+          <StackFrame key={frame.id} frame={frame} index={i} reduced={Boolean(reduced)} />
+        ))}
       </div>
     </section>
   );
 }
 
-function GalleryFrame({ frame, index }: { frame: Frame; index: number }) {
-  const ref = useRef<HTMLDivElement>(null);
-  const reduced = useReducedMotion();
-
-  const { scrollYProgress } = useScroll({ target: ref, offset: ["start end", "end start"] });
-  /**
-   * The image drifts inside its frame rather than the frame moving on the page.
-   * Moving the frames themselves breaks the grid alignment that makes this
-   * layout read as considered.
-   */
-  const y = useTransform(scrollYProgress, [0, 1], ["-6%", "6%"]);
-
+function StackFrame({
+  frame,
+  index,
+  reduced,
+}: {
+  frame: Frame;
+  index: number;
+  reduced: boolean;
+}) {
   return (
-    <motion.figure
-      ref={ref}
-      initial={reduced ? { opacity: 0 } : { opacity: 0, y: 40 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={inView}
-      transition={{ duration: 0.9, ease: EASE_OUT, delay: reduced ? 0 : (index % 3) * 0.06 }}
-      className={cn("group relative", frame.span)}
+    <div
+      className={cn(reduced ? "relative mb-4 h-[70svh]" : "sticky top-0 h-svh")}
+      style={{ zIndex: index + 1 }}
     >
-      <Link href="/lookbook" className="block" data-cursor="Open frame" aria-label={frame.caption}>
-        <div className={cn("relative overflow-hidden bg-charcoal", frame.ratio)}>
-          {/* Oversized so the drift never exposes an edge. */}
-          <motion.div
-            style={reduced ? undefined : { y }}
-            className="absolute inset-0 scale-[1.12]"
-          >
-            <Plate
-              seed={frame.id}
-              src={frame.src}
-              alt={frame.caption}
-              sizes="(max-width: 640px) 92vw, (max-width: 1024px) 46vw, 55vw"
-              className="h-full w-full transition-transform duration-[1400ms] ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:scale-[1.04]"
-            />
-          </motion.div>
-        </div>
+      <Link
+        href="/lookbook"
+        className="group relative block h-full overflow-hidden border-t border-bone/10"
+        data-cursor="Open frame"
+        aria-label={frame.caption}
+      >
+        <Plate
+          seed={frame.id}
+          src={frame.src}
+          alt={frame.caption}
+          priority={index === 0}
+          sizes="100vw"
+          className="h-full w-full transition-transform duration-[1600ms] ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:scale-[1.03]"
+        />
 
-        <figcaption className="mt-4 flex items-baseline gap-4">
-          <span className="label-wide shrink-0 text-smoke">{frame.meta}</span>
-          <span className="display text-lg leading-tight text-bone transition-colors duration-500 group-hover:text-lime md:text-xl">
-            {frame.caption}
-          </span>
-        </figcaption>
+        {/* Keeps the caption legible over whatever the frame happens to be. */}
+        <div
+          aria-hidden
+          className="absolute inset-0 bg-gradient-to-t from-ink via-ink/25 to-transparent"
+        />
+
+        <motion.figcaption
+          initial={{ opacity: 0, y: 24 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: false, margin: "-45% 0px -35% 0px" }}
+          transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
+          className="absolute inset-x-0 bottom-0 px-4 pb-12 md:px-10 md:pb-16"
+        >
+          <div className="mx-auto flex max-w-[1600px] items-end justify-between gap-8">
+            <div>
+              <span className="label-wide text-lime">{frame.meta}</span>
+              <p className="display mt-4 max-w-[15ch] text-[clamp(2rem,6vw,5rem)] leading-[0.92]">
+                {frame.caption}
+              </p>
+            </div>
+            <span className="label-wide hidden shrink-0 pb-3 text-smoke md:block">
+              Chapter 1 — Dreams
+            </span>
+          </div>
+        </motion.figcaption>
       </Link>
-    </motion.figure>
+    </div>
   );
 }

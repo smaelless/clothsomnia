@@ -145,7 +145,11 @@
     font-feature-settings: "ss01", "cv01";
     -webkit-font-smoothing: antialiased;
     text-rendering: optimizeLegibility;
-    overflow-x: hidden;
+    /* clip, not hidden: `hidden` turns the body into a scroll container, which
+       silently stops position:sticky working anywhere inside it — the lookbook
+       stack depends on sticky. `clip` crops the same overflow without creating
+       a scroll container. */
+    overflow-x: clip;
   }
 
   /* Focus: visible, on-brand, never removed */
