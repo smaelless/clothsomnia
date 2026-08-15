@@ -1,3 +1,4 @@
+import { CountdownBand } from "@/components/home/countdown-band";
 import { Hero } from "@/components/home/hero";
 import { LookbookGallery } from "@/components/home/lookbook-gallery";
 import { NewDrop } from "@/components/home/new-drop";
@@ -16,6 +17,7 @@ export default function HomePage() {
   return (
     <>
       <Hero />
+      <CountdownBand />
       <NewDrop />
       <LookbookGallery />
     </>

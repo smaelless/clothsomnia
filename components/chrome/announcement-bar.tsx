@@ -3,6 +3,7 @@
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { useEffect, useState } from "react";
 import { EASE_OUT } from "@/lib/motion";
+import { LAUNCH_AT } from "@/components/ui/countdown";
 
 /**
  * Each line pulls a different lever: risk reversal (shipping, returns),
@@ -66,9 +67,35 @@ export function AnnouncementBar() {
             flicker on purpose, so the two ends of the bar never sync up. */}
         <span className="label-wide hidden shrink-0 items-center gap-2 text-lime sm:flex">
           <span aria-hidden className="inline-block size-1 rounded-full bg-lime animate-breathe" />
-          Shipping is free
+          <DaysToDrop />
         </span>
       </div>
     </div>
+  );
+}
+
+/**
+ * Days left, in the corner of every page. Days only — a ticking seconds counter
+ * in the chrome is a distraction, and the board on the homepage already does
+ * the dramatic version.
+ */
+function DaysToDrop() {
+  const [days, setDays] = useState<number | null>(null);
+
+  useEffect(() => {
+    const tick = () =>
+      setDays(Math.max(Math.ceil((LAUNCH_AT.getTime() - Date.now()) / 86400000), 0));
+    tick();
+    const id = window.setInterval(tick, 60000);
+    return () => window.clearInterval(id);
+  }, []);
+
+  // Nothing on the server: the number depends on when the page is read.
+  if (days === null) return <span>Shipping is free</span>;
+  if (days === 0) return <span>The drop is live</span>;
+  return (
+    <span>
+      {days} {days === 1 ? "day" : "days"} to the drop
+    </span>
   );
 }

@@ -5,6 +5,7 @@ import { Heart, Minus, Plus, Ruler, Truck, Undo2 } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
 import { ActionButton } from "@/components/ui/magnetic";
+import { Countdown } from "@/components/ui/countdown";
 import { Plate } from "@/components/ui/plate";
 import { CATEGORY_LABEL, LOW_STOCK_AT, stockFor, type Product } from "@/lib/catalog";
 import { EASE_OUT } from "@/lib/motion";
@@ -296,6 +297,8 @@ export function ProductDetail({
             )}
           </AnimatePresence>
         </fieldset>
+
+        <Countdown compact className="mt-10 border-t border-bone/10 pt-8" label="Ships after the drop" />
 
         {/* Quantity + add */}
         <div className="mt-10 flex flex-wrap items-center gap-3">
