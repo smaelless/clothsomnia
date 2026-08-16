@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, type ComponentType } from "react";
+import { useCallback, useEffect, useState, type ComponentType } from "react";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { Equaliser, useSoundtrackPlaying } from "@/components/chrome/soundtrack";
 import { SOUNDTRACK } from "@/lib/soundtrack";
@@ -40,7 +40,10 @@ export function Intro({
   // Render the cover on the server and on first paint so the page never flashes
   // through before the sequence has decided whether to run.
   const [visible, setVisible] = useState(true);
-  const [phase, setPhase] = useState<"sequence" | "gate">("sequence");
+  const [phase, setPhase] = useState<"sequence" | "gate" | "leaving">("sequence");
+
+  // Stable, so the door's exit timer is not restarted by an unrelated render.
+  const hide = useCallback(() => setVisible(false), []);
 
   useEffect(() => {
     if (force) {
@@ -94,28 +97,36 @@ export function Intro({
   const Sequence = REGISTRY[variant];
 
   return (
-    <AnimatePresence>
-      {phase === "gate" ? (
-        <EnterGate
-          key="gate"
-          onEnter={() => {
-            setVisible(false);
-            try {
-              window.sessionStorage.setItem(ENTERED_KEY, "1");
-            } catch {
-              /* non-fatal — the worst case is seeing the door twice */
-            }
-          }}
-        />
-      ) : (
-        <div key="sequence" aria-hidden role="presentation">
-          {/* The sequence no longer reveals the site directly. It hands over to
-              the door, so the visit begins on a press rather than on a timer. */}
-          <Sequence onComplete={() => setPhase("gate")} />
-          <NowPlaying />
-        </div>
-      )}
-    </AnimatePresence>
+    <>
+      {/*
+        The door is mounted from the first frame, beneath the sequence, and the
+        sequence sits on top of it. So when the slats lift they uncover the
+        door — not the site. Mounting it only after the sequence finished let
+        the page show through in between, which looked like a second loading
+        screen arriving after the first had completed.
+      */}
+      <EnterGate
+        leaving={phase === "leaving"}
+        onEnter={() => {
+          setPhase("leaving");
+          try {
+            window.sessionStorage.setItem(ENTERED_KEY, "1");
+          } catch {
+            /* non-fatal — the worst case is seeing the door twice */
+          }
+        }}
+        onExited={hide}
+      />
+
+      <AnimatePresence>
+        {phase === "sequence" && (
+          <div key="sequence" aria-hidden role="presentation">
+            <Sequence onComplete={() => setPhase("gate")} />
+            <NowPlaying />
+          </div>
+        )}
+      </AnimatePresence>
+    </>
   );
 }
 

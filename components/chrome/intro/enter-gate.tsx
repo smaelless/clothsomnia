@@ -1,9 +1,11 @@
 "use client";
 
 import { motion } from "framer-motion";
+import { useEffect } from "react";
 import { Equaliser } from "@/components/chrome/soundtrack";
 import { Wordmark } from "@/components/ui/wordmark";
 import { SOUNDTRACK, startSoundtrack } from "@/lib/soundtrack";
+import { cn } from "@/lib/utils";
 
 /**
  * THE DOOR
@@ -17,7 +19,32 @@ import { SOUNDTRACK, startSoundtrack } from "@/lib/soundtrack";
  * the way in — one press opens the site and starts the music in the same
  * motion, and nothing about it reads as a technical concession.
  */
-export function EnterGate({ onEnter }: { onEnter: () => void }) {
+/** How long the door takes to fade out of the way. */
+export const EXIT_MS = 550;
+
+export function EnterGate({
+  leaving,
+  onEnter,
+  onExited,
+}: {
+  leaving: boolean;
+  onEnter: () => void;
+  onExited: () => void;
+}) {
+  /*
+   * Unmounted on a timer, not on the animation's completion callback.
+   *
+   * The callback did not fire reliably, and the failure mode was the worst
+   * available: a full-screen panel left sitting over the site at full opacity,
+   * with the shop underneath it and no way to reach it. A timer cannot fail
+   * that way — it fires whether or not the animation ever ran.
+   */
+  useEffect(() => {
+    if (!leaving) return;
+    const id = window.setTimeout(onExited, EXIT_MS);
+    return () => window.clearTimeout(id);
+  }, [leaving, onExited]);
+
   function enter() {
     // Synchronous, inside the click's own task. Safari grants sound only to
     // code running there, so this cannot be deferred behind the exit animation.
@@ -27,11 +54,19 @@ export function EnterGate({ onEnter }: { onEnter: () => void }) {
 
   return (
     <motion.div
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      exit={{ opacity: 0 }}
-      transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
-      className="fixed inset-0 z-[102] grid place-items-center bg-ink px-6"
+      /*
+       * initial={false} — no fade in. This sits *underneath* the loading
+       * sequence and is already fully painted when the slats lift, so what they
+       * reveal is the door. Fading it in afterwards showed the site for a beat
+       * in between, which read as two loading screens back to back.
+       */
+      initial={false}
+      animate={{ opacity: leaving ? 0 : 1 }}
+      transition={{ duration: EXIT_MS / 1000, ease: [0.16, 1, 0.3, 1] }}
+      className={cn(
+        "fixed inset-0 z-[95] grid place-items-center bg-ink px-6",
+        leaving && "pointer-events-none",
+      )}
     >
       {/* The whole panel is the target. Someone reaching for anything on this
           screen means the same thing, and a missed tap on a door is a visitor
