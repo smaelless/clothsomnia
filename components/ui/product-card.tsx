@@ -8,7 +8,7 @@ import { Plate } from "@/components/ui/plate";
 import { EASE_OUT } from "@/lib/motion";
 import type { Product } from "@/lib/catalog";
 import { CATEGORY_LABEL } from "@/lib/catalog";
-import { unitPrice } from "@/lib/pricing";
+
 import { cn, formatPrice } from "@/lib/utils";
 import { useStore } from "@/providers/store";
 
@@ -34,12 +34,12 @@ export function ProductCard({
   priority?: boolean;
   className?: string;
 }) {
-  const { add, toggleWish, isWished } = useStore();
+  const { add, toggleWish, isWished, priceFor } = useStore();
   const [swapped, setSwapped] = useState(false);
   const [added, setAdded] = useState<string | null>(null);
   const reduced = useReducedMotion();
   const wished = isWished(product.slug);
-  const now = unitPrice(product.price);
+  const now = priceFor(product).price;
 
   // Cards alternate their vertical offset so rows never read as a plain grid.
   const offset = index % 3 === 1 ? "md:mt-10" : index % 3 === 2 ? "md:mt-8" : "";

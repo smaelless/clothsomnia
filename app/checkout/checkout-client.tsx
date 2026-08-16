@@ -6,8 +6,8 @@ import Link from "next/link";
 import { useState } from "react";
 import { Plate } from "@/components/ui/plate";
 import { ActionButton } from "@/components/ui/magnetic";
+import { CouponField } from "@/components/checkout/coupon-field";
 import { EASE_OUT } from "@/lib/motion";
-import { PRELAUNCH_LABEL, unitPrice } from "@/lib/pricing";
 import { cn, formatPrice } from "@/lib/utils";
 import { useStore } from "@/providers/store";
 
@@ -23,7 +23,8 @@ const EMPTY: Fields = { fullName: "", phone: "", city: "", address: "", note: ""
  * this form only has to be clear and hard to get wrong.
  */
 export function CheckoutClient() {
-  const { detailedLines, subtotal, fullSubtotal, discount, count, clear } = useStore();
+  const { detailedLines, subtotal, fullSubtotal, discount, total, coupon, count, clear, priceFor } =
+    useStore();
   const reduced = useReducedMotion();
 
   const [fields, setFields] = useState<Fields>(EMPTY);
@@ -54,6 +55,8 @@ export function CheckoutClient() {
             color: l.color,
             qty: l.qty,
           })),
+          // Sent as a code, not as an amount. The server decides what it is worth.
+          coupon: coupon?.code ?? undefined,
         }),
       });
 
@@ -189,8 +192,10 @@ export function CheckoutClient() {
             />
           </div>
 
+          <CouponField />
+
           <AnimatePresence>
-            {(errors.form || errors.items) && (
+            {(errors.form || errors.items || errors.coupon) && (
               <motion.p
                 role="alert"
                 initial={{ opacity: 0, y: -6 }}
@@ -198,7 +203,7 @@ export function CheckoutClient() {
                 exit={{ opacity: 0 }}
                 className="label mt-8 text-magenta"
               >
-                {errors.form || errors.items}
+                {errors.form || errors.items || errors.coupon}
               </motion.p>
             )}
           </AnimatePresence>
@@ -209,7 +214,7 @@ export function CheckoutClient() {
             disabled={sending}
             onClick={() => undefined}
           >
-            {sending ? "Placing your order…" : `Place order — ${formatPrice(subtotal)}`}
+            {sending ? "Placing your order…" : `Place order — ${formatPrice(total)}`}
           </ActionButton>
 
           <p className="mt-5 text-center text-xs text-smoke">
@@ -239,7 +244,7 @@ export function CheckoutClient() {
                     {line.color} — {line.size} — ×{line.qty}
                   </p>
                   <p className="label mt-auto text-bone">
-                    {formatPrice(unitPrice(line.product.price) * line.qty)}
+                    {formatPrice(priceFor(line.product).price * line.qty)}
                   </p>
                 </div>
               </li>
@@ -255,8 +260,14 @@ export function CheckoutClient() {
             </div>
             {discount > 0 && (
               <div className="flex justify-between">
-                <dt className="label text-lime">{PRELAUNCH_LABEL} off — before the drop</dt>
+                <dt className="label text-lime">Offer</dt>
                 <dd className="label text-lime">−{formatPrice(discount)}</dd>
+              </div>
+            )}
+            {coupon && (
+              <div className="flex justify-between">
+                <dt className="label text-lime">Code {coupon.code}</dt>
+                <dd className="label text-lime">−{formatPrice(coupon.discount)}</dd>
               </div>
             )}
             <div className="flex justify-between">
@@ -265,7 +276,7 @@ export function CheckoutClient() {
             </div>
             <div className="flex justify-between border-t border-bone/12 pt-4">
               <dt className="label text-smoke">Total to pay on delivery</dt>
-              <dd className="display text-2xl">{formatPrice(subtotal)}</dd>
+              <dd className="display text-2xl">{formatPrice(total)}</dd>
             </div>
           </dl>
 

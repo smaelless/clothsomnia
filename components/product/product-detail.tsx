@@ -8,7 +8,7 @@ import { ActionButton } from "@/components/ui/magnetic";
 import { Countdown } from "@/components/ui/countdown";
 import { Plate } from "@/components/ui/plate";
 import { CATEGORY_LABEL, LOW_STOCK_AT, STOCK_PER_SIZE, type Product } from "@/lib/catalog";
-import { PRELAUNCH_LABEL, unitPrice } from "@/lib/pricing";
+import { PRELAUNCH_LABEL } from "@/lib/pricing";
 import type { StockMap } from "@/lib/stock";
 import { EASE_OUT } from "@/lib/motion";
 import { cn, formatPrice } from "@/lib/utils";
@@ -41,12 +41,15 @@ export function ProductDetail({
    */
   stock?: StockMap;
 }) {
-  const { add, toggleWish, isWished } = useStore();
+  const { add, toggleWish, isWished, priceFor } = useStore();
   const reduced = useReducedMotion();
 
   const left = (colour: string, s: string) => stock?.[`${colour}|${s}`] ?? STOCK_PER_SIZE;
 
-  const now = unitPrice(product.price);
+  // The live offer if the price map has landed, the built-in pre-launch rule
+  // until then. Both agree unless an admin has set something extra.
+  const priced = priceFor(product);
+  const now = priced.price;
   const discounted = now < product.price;
 
   const [color, setColor] = useState(product.colors[0].name);
@@ -177,7 +180,7 @@ export function ProductDetail({
 
         {discounted && (
           <p className="label mt-3 inline-flex items-center gap-2 rounded-full bg-lime px-3 py-1.5 text-ink">
-            {PRELAUNCH_LABEL} off before the drop
+            {priced.label ?? `${PRELAUNCH_LABEL} off before the drop`}
           </p>
         )}
 

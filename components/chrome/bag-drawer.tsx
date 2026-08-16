@@ -8,7 +8,7 @@ import { Plate } from "@/components/ui/plate";
 import { ActionButton } from "@/components/ui/magnetic";
 import { drawerSlide, EASE_OUT, overlayFade } from "@/lib/motion";
 import { useFocusTrap } from "@/lib/use-focus-trap";
-import { PRELAUNCH_LABEL, unitPrice } from "@/lib/pricing";
+
 import { formatPrice } from "@/lib/utils";
 import { useStore } from "@/providers/store";
 
@@ -17,7 +17,7 @@ import { useStore } from "@/providers/store";
  * something, and it tells you exactly where you stand.
  */
 export function BagDrawer() {
-  const { overlay, closeOverlay, detailedLines, subtotal, discount, setQty, remove, count } =
+  const { overlay, closeOverlay, detailedLines, subtotal, discount, total, coupon, priceFor, setQty, remove, count } =
     useStore();
   const open = overlay === "bag";
   const panelRef = useRef<HTMLDivElement>(null);
@@ -124,7 +124,7 @@ export function BagDrawer() {
                               {line.product.name}
                             </Link>
                             <span className="label shrink-0 text-bone">
-                              {formatPrice(unitPrice(line.product.price) * line.qty)}
+                              {formatPrice(priceFor(line.product).price * line.qty)}
                             </span>
                           </div>
 
@@ -180,13 +180,19 @@ export function BagDrawer() {
               <div className="border-t border-bone/12 bg-ink/60 p-5">
                 {discount > 0 && (
                   <div className="mb-3 flex items-baseline justify-between">
-                    <span className="label text-lime">{PRELAUNCH_LABEL} off before the drop</span>
+                    <span className="label text-lime">Offer applied</span>
                     <span className="label text-lime">−{formatPrice(discount)}</span>
+                  </div>
+                )}
+                {coupon && (
+                  <div className="mb-3 flex items-baseline justify-between">
+                    <span className="label text-lime">Code {coupon.code}</span>
+                    <span className="label text-lime">−{formatPrice(coupon.discount)}</span>
                   </div>
                 )}
                 <div className="flex items-baseline justify-between">
                   <span className="label text-smoke">Subtotal</span>
-                  <span className="display text-3xl">{formatPrice(subtotal)}</span>
+                  <span className="display text-3xl">{formatPrice(total || subtotal)}</span>
                 </div>
                 <p className="label-wide mt-3 text-smoke">
                   {discount > 0 ? "Free delivery — you pay in cash" : "Free delivery across Morocco"}

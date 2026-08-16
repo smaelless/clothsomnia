@@ -132,6 +132,8 @@ export async function resendNotification(_prev: FormState, form: FormData): Prom
     fullSubtotal: order.full_subtotal ?? order.subtotal,
     discount: order.discount ?? 0,
     subtotal: order.subtotal,
+    couponCode: order.coupon_code,
+    couponDiscount: order.coupon_discount ?? 0,
     shipping: order.shipping,
     total: order.total,
   });

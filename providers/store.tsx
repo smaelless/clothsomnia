@@ -11,6 +11,7 @@ import {
   type ReactNode,
 } from "react";
 import { getProduct, type Product } from "@/lib/catalog";
+import { priceOf, type PriceMap } from "@/lib/offers";
 import { unitPrice } from "@/lib/pricing";
 
 export type BagLine = {
@@ -84,12 +85,22 @@ type StoreValue = {
   /** Bag lines joined to their product records, sold-out safe. */
   detailedLines: (BagLine & { product: Product })[];
   count: number;
-  /** The bag at list price, before the pre-launch discount. */
+  /** The bag at list price, before any offer. */
   fullSubtotal: number;
-  /** What the discount takes off. Zero once Chapter 1 has opened. */
+  /** What the item-level offers take off. */
   discount: number;
-  /** What they actually pay for the pieces. */
+  /** What the pieces cost after offers, before any coupon. */
   subtotal: number;
+  /** Live prices from the server. Null until the first fetch lands. */
+  prices: PriceMap | null;
+  /** The applied coupon, checked by the server. */
+  coupon: { code: string; discount: number } | null;
+  applyCoupon: (code: string) => Promise<string | null>;
+  clearCoupon: () => void;
+  couponPending: boolean;
+  /** What they actually pay. */
+  total: number;
+  priceFor: (product: Product) => { list: number; price: number; label: string | null };
   add: (slug: string, size: string, color: string, qty?: number) => void;
   setQty: (id: string, qty: number) => void;
   remove: (id: string) => void;
@@ -112,6 +123,31 @@ export function StoreProvider({ children }: { children: ReactNode }) {
   const [overlay, setOverlay] = useState<Overlay>(null);
   const [pulse, setPulse] = useState(0);
   const [hydrated, setHydrated] = useState(false);
+  const [prices, setPrices] = useState<PriceMap | null>(null);
+  const [coupon, setCoupon] = useState<{ code: string; discount: number } | null>(null);
+  const [couponPending, setCouponPending] = useState(false);
+
+  /**
+   * Live prices, fetched after mount rather than rendered on the server.
+   * Reading offers during render would make every page on the site dynamic;
+   * this way the shop stays static and the price corrects itself immediately.
+   * The server reprices the whole bag before saving an order regardless, so a
+   * stale map here can never become a wrong charge.
+   */
+  useEffect(() => {
+    let cancelled = false;
+    fetch("/api/pricing")
+      .then((r) => (r.ok ? r.json() : null))
+      .then((map: PriceMap | null) => {
+        if (!cancelled && map) setPrices(map);
+      })
+      .catch(() => {
+        /* Offline or blocked — the pre-launch fallback still applies. */
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   // Restore after mount so server and first client render match.
   useEffect(() => {
@@ -158,6 +194,49 @@ export function StoreProvider({ children }: { children: ReactNode }) {
     return () => window.removeEventListener("keydown", onKey);
   }, [overlay]);
 
+  /**
+   * Ask the server whether a code is good for this bag.
+   *
+   * Returns null on success, or the reason to show. Nothing is decided here —
+   * the order API checks the code again from scratch, so a shopper who edits
+   * this response cannot pay less than the coupon is worth.
+   */
+  const applyCoupon = useCallback(
+    async (code: string): Promise<string | null> => {
+      setCouponPending(true);
+      try {
+        const res = await fetch("/api/coupon", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            code,
+            items: state.lines.map((l) => ({ slug: l.slug, qty: l.qty })),
+          }),
+        });
+        const data = (await res.json()) as
+          | { ok: true; code: string; discount: number }
+          | { ok: false; reason: string };
+
+        if (!data.ok) {
+          setCoupon(null);
+          return data.reason;
+        }
+        setCoupon({ code: data.code, discount: data.discount });
+        return null;
+      } catch {
+        return "Could not check that code. Check your connection.";
+      } finally {
+        setCouponPending(false);
+      }
+    },
+    [state.lines],
+  );
+
+  // A coupon checked against an older bag is stale the moment the bag changes.
+  useEffect(() => {
+    setCoupon(null);
+  }, [state.lines]);
+
   const add = useCallback((slug: string, size: string, color: string, qty = 1) => {
     dispatch({ type: "add", slug, size, color, qty });
     setPulse((p) => p + 1);
@@ -172,13 +251,34 @@ export function StoreProvider({ children }: { children: ReactNode }) {
       })
       .filter((l): l is BagLine & { product: Product } => l !== null);
 
+    /**
+     * Until the price map arrives, fall back to the built-in pre-launch offer.
+     * It is the same rule the server applies when it has no other offer, so the
+     * number rarely changes when the map lands.
+     */
+    const priceFor = (product: Product) =>
+      prices
+        ? priceOf(prices, product.slug, product.price)
+        : { list: product.price, price: unitPrice(product.price), label: null };
+
     // What the bag would cost at list price, and what it costs today. The
-    // server recomputes both before saving an order — these two numbers exist
-    // to show the shopper the saving, not to decide it.
+    // server recomputes both before saving an order — these numbers exist to
+    // show the shopper the saving, not to decide it.
     const fullSubtotal = detailedLines.reduce((sum, l) => sum + l.product.price * l.qty, 0);
-    const subtotal = detailedLines.reduce((sum, l) => sum + unitPrice(l.product.price) * l.qty, 0);
+    const subtotal = detailedLines.reduce((sum, l) => sum + priceFor(l.product).price * l.qty, 0);
+
+    // A coupon checked against a bag that has since changed must not outlive
+    // it: clamped here so an edited bag can never go negative on screen.
+    const couponOff = Math.min(coupon?.discount ?? 0, subtotal);
 
     return {
+      prices,
+      priceFor,
+      coupon,
+      couponPending,
+      applyCoupon,
+      clearCoupon: () => setCoupon(null),
+      total: subtotal - couponOff,
       lines: state.lines,
       wishlist: state.wishlist,
       detailedLines,
@@ -197,7 +297,7 @@ export function StoreProvider({ children }: { children: ReactNode }) {
       closeOverlay: () => setOverlay(null),
       pulse,
     };
-  }, [state, overlay, pulse, add]);
+  }, [state, overlay, pulse, add, prices, coupon, couponPending, applyCoupon]);
 
   return <StoreContext.Provider value={value}>{children}</StoreContext.Provider>;
 }

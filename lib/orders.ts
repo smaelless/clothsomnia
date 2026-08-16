@@ -1,6 +1,6 @@
 import { createClient } from "@supabase/supabase-js";
 import { getProduct } from "./catalog";
-import { isPreLaunch, unitPrice } from "./pricing";
+import { priceOf, type PriceMap } from "./offers";
 import type { StockMap } from "./stock";
 
 /**
@@ -28,7 +28,11 @@ export type OrderInput = {
   address: string;
   note?: string;
   items: OrderLineInput[];
+  coupon?: string;
 };
+
+/** A coupon the server has already checked. Never taken from the request. */
+export type AppliedCoupon = { id: string; code: string; discount: number };
 
 export type ValidationResult =
   | { ok: true; value: NormalisedOrder }
@@ -55,9 +59,12 @@ export type NormalisedOrder = {
   itemCount: number;
   /** The bag at list price. */
   fullSubtotal: number;
-  /** What the pre-launch offer took off. Zero after 27 September. */
+  /** What the item-level offers took off. */
   discount: number;
+  /** Subtotal after item offers, before any coupon. */
   subtotal: number;
+  couponCode: string | null;
+  couponDiscount: number;
   shipping: number;
   total: number;
 };
@@ -95,7 +102,12 @@ function makeReference(): string {
  * be oversold indefinitely and no one would find out until the pieces ran out
  * in the flat.
  */
-export function validateOrder(input: OrderInput, stock: StockMap): ValidationResult {
+export function validateOrder(
+  input: OrderInput,
+  stock: StockMap,
+  prices: PriceMap,
+  coupon: AppliedCoupon | null = null,
+): ValidationResult {
   const errors: Record<string, string> = {};
 
   const fullName = (input.fullName ?? "").trim();
@@ -154,9 +166,11 @@ export function validateOrder(input: OrderInput, stock: StockMap): ValidationRes
       break;
     }
     claimed.set(key, (claimed.get(key) ?? 0) + qty);
-    // Priced here, on the server, at the moment of the order. Whatever the
-    // browser thought the discount was is irrelevant.
-    const paid = unitPrice(product.price);
+    // Priced here, on the server, at the moment of the order, from the offers
+    // in the database. Whatever the browser thought the discount was is
+    // irrelevant — and a product with no offer falls back to list price rather
+    // than to whatever a missing map entry would imply.
+    const paid = priceOf(prices, product.slug, product.price).price;
     lines.push({
       slug: product.slug,
       name: product.name,
@@ -189,8 +203,12 @@ export function validateOrder(input: OrderInput, stock: StockMap): ValidationRes
       fullSubtotal,
       discount: fullSubtotal - subtotal,
       subtotal,
+      couponCode: coupon?.code ?? null,
+      // Clamped again here even though checkCoupon already clamps it: this is
+      // the last point before money is written down.
+      couponDiscount: Math.min(coupon?.discount ?? 0, subtotal),
       shipping,
-      total: subtotal + shipping,
+      total: subtotal - Math.min(coupon?.discount ?? 0, subtotal) + shipping,
     },
   };
 }
@@ -222,6 +240,8 @@ export async function saveOrder(order: NormalisedOrder): Promise<{ id: string }>
       full_subtotal: order.fullSubtotal,
       discount: order.discount,
       subtotal: order.subtotal,
+      coupon_code: order.couponCode,
+      coupon_discount: order.couponDiscount,
       shipping: order.shipping,
       total: order.total,
       currency: "MAD",
@@ -255,8 +275,9 @@ export async function notifyTelegram(order: NormalisedOrder): Promise<boolean> {
     "",
     lines,
     "",
-    order.discount > 0
-      ? `~${dh(order.fullSubtotal)}~ — pre-launch ${dh(order.discount)} off`
+    order.discount > 0 ? `~${dh(order.fullSubtotal)}~ — ${dh(order.discount)} off` : null,
+    order.couponDiscount > 0
+      ? `🎟 ${order.couponCode} — ${dh(order.couponDiscount)} off`
       : null,
     `*Total:* ${dh(order.total)} — cash on delivery`,
     "",

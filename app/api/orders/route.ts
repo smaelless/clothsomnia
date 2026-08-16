@@ -1,6 +1,13 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@supabase/supabase-js";
-import { isConfigured, notifyTelegram, saveOrder, validateOrder } from "@/lib/orders";
+import {
+  isConfigured,
+  notifyTelegram,
+  saveOrder,
+  validateOrder,
+  type AppliedCoupon,
+} from "@/lib/orders";
+import { checkCoupon, priceMap, recordCouponUse } from "@/lib/offers-data";
 import { remainingStock } from "@/lib/stock";
 
 /**
@@ -25,10 +32,30 @@ export async function POST(request: Request) {
   }
 
   // Read at the moment of the order, not at page load — the browser's copy of
-  // what is left can be minutes old by the time someone finishes the form.
-  const stock = await remainingStock();
+  // what is left, and of what things cost, can be minutes old by the time
+  // someone finishes the form.
+  const [stock, prices] = await Promise.all([remainingStock(), priceMap()]);
 
-  const result = validateOrder(body as never, stock);
+  // Priced first without the coupon, because a coupon's minimum and its value
+  // both depend on the subtotal it is being applied to.
+  const dry = validateOrder(body as never, stock, prices);
+  if (!dry.ok) {
+    return NextResponse.json({ errors: dry.errors }, { status: 422 });
+  }
+
+  let applied: AppliedCoupon | null = null;
+  const submittedCode = (body as { coupon?: unknown }).coupon;
+  if (typeof submittedCode === "string" && submittedCode.trim()) {
+    const check = await checkCoupon(submittedCode, dry.value.subtotal);
+    if (!check.ok) {
+      // Refused rather than silently dropped: someone who typed a code and saw
+      // a lower total must not be charged the higher one without being told.
+      return NextResponse.json({ errors: { coupon: check.reason } }, { status: 422 });
+    }
+    applied = { id: check.id, code: check.coupon.code, discount: check.discount };
+  }
+
+  const result = validateOrder(body as never, stock, prices, applied);
   if (!result.ok) {
     return NextResponse.json({ errors: result.errors }, { status: 422 });
   }
@@ -45,6 +72,10 @@ export async function POST(request: Request) {
       { status: 500 },
     );
   }
+
+  // Counted only now the order is safely saved, so a shopper who types a code
+  // and then abandons the checkout has not burned one of its uses.
+  if (applied) await recordCouponUse(applied.id);
 
   // The order is safe at this point. A failed notification is recorded, never
   // surfaced to the customer as a failure.

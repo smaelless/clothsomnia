@@ -40,9 +40,11 @@ export type Order = {
   item_count: number;
   /** Bag at list price. Null on orders placed before the offer existed. */
   full_subtotal: number | null;
-  /** What the pre-launch offer took off, in centimes. */
+  /** What the item-level offers took off, in centimes. */
   discount: number;
   subtotal: number;
+  coupon_code: string | null;
+  coupon_discount: number;
   shipping: number;
   total: number;
   currency: string;
