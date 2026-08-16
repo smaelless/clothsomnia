@@ -27,7 +27,12 @@ export default function WaitingPage() {
   return (
     <>
       {/* The clock — the only thing anyone is here for */}
-      <section className="relative overflow-hidden py-16 md:py-24" aria-label="Time until the drop">
+      <section
+        /* Sits straight under the header. The eyebrow was the first thing on
+           the page and had a whole band of empty above it. */
+        className="relative overflow-hidden pb-16 pt-2 md:pb-24 md:pt-3"
+        aria-label="Time until the drop"
+      >
         <div
           aria-hidden
           className="bloom left-1/2 top-1/2 size-[34rem] -translate-x-1/2 -translate-y-1/2 bg-pine/20"
@@ -43,17 +48,66 @@ export default function WaitingPage() {
         </Marquee>
 
         <div className="relative mx-auto max-w-[1600px] px-4 md:px-8">
-          <p className="label-wide mb-10 text-center text-lime">
+          <p className="label-wide mb-6 text-center text-lime">
             It&apos;s not necessary tlbess qadek iwatik, sometimes khassek
           </p>
 
+          {/* Deliberately below the board in weight now: the headline sets the
+              tone, the clock is the message. */}
           <SplitLines
             lines={["T'lbess what", "they'll remember"]}
-            className="display mb-12 text-center text-mega"
+            className="display mb-10 text-center text-[clamp(1.5rem,4.2vw,3rem)] leading-[1.05]"
             lineClassName="[&:nth-child(2)]:italic [&:nth-child(2)]:font-light [&:nth-child(2)]:text-silver"
           />
 
-          <Countdown />
+          {/*
+            The board, with a colourway standing at each shoulder.
+
+            Laid out as three columns first, the hoodies were squeezed to 180px
+            slivers on a laptop — the board is deliberately huge and takes the
+            width it needs. So they sit behind it instead, bleeding off both
+            edges at a size worth looking at, dimmed enough that the digits
+            still read cleanly over them. The cells are opaque and bordered, so
+            where they do overlap the clock still wins.
+
+            Below lg they are gone: a hoodie peering out from behind a clock on
+            a phone is clutter, not a composition.
+          */}
+          <div className="relative">
+            <div
+              aria-hidden
+              className="pointer-events-none absolute inset-y-0 left-0 z-0 hidden w-[24vw] max-w-[24rem] -translate-x-[18%] items-center opacity-50 lg:flex"
+            >
+              <Plate
+                seed="/chapter1/pine-front.jpg"
+                src="/chapter1/pine-front.jpg"
+                tone="pine"
+                alt=""
+                caption={null}
+                sizes="24vw"
+                className="aspect-[3/4] w-full"
+              />
+            </div>
+
+            <div
+              aria-hidden
+              className="pointer-events-none absolute inset-y-0 right-0 z-0 hidden w-[24vw] max-w-[24rem] translate-x-[18%] items-center opacity-50 lg:flex"
+            >
+              <Plate
+                seed="/chapter1/wine-front.jpg"
+                src="/chapter1/wine-front.jpg"
+                tone="wine"
+                alt=""
+                caption={null}
+                sizes="24vw"
+                className="aspect-[3/4] w-full"
+              />
+            </div>
+
+            <div className="relative z-10 py-4">
+              <Countdown size="large" />
+            </div>
+          </div>
 
           <p className="mx-auto mt-10 max-w-[46ch] text-center text-sm leading-relaxed text-smoke">
             Kolchi kaylbes. Machi kolchi kay3ref ykhtar. Fifty pieces per size, per colour.
