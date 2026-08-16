@@ -97,24 +97,40 @@ export function Soundtrack() {
     }
 
     // Keep it rolling silently even if the browser paused it, so the moment a
-    // gesture arrives there is nothing to buffer.
+    // gesture arrives there is nothing left to buffer.
     if (audio.paused) audio.play().then(() => setPlaying(true)).catch(() => {});
 
-    const events = ["pointerdown", "touchstart", "keydown", "click", "scroll", "wheel"] as const;
+    const events = ["pointerdown", "touchend", "keydown", "click", "scroll", "wheel"] as const;
 
     const unmute = () => {
+      /*
+       * Everything here runs synchronously. Safari grants sound only to code
+       * running inside the gesture's own task — resume it from a promise
+       * callback and the permission has already expired.
+       */
       audio.muted = false;
       audio.volume = 1;
-      const done = () => {
-        setPlaying(true);
-        setAudible(true);
-        for (const type of events) window.removeEventListener(type, unmute);
-      };
-      if (audio.paused) audio.play().then(done).catch(() => {});
-      else done();
+      // Called even when it is already playing: on iOS a muted element that
+      // began without a gesture still needs one before it will make a sound.
+      const attempt = audio.play();
+
+      setPlaying(true);
+      // Drives muted={!audible} on the element, so React agrees with what was
+      // just set by hand instead of overwriting it on the next render.
+      setAudible(true);
+      for (const type of events) window.removeEventListener(type, unmute);
+
+      attempt?.catch(() => {
+        // Still refused. Put the listeners back rather than leaving a control
+        // that claims to be playing over silence.
+        setAudible(false);
+        for (const type of events) {
+          window.addEventListener(type, unmute, { passive: true });
+        }
+      });
     };
 
-    // Listeners stay until sound is actually audible, because the first event
+    // Listeners stay until sound is genuinely audible, because the first event
     // to fire may be one the browser does not count as activation — a passive
     // scroll on iOS will not unlock audio on its own.
     for (const type of events) {
@@ -174,9 +190,14 @@ export function Soundtrack() {
         loop
         /* autoPlay + muted is the combination every browser permits. The track
            begins the instant the element parses — before hydration, before the
-           loading screen clears — so the first gesture only has to unmute it. */
+           loading screen clears — so the first gesture only has to unmute it.
+
+           Bound to state rather than hard-coded: React treats `muted` as a
+           property it owns and re-asserts on every commit, so a literal
+           muted={true} here silently re-muted the audio on the very next
+           render after a gesture had unmuted it by hand. That was the bug. */
         autoPlay
-        muted
+        muted={!audible}
         preload="auto"
         playsInline
         onPlay={() => setPlaying(true)}
