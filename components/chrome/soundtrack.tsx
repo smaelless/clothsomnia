@@ -96,9 +96,32 @@ export function Soundtrack() {
       return;
     }
 
-    // Keep it rolling silently even if the browser paused it, so the moment a
-    // gesture arrives there is nothing left to buffer.
-    if (audio.paused) audio.play().then(() => setPlaying(true)).catch(() => {});
+    /*
+     * Ask for sound outright, first.
+     *
+     * Chrome keeps a per-site media engagement score: once someone has played
+     * audio here a few times, it stops asking and simply allows it. Safari has
+     * the same idea, and both let a visitor grant it permanently in settings.
+     * None of that can be triggered from code — but it costs one rejected
+     * promise to find out, and for a returning visitor this is the branch that
+     * runs, with no tap at all.
+     */
+    audio.muted = false;
+    audio.volume = 1;
+
+    audio
+      .play()
+      .then(() => {
+        setPlaying(true);
+        setAudible(true);
+      })
+      .catch(() => {
+        // Refused, which is the answer on a first visit everywhere. Fall back
+        // to silent playback so the track is buffered, in time, and one gesture
+        // away from being heard.
+        audio.muted = true;
+        audio.play().then(() => setPlaying(true)).catch(() => {});
+      });
 
     const events = ["pointerdown", "touchend", "keydown", "click", "scroll", "wheel"] as const;
 
