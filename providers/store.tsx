@@ -11,6 +11,7 @@ import {
   type ReactNode,
 } from "react";
 import { getProduct, type Product } from "@/lib/catalog";
+import { unitPrice } from "@/lib/pricing";
 
 export type BagLine = {
   /** Composite key — a product in two sizes is two lines. */
@@ -83,6 +84,11 @@ type StoreValue = {
   /** Bag lines joined to their product records, sold-out safe. */
   detailedLines: (BagLine & { product: Product })[];
   count: number;
+  /** The bag at list price, before the pre-launch discount. */
+  fullSubtotal: number;
+  /** What the discount takes off. Zero once Chapter 1 has opened. */
+  discount: number;
+  /** What they actually pay for the pieces. */
   subtotal: number;
   add: (slug: string, size: string, color: string, qty?: number) => void;
   setQty: (id: string, qty: number) => void;
@@ -166,12 +172,20 @@ export function StoreProvider({ children }: { children: ReactNode }) {
       })
       .filter((l): l is BagLine & { product: Product } => l !== null);
 
+    // What the bag would cost at list price, and what it costs today. The
+    // server recomputes both before saving an order — these two numbers exist
+    // to show the shopper the saving, not to decide it.
+    const fullSubtotal = detailedLines.reduce((sum, l) => sum + l.product.price * l.qty, 0);
+    const subtotal = detailedLines.reduce((sum, l) => sum + unitPrice(l.product.price) * l.qty, 0);
+
     return {
       lines: state.lines,
       wishlist: state.wishlist,
       detailedLines,
       count: state.lines.reduce((n, l) => n + l.qty, 0),
-      subtotal: detailedLines.reduce((sum, l) => sum + l.product.price * l.qty, 0),
+      fullSubtotal,
+      discount: fullSubtotal - subtotal,
+      subtotal,
       add,
       setQty: (id, qty) => dispatch({ type: "setQty", id, qty }),
       remove: (id) => dispatch({ type: "remove", id }),

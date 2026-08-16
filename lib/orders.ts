@@ -1,5 +1,6 @@
 import { createClient } from "@supabase/supabase-js";
 import { getProduct } from "./catalog";
+import { isPreLaunch, unitPrice } from "./pricing";
 import type { StockMap } from "./stock";
 
 /**
@@ -46,10 +47,16 @@ export type NormalisedOrder = {
     colour: string;
     size: string;
     qty: number;
+    /** List price, kept so the saving is still legible in a year. */
+    listPrice: number;
     unitPrice: number;
     lineTotal: number;
   }[];
   itemCount: number;
+  /** The bag at list price. */
+  fullSubtotal: number;
+  /** What the pre-launch offer took off. Zero after 27 September. */
+  discount: number;
   subtotal: number;
   shipping: number;
   total: number;
@@ -147,20 +154,25 @@ export function validateOrder(input: OrderInput, stock: StockMap): ValidationRes
       break;
     }
     claimed.set(key, (claimed.get(key) ?? 0) + qty);
+    // Priced here, on the server, at the moment of the order. Whatever the
+    // browser thought the discount was is irrelevant.
+    const paid = unitPrice(product.price);
     lines.push({
       slug: product.slug,
       name: product.name,
-      colour: line.color,
+      colour: colour.name,
       size: line.size,
       qty,
-      unitPrice: product.price,
-      lineTotal: product.price * qty,
+      listPrice: product.price,
+      unitPrice: paid,
+      lineTotal: paid * qty,
     });
   }
 
   if (Object.keys(errors).length > 0) return { ok: false, errors };
 
   const subtotal = lines.reduce((sum, l) => sum + l.lineTotal, 0);
+  const fullSubtotal = lines.reduce((sum, l) => sum + l.listPrice * l.qty, 0);
   const shipping = 0; // Free across Morocco.
 
   return {
@@ -174,6 +186,8 @@ export function validateOrder(input: OrderInput, stock: StockMap): ValidationRes
       note: (input.note ?? "").trim() || null,
       items: lines,
       itemCount: lines.reduce((n, l) => n + l.qty, 0),
+      fullSubtotal,
+      discount: fullSubtotal - subtotal,
       subtotal,
       shipping,
       total: subtotal + shipping,
@@ -205,6 +219,8 @@ export async function saveOrder(order: NormalisedOrder): Promise<{ id: string }>
       note: order.note,
       items: order.items,
       item_count: order.itemCount,
+      full_subtotal: order.fullSubtotal,
+      discount: order.discount,
       subtotal: order.subtotal,
       shipping: order.shipping,
       total: order.total,
@@ -239,6 +255,9 @@ export async function notifyTelegram(order: NormalisedOrder): Promise<boolean> {
     "",
     lines,
     "",
+    order.discount > 0
+      ? `~${dh(order.fullSubtotal)}~ — pre-launch ${dh(order.discount)} off`
+      : null,
     `*Total:* ${dh(order.total)} — cash on delivery`,
     "",
     `👤 ${order.fullName}`,

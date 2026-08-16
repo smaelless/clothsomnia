@@ -8,6 +8,7 @@ import { ActionButton } from "@/components/ui/magnetic";
 import { Countdown } from "@/components/ui/countdown";
 import { Plate } from "@/components/ui/plate";
 import { CATEGORY_LABEL, LOW_STOCK_AT, STOCK_PER_SIZE, type Product } from "@/lib/catalog";
+import { PRELAUNCH_LABEL, unitPrice } from "@/lib/pricing";
 import type { StockMap } from "@/lib/stock";
 import { EASE_OUT } from "@/lib/motion";
 import { cn, formatPrice } from "@/lib/utils";
@@ -44,6 +45,9 @@ export function ProductDetail({
   const reduced = useReducedMotion();
 
   const left = (colour: string, s: string) => stock?.[`${colour}|${s}`] ?? STOCK_PER_SIZE;
+
+  const now = unitPrice(product.price);
+  const discounted = now < product.price;
 
   const [color, setColor] = useState(product.colors[0].name);
   const [size, setSize] = useState<string | null>(null);
@@ -158,13 +162,24 @@ export function ProductDetail({
 
         <p className="mt-4 text-base text-silver">{product.line}</p>
 
-        <div className="mt-6 flex items-baseline gap-4">
-          <span className="display text-3xl">{formatPrice(product.price)}</span>
-          {product.compareAt && (
+        <div className="mt-6 flex flex-wrap items-baseline gap-x-4 gap-y-2">
+          <span className="display text-3xl">{formatPrice(now)}</span>
+          {/* The list price stays visible and struck. A discount nobody can see
+              the original of is just a lower price. */}
+          {discounted && (
+            <span className="label text-smoke line-through">{formatPrice(product.price)}</span>
+          )}
+          {product.compareAt && !discounted && (
             <span className="label text-smoke line-through">{formatPrice(product.compareAt)}</span>
           )}
           <span className="label-wide text-smoke">Incl. VAT</span>
         </div>
+
+        {discounted && (
+          <p className="label mt-3 inline-flex items-center gap-2 rounded-full bg-lime px-3 py-1.5 text-ink">
+            {PRELAUNCH_LABEL} off before the drop
+          </p>
+        )}
 
         {/* Colour */}
         <fieldset className="mt-10">

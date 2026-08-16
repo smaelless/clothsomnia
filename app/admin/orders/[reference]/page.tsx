@@ -123,8 +123,16 @@ export default async function OrderPage({
             <dl className="mt-6 space-y-3 border-t border-bone/12 pt-5">
               <div className="flex justify-between">
                 <dt className="label text-smoke">Subtotal</dt>
-                <dd className="label tabular-nums text-silver">{formatPrice(order.subtotal)}</dd>
+                <dd className="label tabular-nums text-silver">
+                  {formatPrice(order.discount > 0 ? (order.full_subtotal ?? order.subtotal) : order.subtotal)}
+                </dd>
               </div>
+              {order.discount > 0 && (
+                <div className="flex justify-between">
+                  <dt className="label text-lime">Pre-launch discount</dt>
+                  <dd className="label tabular-nums text-lime">−{formatPrice(order.discount)}</dd>
+                </div>
+              )}
               <div className="flex justify-between">
                 <dt className="label text-smoke">Delivery</dt>
                 <dd className="label text-lime">

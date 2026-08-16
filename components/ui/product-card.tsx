@@ -8,6 +8,7 @@ import { Plate } from "@/components/ui/plate";
 import { EASE_OUT } from "@/lib/motion";
 import type { Product } from "@/lib/catalog";
 import { CATEGORY_LABEL } from "@/lib/catalog";
+import { unitPrice } from "@/lib/pricing";
 import { cn, formatPrice } from "@/lib/utils";
 import { useStore } from "@/providers/store";
 
@@ -38,6 +39,7 @@ export function ProductCard({
   const [added, setAdded] = useState<string | null>(null);
   const reduced = useReducedMotion();
   const wished = isWished(product.slug);
+  const now = unitPrice(product.price);
 
   // Cards alternate their vertical offset so rows never read as a plain grid.
   const offset = index % 3 === 1 ? "md:mt-10" : index % 3 === 2 ? "md:mt-8" : "";
@@ -202,9 +204,15 @@ export function ProductCard({
         </div>
 
         <div className="shrink-0 text-right">
-          <p className="label text-bone">{formatPrice(product.price)}</p>
-          {product.compareAt && (
-            <p className="label mt-1 text-smoke line-through">{formatPrice(product.compareAt)}</p>
+          <p className={cn("label", now < product.price ? "text-lime" : "text-bone")}>
+            {formatPrice(now)}
+          </p>
+          {now < product.price ? (
+            <p className="label mt-1 text-smoke line-through">{formatPrice(product.price)}</p>
+          ) : (
+            product.compareAt && (
+              <p className="label mt-1 text-smoke line-through">{formatPrice(product.compareAt)}</p>
+            )
           )}
           <p className="label-wide mt-2 text-smoke">{CATEGORY_LABEL[product.category]}</p>
         </div>

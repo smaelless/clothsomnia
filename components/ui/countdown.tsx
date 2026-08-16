@@ -4,8 +4,13 @@ import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { useEffect, useState } from "react";
 import { cn } from "@/lib/utils";
 
-/** Chapter 1 goes live at midnight, 27 September. */
-export const LAUNCH_AT = new Date("2026-09-27T00:00:00+01:00");
+/**
+ * Chapter 1 goes live at midnight, 27 September. Defined in lib/pricing because
+ * the same instant ends the pre-launch discount — two copies of this date would
+ * mean a countdown that hits zero while the offer is still running, or worse.
+ */
+export { LAUNCH_AT } from "@/lib/pricing";
+import { LAUNCH_AT } from "@/lib/pricing";
 
 /** The countdown fills up over the final stretch rather than from nothing. */
 const WINDOW_DAYS = 60;

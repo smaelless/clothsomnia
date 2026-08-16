@@ -19,6 +19,8 @@ export type OrderItem = {
   colour: string;
   size: string;
   qty: number;
+  /** List price at the time of the order. Absent on pre-discount orders. */
+  listPrice?: number;
   unitPrice: number;
   lineTotal: number;
 };
@@ -36,6 +38,10 @@ export type Order = {
   admin_note: string | null;
   items: OrderItem[];
   item_count: number;
+  /** Bag at list price. Null on orders placed before the offer existed. */
+  full_subtotal: number | null;
+  /** What the pre-launch offer took off, in centimes. */
+  discount: number;
   subtotal: number;
   shipping: number;
   total: number;

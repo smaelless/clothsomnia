@@ -5,6 +5,7 @@ import { ProductDetail } from "@/components/product/product-detail";
 import { RecentlyViewed } from "@/components/product/recently-viewed";
 import { ProductCard } from "@/components/ui/product-card";
 import { CATEGORY_LABEL, PRODUCTS, getProduct, relatedTo } from "@/lib/catalog";
+import { unitPrice } from "@/lib/pricing";
 import { remainingStock } from "@/lib/stock";
 import { formatPrice } from "@/lib/utils";
 
@@ -33,7 +34,7 @@ export async function generateMetadata({ params }: Params): Promise<Metadata> {
   if (!product) return { title: "Not found" };
   return {
     title: product.name,
-    description: `${product.line}. ${formatPrice(product.price)}.`,
+    description: `${product.line}. ${formatPrice(unitPrice(product.price))}.`,
     openGraph: { title: `${product.name} — Clothsomnia`, description: product.line },
   };
 }
@@ -59,7 +60,10 @@ export default async function ProductPage({ params }: Params) {
     brand: { "@type": "Brand", name: "Clothsomnia" },
     offers: {
       "@type": "Offer",
-      price: (product.price / 100).toFixed(2),
+      // The price actually being charged today, not the list price — a rich
+      // result quoting 319 while the page says 271 is a mismatch Google
+      // penalises, and a promise to the shopper the checkout would not keep.
+      price: (unitPrice(product.price) / 100).toFixed(2),
       // Prices are dirhams everywhere else on the site; this said EUR, which
       // would have shown the wrong currency in Google's search results.
       priceCurrency: "MAD",

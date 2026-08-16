@@ -3,14 +3,19 @@
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { useEffect, useState } from "react";
 import { EASE_OUT } from "@/lib/motion";
-import { LAUNCH_AT } from "@/components/ui/countdown";
+import { LAUNCH_AT, PRELAUNCH_LABEL, isPreLaunch } from "@/lib/pricing";
 
 /**
  * Each line pulls a different lever: risk reversal (shipping, returns),
  * scarcity (small runs, never restocked), and urgency (ships tomorrow).
  * Kept in the brand's voice — a bar that shouts stops being believed.
  */
+/**
+ * The offer leads while it is running, then drops out of the rotation of its
+ * own accord — nothing to remember to switch off on the 27th.
+ */
 const MESSAGES = [
+  ...(isPreLaunch() ? [`${PRELAUNCH_LABEL} off — only before the drop`] : []),
   "Wear what you dream of",
   "If you know, you know",
   "Order tonight → ships tomorrow.",

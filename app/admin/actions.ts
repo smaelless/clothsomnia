@@ -125,8 +125,12 @@ export async function resendNotification(_prev: FormState, form: FormData): Prom
     city: order.city,
     address: order.address,
     note: order.note,
-    items: order.items,
+    // Older orders predate the listPrice field; they were charged list price,
+    // so the two are the same number.
+    items: order.items.map((i) => ({ ...i, listPrice: i.listPrice ?? i.unitPrice })),
     itemCount: order.item_count,
+    fullSubtotal: order.full_subtotal ?? order.subtotal,
+    discount: order.discount ?? 0,
     subtotal: order.subtotal,
     shipping: order.shipping,
     total: order.total,

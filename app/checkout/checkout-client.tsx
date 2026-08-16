@@ -7,6 +7,7 @@ import { useState } from "react";
 import { Plate } from "@/components/ui/plate";
 import { ActionButton } from "@/components/ui/magnetic";
 import { EASE_OUT } from "@/lib/motion";
+import { PRELAUNCH_LABEL, unitPrice } from "@/lib/pricing";
 import { cn, formatPrice } from "@/lib/utils";
 import { useStore } from "@/providers/store";
 
@@ -22,7 +23,7 @@ const EMPTY: Fields = { fullName: "", phone: "", city: "", address: "", note: ""
  * this form only has to be clear and hard to get wrong.
  */
 export function CheckoutClient() {
-  const { detailedLines, subtotal, count, clear } = useStore();
+  const { detailedLines, subtotal, fullSubtotal, discount, count, clear } = useStore();
   const reduced = useReducedMotion();
 
   const [fields, setFields] = useState<Fields>(EMPTY);
@@ -238,7 +239,7 @@ export function CheckoutClient() {
                     {line.color} — {line.size} — ×{line.qty}
                   </p>
                   <p className="label mt-auto text-bone">
-                    {formatPrice(line.product.price * line.qty)}
+                    {formatPrice(unitPrice(line.product.price) * line.qty)}
                   </p>
                 </div>
               </li>
@@ -248,8 +249,16 @@ export function CheckoutClient() {
           <dl className="mt-6 space-y-3">
             <div className="flex justify-between">
               <dt className="label text-smoke">Subtotal</dt>
-              <dd className="label text-bone">{formatPrice(subtotal)}</dd>
+              <dd className="label text-bone">
+                {formatPrice(discount > 0 ? fullSubtotal : subtotal)}
+              </dd>
             </div>
+            {discount > 0 && (
+              <div className="flex justify-between">
+                <dt className="label text-lime">{PRELAUNCH_LABEL} off — before the drop</dt>
+                <dd className="label text-lime">−{formatPrice(discount)}</dd>
+              </div>
+            )}
             <div className="flex justify-between">
               <dt className="label text-smoke">Delivery</dt>
               <dd className="label text-lime">Free</dd>
