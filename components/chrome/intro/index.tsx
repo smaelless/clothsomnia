@@ -1,7 +1,9 @@
 "use client";
 
 import { useEffect, useState, type ComponentType } from "react";
-import { useReducedMotion } from "framer-motion";
+import { motion, useReducedMotion } from "framer-motion";
+import { Equaliser, useSoundtrackPlaying } from "@/components/chrome/soundtrack";
+import { SOUNDTRACK } from "@/lib/soundtrack";
 import { INTRO_SESSION_KEY, INTRO_VARIANT, type IntroVariant } from "@/lib/intro";
 import type { IntroProps } from "./types";
 import { IntroBlink } from "./intro-blink";
@@ -94,6 +96,39 @@ export function Intro({
   return (
     <div aria-hidden role="presentation">
       <Sequence onComplete={() => setVisible(false)} />
+      <NowPlaying />
     </div>
+  );
+}
+
+/**
+ * The track, named in the corner of the loading screen.
+ *
+ * Above the sequence rather than inside it, so all four variants get it and
+ * none of them has to know it exists. It fades in a beat late: arriving with
+ * the curtain would make it part of the furniture, arriving just after reads
+ * as the music starting.
+ */
+function NowPlaying() {
+  const playing = useSoundtrackPlaying();
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 8 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ delay: 0.9, duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
+      className="fixed bottom-6 left-6 z-[101] flex items-center gap-3 md:bottom-8 md:left-8"
+    >
+      <Equaliser playing={playing} className="text-lime" />
+      <span className="leading-tight">
+        <span className="label block text-[9px] tracking-[0.3em] text-smoke">Now playing</span>
+        <span className="label mt-1.5 block text-[10px] tracking-[0.14em] text-bone">
+          {SOUNDTRACK.title}
+        </span>
+        <span className="label mt-1 block text-[9px] tracking-[0.14em] text-smoke">
+          {SOUNDTRACK.artist}
+        </span>
+      </span>
+    </motion.div>
   );
 }

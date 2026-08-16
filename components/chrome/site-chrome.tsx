@@ -10,6 +10,7 @@ import { Intro } from "@/components/chrome/intro";
 import { MobileMenu } from "@/components/chrome/mobile-menu";
 import { ScrollProgress } from "@/components/chrome/scroll-progress";
 import { SearchOverlay } from "@/components/chrome/search-overlay";
+import { Soundtrack } from "@/components/chrome/soundtrack";
 import { TypeField } from "@/components/chrome/type-field";
 
 /**
@@ -34,6 +35,10 @@ export function SiteChrome({ children }: { children: React.ReactNode }) {
       <Intro />
       <ScrollProgress />
       <Cursor />
+
+      {/* Storefront only. Music over the order screen would be a liability, not
+          a mood — the admin is somewhere you work, often on a phone in a shop. */}
+      <Soundtrack />
 
       {/* Sits above the page background, below all content */}
       <TypeField />
