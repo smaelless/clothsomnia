@@ -6,6 +6,7 @@ import {
   SOUNDTRACK,
   getSoundtrackPlaying,
   getSoundtrackServerSnapshot,
+  registerSoundtrackStarter,
   setSoundtrackPlaying,
   subscribeSoundtrack,
 } from "@/lib/soundtrack";
@@ -71,6 +72,30 @@ export function Soundtrack() {
   // The loading screen's equaliser reads this. It reflects audible rather than
   // merely playing, so the bars never dance over silence.
   useEffect(() => setSoundtrackPlaying(audible), [audible]);
+
+  /**
+   * The Enter button on the loading screen calls this, synchronously, from
+   * inside its own click handler — the one moment sound is guaranteed to be
+   * permitted. Someone who muted the site on a previous visit keeps their
+   * silence: entering is not a request for music, it is a request to come in.
+   */
+  useEffect(
+    () =>
+      registerSoundtrackStarter(() => {
+        const audio = ref.current;
+        if (!audio || muted) return;
+        audio.muted = false;
+        audio.volume = 1;
+        audio.play().then(
+          () => {
+            setPlaying(true);
+            setAudible(true);
+          },
+          () => {},
+        );
+      }),
+    [muted],
+  );
 
   // Restore the previous choice before doing anything noisy.
   useEffect(() => {

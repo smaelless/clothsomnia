@@ -42,3 +42,25 @@ export function getSoundtrackPlaying(): boolean {
 export function getSoundtrackServerSnapshot(): boolean {
   return false;
 }
+
+/**
+ * A way for the loading screen's Enter button to start the music.
+ *
+ * The Soundtrack component owns the audio element and registers its own
+ * starter here. It must be called *synchronously* from inside the click
+ * handler — Safari grants sound only to code running in the gesture's own
+ * task, so anything deferred to a promise or a state update has already lost
+ * the permission by the time it runs.
+ */
+let starter: (() => void) | null = null;
+
+export function registerSoundtrackStarter(fn: () => void): () => void {
+  starter = fn;
+  return () => {
+    if (starter === fn) starter = null;
+  };
+}
+
+export function startSoundtrack(): void {
+  starter?.();
+}

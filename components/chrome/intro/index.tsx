@@ -1,10 +1,11 @@
 "use client";
 
 import { useEffect, useState, type ComponentType } from "react";
-import { motion, useReducedMotion } from "framer-motion";
+import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { Equaliser, useSoundtrackPlaying } from "@/components/chrome/soundtrack";
 import { SOUNDTRACK } from "@/lib/soundtrack";
-import { INTRO_SESSION_KEY, INTRO_VARIANT, type IntroVariant } from "@/lib/intro";
+import { INTRO_ENTERED_KEY as ENTERED_KEY, INTRO_VARIANT, type IntroVariant } from "@/lib/intro";
+import { EnterGate } from "./enter-gate";
 import type { IntroProps } from "./types";
 import { IntroBlink } from "./intro-blink";
 import { IntroIris } from "./intro-iris";
@@ -39,6 +40,7 @@ export function Intro({
   // Render the cover on the server and on first paint so the page never flashes
   // through before the sequence has decided whether to run.
   const [visible, setVisible] = useState(true);
+  const [phase, setPhase] = useState<"sequence" | "gate">("sequence");
 
   useEffect(() => {
     if (force) {
@@ -60,44 +62,60 @@ export function Intro({
       return;
     }
 
-    let seen = false;
+    /*
+     * Marked when they press Enter, not when the sequence starts. Someone who
+     * closed the tab on the door has not been in yet, and should meet it again
+     * rather than land inside a silent site.
+     */
+    let entered = false;
     try {
-      seen = window.sessionStorage.getItem(INTRO_SESSION_KEY) === "1";
+      entered = window.sessionStorage.getItem(ENTERED_KEY) === "1";
     } catch {
       /* storage blocked — treat as a first visit */
     }
-    if (seen) {
-      setVisible(false);
-      return;
-    }
-    try {
-      window.sessionStorage.setItem(INTRO_SESSION_KEY, "1");
-    } catch {
-      /* non-fatal */
-    }
+    if (entered) setVisible(false);
   }, [force, reduced]);
 
   /**
    * Failsafe. Every sequence ends by calling onComplete from an animation
    * callback — but rAF is frozen in a background tab, so a visitor who opens
    * the site in a tab they never focus could otherwise sit behind a black
-   * screen. A timer (which still fires when throttled) guarantees the reveal.
+   * screen. A timer (which still fires when throttled) guarantees the door
+   * appears even if the animation never runs.
    */
   useEffect(() => {
-    if (!visible) return;
-    const id = window.setTimeout(() => setVisible(false), 6000);
+    if (!visible || phase !== "sequence") return;
+    const id = window.setTimeout(() => setPhase("gate"), 6000);
     return () => window.clearTimeout(id);
-  }, [visible]);
+  }, [visible, phase]);
 
   if (!visible) return null;
 
   const Sequence = REGISTRY[variant];
 
   return (
-    <div aria-hidden role="presentation">
-      <Sequence onComplete={() => setVisible(false)} />
-      <NowPlaying />
-    </div>
+    <AnimatePresence>
+      {phase === "gate" ? (
+        <EnterGate
+          key="gate"
+          onEnter={() => {
+            setVisible(false);
+            try {
+              window.sessionStorage.setItem(ENTERED_KEY, "1");
+            } catch {
+              /* non-fatal — the worst case is seeing the door twice */
+            }
+          }}
+        />
+      ) : (
+        <div key="sequence" aria-hidden role="presentation">
+          {/* The sequence no longer reveals the site directly. It hands over to
+              the door, so the visit begins on a press rather than on a timer. */}
+          <Sequence onComplete={() => setPhase("gate")} />
+          <NowPlaying />
+        </div>
+      )}
+    </AnimatePresence>
   );
 }
 

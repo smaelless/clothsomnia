@@ -44,3 +44,10 @@ export const INTRO_META: Record<
 };
 
 export const INTRO_SESSION_KEY = "clothsomnia.intro.seen";
+
+/**
+ * Set when the visitor presses Enter, not when the sequence begins — someone
+ * who closed the tab on the door has not been in yet, and should meet it again
+ * rather than land inside a site whose music never started.
+ */
+export const INTRO_ENTERED_KEY = "clothsomnia.intro.entered";
