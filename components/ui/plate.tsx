@@ -29,6 +29,14 @@ type PlateProps = {
   priority?: boolean;
   className?: string;
   children?: ReactNode;
+  /**
+   * Overrides the teaser line drawn from the hash, or removes it with `null`.
+   *
+   * The waiting page chooses its own lines and prints them under each frame, so
+   * without this it carried two captions per photograph — a random one burnt
+   * into the image and a deliberate one beneath it.
+   */
+  caption?: string | null;
 };
 
 
@@ -129,6 +137,7 @@ export function Plate({
   priority,
   className,
   children,
+  caption,
 }: PlateProps) {
   /**
    * Real product photography wins. A seed mapped to a Chapter 1 frame resolves
@@ -157,7 +166,8 @@ export function Plate({
    * far more evenly than the default and leaves none unused, so no single line
    * dominates a page.
    */
-  const teaserLine = TEASER_MODE ? pick(TEASER_CAPTIONS, seed, 20) : null;
+  const teaserLine =
+    caption !== undefined ? caption : TEASER_MODE ? pick(TEASER_CAPTIONS, seed, 20) : null;
 
   const t = TONES[tone];
   const uid = `p${hash(seed).toString(36)}`;
