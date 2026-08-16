@@ -1,46 +1,26 @@
 "use client";
 
-import { useCallback, useEffect, useState, type ComponentType } from "react";
-import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
-import { Equaliser, useSoundtrackPlaying } from "@/components/chrome/soundtrack";
-import { SOUNDTRACK } from "@/lib/soundtrack";
-import { INTRO_ENTERED_KEY as ENTERED_KEY, INTRO_VARIANT, type IntroVariant } from "@/lib/intro";
-import { EnterGate } from "./enter-gate";
-import type { IntroProps } from "./types";
-import { IntroBlink } from "./intro-blink";
-import { IntroIris } from "./intro-iris";
-import { IntroSlats } from "./intro-slats";
-import { IntroTypesweep } from "./intro-typesweep";
-
-const REGISTRY: Record<IntroVariant, ComponentType<IntroProps>> = {
-  slats: IntroSlats,
-  blink: IntroBlink,
-  iris: IntroIris,
-  typesweep: IntroTypesweep,
-};
+import { useCallback, useEffect, useState } from "react";
+import { useReducedMotion } from "framer-motion";
+import { INTRO_ENTERED_KEY as ENTERED_KEY } from "@/lib/intro";
+import { IntroDoor } from "./intro-door";
 
 /**
  * INTRO
  *
- * Picks the configured opening sequence, shows it once per session, and gets
- * out of the way. `force` bypasses the session gate so /intro-lab can replay
- * any variant on demand.
+ * One screen: the loading count and the way in, on the same panel. Shown once
+ * per session, and only until someone presses Enter.
  *
- * Reduced motion skips the sequence entirely — an intro is the least
- * defensible place to insist on animation.
+ * Reduced motion skips it entirely. Insisting on an animated door for a
+ * visitor who asked for less motion is the least defensible place to do it, and
+ * the music still starts on their first interaction with the site.
  */
-export function Intro({
-  variant = INTRO_VARIANT,
-  force = false,
-}: {
-  variant?: IntroVariant;
-  force?: boolean;
-}) {
+export function Intro({ force = false }: { force?: boolean }) {
   const reduced = useReducedMotion();
-  // Render the cover on the server and on first paint so the page never flashes
-  // through before the sequence has decided whether to run.
+  // Rendered on the server and on first paint so the page never shows through
+  // before the door has decided whether to run.
   const [visible, setVisible] = useState(true);
-  const [phase, setPhase] = useState<"sequence" | "gate" | "leaving">("sequence");
+  const [leaving, setLeaving] = useState(false);
 
   // Stable, so the door's exit timer is not restarted by an unrelated render.
   const hide = useCallback(() => setVisible(false), []);
@@ -56,9 +36,8 @@ export function Intro({
     }
 
     /**
-     * In development the intro plays on every load, so it can actually be
-     * worked on — gating it to once per session made it look deleted.
-     * In production it still plays only once per session.
+     * In development it runs on every load so it can actually be worked on;
+     * gating it to once per session made it look deleted.
      */
     if (process.env.NODE_ENV !== "production") {
       setVisible(true);
@@ -66,9 +45,9 @@ export function Intro({
     }
 
     /*
-     * Marked when they press Enter, not when the sequence starts. Someone who
+     * Marked when they press Enter, not when the screen appears. Someone who
      * closed the tab on the door has not been in yet, and should meet it again
-     * rather than land inside a silent site.
+     * rather than land inside a site whose music never started.
      */
     let entered = false;
     try {
@@ -79,85 +58,20 @@ export function Intro({
     if (entered) setVisible(false);
   }, [force, reduced]);
 
-  /**
-   * Failsafe. Every sequence ends by calling onComplete from an animation
-   * callback — but rAF is frozen in a background tab, so a visitor who opens
-   * the site in a tab they never focus could otherwise sit behind a black
-   * screen. A timer (which still fires when throttled) guarantees the door
-   * appears even if the animation never runs.
-   */
-  useEffect(() => {
-    if (!visible || phase !== "sequence") return;
-    const id = window.setTimeout(() => setPhase("gate"), 6000);
-    return () => window.clearTimeout(id);
-  }, [visible, phase]);
-
   if (!visible) return null;
 
-  const Sequence = REGISTRY[variant];
-
   return (
-    <>
-      {/*
-        The door is mounted from the first frame, beneath the sequence, and the
-        sequence sits on top of it. So when the slats lift they uncover the
-        door — not the site. Mounting it only after the sequence finished let
-        the page show through in between, which looked like a second loading
-        screen arriving after the first had completed.
-      */}
-      <EnterGate
-        leaving={phase === "leaving"}
-        onEnter={() => {
-          setPhase("leaving");
-          try {
-            window.sessionStorage.setItem(ENTERED_KEY, "1");
-          } catch {
-            /* non-fatal — the worst case is seeing the door twice */
-          }
-        }}
-        onExited={hide}
-      />
-
-      <AnimatePresence>
-        {phase === "sequence" && (
-          <div key="sequence" aria-hidden role="presentation">
-            <Sequence onComplete={() => setPhase("gate")} />
-            <NowPlaying />
-          </div>
-        )}
-      </AnimatePresence>
-    </>
-  );
-}
-
-/**
- * The track, named in the corner of the loading screen.
- *
- * Above the sequence rather than inside it, so all four variants get it and
- * none of them has to know it exists. It fades in a beat late: arriving with
- * the curtain would make it part of the furniture, arriving just after reads
- * as the music starting.
- */
-function NowPlaying() {
-  const playing = useSoundtrackPlaying();
-
-  return (
-    <motion.div
-      initial={{ opacity: 0, y: 8 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ delay: 0.9, duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
-      className="fixed bottom-6 left-6 z-[101] flex items-center gap-3 md:bottom-8 md:left-8"
-    >
-      <Equaliser playing={playing} className="text-lime" />
-      <span className="leading-tight">
-        <span className="label block text-[9px] tracking-[0.3em] text-smoke">Now playing</span>
-        <span className="label mt-1.5 block text-[10px] tracking-[0.14em] text-bone">
-          {SOUNDTRACK.title}
-        </span>
-        <span className="label mt-1 block text-[9px] tracking-[0.14em] text-smoke">
-          {SOUNDTRACK.artist}
-        </span>
-      </span>
-    </motion.div>
+    <IntroDoor
+      leaving={leaving}
+      onEnter={() => {
+        setLeaving(true);
+        try {
+          window.sessionStorage.setItem(ENTERED_KEY, "1");
+        } catch {
+          /* non-fatal — the worst case is seeing the door twice */
+        }
+      }}
+      onExited={hide}
+    />
   );
 }
