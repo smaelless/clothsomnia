@@ -4,7 +4,6 @@ import { useEffect, useState, type ComponentType } from "react";
 import { motion, useReducedMotion } from "framer-motion";
 import { Equaliser, useSoundtrackPlaying } from "@/components/chrome/soundtrack";
 import { SOUNDTRACK } from "@/lib/soundtrack";
-import { cn } from "@/lib/utils";
 import { INTRO_SESSION_KEY, INTRO_VARIANT, type IntroVariant } from "@/lib/intro";
 import type { IntroProps } from "./types";
 import { IntroBlink } from "./intro-blink";
@@ -122,16 +121,7 @@ function NowPlaying() {
     >
       <Equaliser playing={playing} className="text-lime" />
       <span className="leading-tight">
-        {/* A gesture is required before any browser will let sound out, so the
-            loading screen asks for one instead of pretending it is optional. */}
-        <span
-          className={cn(
-            "label block text-[9px] tracking-[0.3em]",
-            playing ? "text-smoke" : "text-lime",
-          )}
-        >
-          {playing ? "Now playing" : "Tap for sound"}
-        </span>
+        <span className="label block text-[9px] tracking-[0.3em] text-smoke">Now playing</span>
         <span className="label mt-1.5 block text-[10px] tracking-[0.14em] text-bone">
           {SOUNDTRACK.title}
         </span>

@@ -123,7 +123,25 @@ export function Soundtrack() {
         audio.play().then(() => setPlaying(true)).catch(() => {});
       });
 
-    const events = ["pointerdown", "touchend", "keydown", "click", "scroll", "wheel"] as const;
+    /*
+     * Everything a person does in their first second, not just a deliberate
+     * click. Only some of these count as activation — a scroll does not unlock
+     * audio in Chrome — but a rejected attempt costs nothing and re-arms, so
+     * casting wide only helps. The aim is that sound arrives during a movement
+     * the visitor was making anyway and never feels like a step they performed.
+     */
+    const events = [
+      "pointerdown",
+      "pointerup",
+      "mousedown",
+      "touchstart",
+      "touchend",
+      "click",
+      "keydown",
+      "scroll",
+      "wheel",
+      "mousemove",
+    ] as const;
 
     const unmute = () => {
       /*
@@ -246,16 +264,12 @@ export function Soundtrack() {
 
         <Equaliser playing={audible} className="text-lime" />
 
-        {/* While the track is rolling silently, say so — a visitor who does not
-            know sound is one tap away simply never hears it. Replaced by the
-            title once it is audible. */}
-        {playing && !audible && !muted ? (
-          <span className="label ml-1 text-[9px] tracking-[0.12em] text-lime">Tap for sound</span>
-        ) : (
-          <span className="label ml-1 hidden text-[9px] tracking-[0.12em] text-smoke sm:block">
-            {SOUNDTRACK.title} — {SOUNDTRACK.artist}
-          </span>
-        )}
+        {/* Just the track. No instruction to tap: the sound arrives on its own
+            the moment the visitor touches anything, so telling them to do it
+            only draws attention to a step that should go unnoticed. */}
+        <span className="label ml-1 hidden text-[9px] tracking-[0.12em] text-smoke sm:block">
+          {SOUNDTRACK.title} — {SOUNDTRACK.artist}
+        </span>
 
         <button
           type="button"
