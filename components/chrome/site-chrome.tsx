@@ -32,13 +32,15 @@ export function SiteChrome({ children }: { children: React.ReactNode }) {
         Skip to content
       </a>
 
+      {/* First, deliberately: the audio element starts playing as soon as it
+          parses, so it should parse before the loading screen rather than after
+          it. Storefront only — music over the order screen would be a
+          liability, not a mood. */}
+      <Soundtrack />
+
       <Intro />
       <ScrollProgress />
       <Cursor />
-
-      {/* Storefront only. Music over the order screen would be a liability, not
-          a mood — the admin is somewhere you work, often on a phone in a shop. */}
-      <Soundtrack />
 
       {/* Sits above the page background, below all content */}
       <TypeField />
