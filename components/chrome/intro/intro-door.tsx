@@ -28,8 +28,56 @@ import { cn } from "@/lib/utils";
 const COUNT = 8;
 const DURATION = 1700;
 
-/** How long the panel takes to clear once someone is in. */
-export const EXIT_MS = 550;
+/**
+ * How long the curtain takes to clear once someone is in: the column travel
+ * plus the stagger on the outermost pair, plus a frame's grace.
+ */
+export const EXIT_MS = 1250;
+
+/**
+ * Eight columns that lift off the stage, middle out.
+ *
+ * Used twice on this screen: once as the rig that opens over the wordmark, and
+ * once as the black the whole door is painted on — which is what lifts when
+ * somebody presses Enter. Reusing it means leaving looks like arriving, in
+ * reverse, instead of a fade that nobody registers as an animation at all.
+ */
+function Rig({
+  lifted,
+  reduced,
+  className,
+}: {
+  lifted: boolean;
+  reduced: boolean;
+  className?: string;
+}) {
+  return (
+    <div className={cn("absolute inset-0 flex", className)}>
+      {Array.from({ length: COUNT }).map((_, i) => {
+        // Distance from centre drives the stagger: middle out.
+        const fromCentre = Math.abs(i - (COUNT - 1) / 2);
+        return (
+          <motion.div
+            key={i}
+            className="relative h-full flex-1 bg-ink"
+            initial={{ y: 0 }}
+            animate={lifted ? { y: "-101%" } : { y: 0 }}
+            transition={{
+              duration: 0.95,
+              ease: EASE_IN_OUT,
+              delay: lifted && !reduced ? fromCentre * 0.07 : 0,
+            }}
+          >
+            <span
+              aria-hidden
+              className="absolute inset-y-0 right-0 w-px bg-gradient-to-b from-transparent via-violet/40 to-transparent"
+            />
+          </motion.div>
+        );
+      })}
+    </div>
+  );
+}
 
 export function IntroDoor({
   leaving,
@@ -103,13 +151,17 @@ export function IntroDoor({
   }
 
   return (
-    <motion.div
-      // No entrance fade: this panel is the first thing painted and stays put.
-      initial={false}
-      animate={{ opacity: leaving ? 0 : 1 }}
-      transition={{ duration: EXIT_MS / 1000, ease: EASE_OUT }}
-      className={cn("fixed inset-0 z-[95] bg-ink", leaving && "pointer-events-none")}
+    <div
+      /*
+       * Transparent. The black is the backdrop rig below, so that pressing
+       * Enter lifts the door away column by column and the shop is uncovered
+       * rather than faded through. A panel with its own background could only
+       * ever dissolve, which is what read as no transition at all.
+       */
+      className={cn("fixed inset-0 z-[95]", leaving && "pointer-events-none")}
     >
+      {/* The door itself — this is what leaves */}
+      <Rig lifted={leaving} reduced={Boolean(reduced)} className="z-0" />
       {/* The whole panel is the target once it is ready. Someone reaching for
           anything on this screen means the same thing, and a missed tap on a
           door reads as a broken site. */}
@@ -129,8 +181,13 @@ export function IntroDoor({
       </button>
 
       {/* Above the rig, so the name is legible from the first frame and the
-          columns move behind it rather than uncovering it. */}
-      <div className="pointer-events-none absolute inset-0 z-40 grid place-items-center px-6">
+          columns move behind it rather than uncovering it. On the way out it
+          goes first and quickly, so the curtain lifts on an empty stage. */}
+      <motion.div
+        animate={{ opacity: leaving ? 0 : 1, y: leaving ? -24 : 0 }}
+        transition={{ duration: 0.35, ease: EASE_OUT }}
+        className="pointer-events-none absolute inset-0 z-40 grid place-items-center px-6"
+      >
         <div className="flex w-full flex-col items-center text-center">
           <Wordmark className="text-[clamp(2.5rem,10vw,8.5rem)]" />
 
@@ -184,39 +241,20 @@ export function IntroDoor({
             </div>
           </motion.div>
         </div>
-      </div>
+      </motion.div>
 
-      {/* The rig, over everything until it lifts */}
-      <div className="absolute inset-0 z-30 flex">
-        {Array.from({ length: COUNT }).map((_, i) => {
-          // Distance from centre drives the stagger: middle out.
-          const fromCentre = Math.abs(i - (COUNT - 1) / 2);
-          return (
-            <motion.div
-              key={i}
-              className="relative h-full flex-1 bg-ink"
-              initial={{ y: 0 }}
-              animate={lifting ? { y: "-101%" } : { y: 0 }}
-              transition={{
-                duration: 0.95,
-                ease: EASE_IN_OUT,
-                delay: lifting && !reduced ? fromCentre * 0.07 : 0,
-              }}
-            >
-              <span
-                aria-hidden
-                className="absolute inset-y-0 right-0 w-px bg-gradient-to-b from-transparent via-violet/40 to-transparent"
-              />
-            </motion.div>
-          );
-        })}
-      </div>
+      {/* The opening rig, over the working half until it lifts */}
+      <Rig lifted={lifting} reduced={Boolean(reduced)} className="z-30" />
 
-      {/* The track, named in the corner throughout */}
+      {/* The track, named in the corner throughout — and away with the rest */}
       <motion.div
         initial={{ opacity: 0, y: 8 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 1.1, duration: 0.7, ease: EASE_OUT }}
+        animate={{ opacity: leaving ? 0 : 1, y: leaving ? -16 : 0 }}
+        transition={
+          leaving
+            ? { duration: 0.3, ease: EASE_OUT }
+            : { delay: 1.1, duration: 0.7, ease: EASE_OUT }
+        }
         className="pointer-events-none absolute bottom-6 left-6 z-10 flex items-center gap-3 md:bottom-8 md:left-8"
       >
         <Equaliser playing={false} className="text-lime" />
@@ -230,6 +268,6 @@ export function IntroDoor({
           </span>
         </span>
       </motion.div>
-    </motion.div>
+    </div>
   );
 }
