@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState, useSyncExternalStore } from "react";
+import { useReducedMotion } from "framer-motion";
 import { Pause, Play, Volume2, VolumeX } from "lucide-react";
 import {
   SOUNDTRACK,
@@ -10,6 +11,7 @@ import {
   setSoundtrackPlaying,
   subscribeSoundtrack,
 } from "@/lib/soundtrack";
+import { doorWillShow } from "@/lib/intro";
 import { cn } from "@/lib/utils";
 
 /** Live playing state, for anything outside this component. */
@@ -35,9 +37,13 @@ export function useSoundtrackPlaying(): boolean {
  * React has hydrated, before the loading screen has finished. It is genuinely
  * running and in time from the first instant.
  *
- * Then the first touch, scroll, key or click unmutes it. Because the audio is
- * already playing and buffered, that is not a start — it is a fade-up, and it
- * happens instantly rather than after a load.
+ * The door then unmutes it. Because the audio is already playing and buffered,
+ * pressing Enter is a fade-up rather than a start, and it is instant.
+ *
+ * Nothing else on the page starts the music. Sound that arrives because someone
+ * happened to click is the behaviour the door exists to replace. The only
+ * exception is a load with no door — reduced motion, or a reload after already
+ * coming in — where there would otherwise be no way for it to begin at all.
  *
  * A choice to mute is remembered, because a visitor who turned the music off
  * and got it back on the next page would simply leave.
@@ -64,6 +70,7 @@ export function Equaliser({ playing, className }: { playing: boolean; className?
 export function Soundtrack() {
   const ref = useRef<HTMLAudioElement>(null);
   const [playing, setPlaying] = useState(false);
+  const reduced = useReducedMotion();
   const [muted, setMuted] = useState(false);
   const [ready, setReady] = useState(false);
   /** Playing *and* actually making sound — false during the silent priming. */
@@ -122,14 +129,22 @@ export function Soundtrack() {
     }
 
     /*
-     * Ask for sound outright, first.
+     * When there is a door, Enter owns the music.
      *
-     * Chrome keeps a per-site media engagement score: once someone has played
-     * audio here a few times, it stops asking and simply allows it. Safari has
-     * the same idea, and both let a visitor grant it permanently in settings.
-     * None of that can be triggered from code — but it costs one rejected
-     * promise to find out, and for a returning visitor this is the branch that
-     * runs, with no tap at all.
+     * The track still runs, silently, so that it is buffered and in time and
+     * the press is a fade-up rather than a load. But nothing else starts it:
+     * no autoplay attempt, no listeners on the page. Sound arriving because
+     * someone happened to click is exactly the behaviour a door is meant to
+     * replace.
+     */
+    audio.muted = true;
+    if (audio.paused) audio.play().then(() => setPlaying(true)).catch(() => {});
+    if (doorWillShow(Boolean(reduced))) return;
+
+    /*
+     * No door on this load, so the music has no other way in. Ask outright —
+     * Chrome allows it once someone has played audio on the site a few times —
+     * and fall back to the first interaction if refused.
      */
     audio.muted = false;
     audio.volume = 1;
@@ -141,9 +156,6 @@ export function Soundtrack() {
         setAudible(true);
       })
       .catch(() => {
-        // Refused, which is the answer on a first visit everywhere. Fall back
-        // to silent playback so the track is buffered, in time, and one gesture
-        // away from being heard.
         audio.muted = true;
         audio.play().then(() => setPlaying(true)).catch(() => {});
       });
@@ -206,7 +218,7 @@ export function Soundtrack() {
     return () => {
       for (const type of events) window.removeEventListener(type, unmute);
     };
-  }, [ready, muted]);
+  }, [ready, muted, reduced]);
 
   function toggleMute() {
     const next = !muted;

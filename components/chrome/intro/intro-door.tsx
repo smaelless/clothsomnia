@@ -62,9 +62,9 @@ export function IntroDoor({
     };
     frame = requestAnimationFrame(tick);
 
-    // The rig clears early, so the count finishes on the open stage rather than
-    // behind it. One screen, one continuous moment.
-    const lift = window.setTimeout(() => setLifting(true), 420);
+    // Late enough that the name has been read before anything moves. The rig
+    // lifting is the second beat, not the first.
+    const lift = window.setTimeout(() => setLifting(true), 900);
 
     return () => {
       cancelAnimationFrame(frame);
@@ -113,19 +113,24 @@ export function IntroDoor({
       {/* The whole panel is the target once it is ready. Someone reaching for
           anything on this screen means the same thing, and a missed tap on a
           door reads as a broken site. */}
+      {/*
+        Never disabled. It was ignored until the count reached 100, which meant
+        a press during the opening did nothing at all — and a door that does
+        nothing when you push it is a broken site, not a patient one. Pressing
+        early simply lets you in early.
+      */}
       <button
         type="button"
         onClick={enter}
-        disabled={!ready}
         aria-label="Enter Clothsomnia"
-        className="absolute inset-0 z-20 cursor-pointer disabled:cursor-default"
+        className="absolute inset-0 z-50 cursor-pointer"
       >
         <span className="sr-only">Enter</span>
       </button>
 
-      {/* The one block of content. Nothing here is replaced — only the line
-          under the rule changes, from the count to the way in. */}
-      <div className="pointer-events-none absolute inset-0 z-10 grid place-items-center px-6">
+      {/* Above the rig, so the name is legible from the first frame and the
+          columns move behind it rather than uncovering it. */}
+      <div className="pointer-events-none absolute inset-0 z-40 grid place-items-center px-6">
         <div className="flex w-full flex-col items-center text-center">
           <Wordmark className="text-[clamp(2.5rem,10vw,8.5rem)]" />
 
@@ -138,17 +143,24 @@ export function IntroDoor({
             Something worth the wait
           </motion.p>
 
-          <div className="mt-9 h-px w-[min(320px,72vw)] bg-bone/15">
-            <motion.div
-              className="h-full bg-lime"
-              animate={{ width: `${count}%` }}
-              transition={{ duration: 0.15, ease: "linear" }}
-            />
-          </div>
+          {/* The working half of the screen arrives after the rig has moved,
+              so the opening beat is the name alone. */}
+          <motion.div
+            className="flex flex-col items-center"
+            animate={{ opacity: lifting ? 1 : 0 }}
+            transition={{ duration: 0.6, ease: EASE_OUT }}
+          >
+            <div className="mt-9 h-px w-[min(320px,72vw)] bg-bone/15">
+              <motion.div
+                className="h-full bg-lime"
+                animate={{ width: `${count}%` }}
+                transition={{ duration: 0.15, ease: "linear" }}
+              />
+            </div>
 
-          {/* One slot, two states. The counter counts, then steps aside for the
-              button in the same place, so the layout never jumps. */}
-          <div className="mt-5 grid min-h-[4.5rem] place-items-center">
+            {/* One slot, two states. The counter counts, then steps aside for
+                the button in the same place, so the layout never jumps. */}
+            <div className="mt-5 grid min-h-[4.5rem] place-items-center">
             {ready ? (
               <motion.span
                 initial={{ opacity: 0, y: 10 }}
@@ -162,14 +174,15 @@ export function IntroDoor({
                 </span>
               </motion.span>
             ) : (
-              <p className="label-wide flex items-center gap-3 text-smoke">
-                <span className="display text-base tabular-nums text-bone">
-                  {String(count).padStart(3, "0")}
-                </span>
-                <span>Call time</span>
-              </p>
-            )}
-          </div>
+                <p className="label-wide flex items-center gap-3 text-smoke">
+                  <span className="display text-base tabular-nums text-bone">
+                    {String(count).padStart(3, "0")}
+                  </span>
+                  <span>Call time</span>
+                </p>
+              )}
+            </div>
+          </motion.div>
         </div>
       </div>
 
