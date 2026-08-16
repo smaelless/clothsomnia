@@ -1,3 +1,5 @@
+import { WHATSAPP_COMMUNITY } from "./policies";
+
 export type NavLink = { label: string; href: string; note?: string };
 
 /**
@@ -49,9 +51,16 @@ export const FOOTER_NAV: { title: string; links: NavLink[] }[] = [
   },
 ];
 
+/**
+ * Only accounts that exist.
+ *
+ * These were four links to the logged-out homepages of Instagram, TikTok,
+ * Pinterest and YouTube — a visitor clicking "Instagram" in the footer landed
+ * on Instagram's front door, not on Clothsomnia. A social link that goes
+ * nowhere is worse than no social link, so the ones without an account are
+ * gone until there is something to point at.
+ */
 export const SOCIALS: NavLink[] = [
-  { label: "Instagram", href: "https://instagram.com" },
-  { label: "TikTok", href: "https://tiktok.com" },
-  { label: "Pinterest", href: "https://pinterest.com" },
-  { label: "YouTube", href: "https://youtube.com" },
+  { label: "Instagram", href: "https://www.instagram.com/clothsomnia/" },
+  { label: "WhatsApp", href: WHATSAPP_COMMUNITY, note: "Community" },
 ];

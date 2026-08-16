@@ -10,14 +10,26 @@
  * agree to. Fill these in before launch.
  */
 
+/**
+ * The WhatsApp community invite.
+ *
+ * Stored without the share-tracking query string it was copied with
+ * (?s=sh&p=i&ilr=0&amv=2) — those describe where that particular copy of the
+ * link came from, and carrying them onto every page on the site would tag
+ * every visitor as having arrived the same way.
+ */
+export const WHATSAPP_COMMUNITY = "https://chat.whatsapp.com/KhjEKMHaUDY04jSuZEEUPz";
+
 export const CONTACT = {
-  /** International format, e.g. "+212600000000". Used for the WhatsApp link. */
+  /** International format, e.g. "+212600000000". Used for the direct chat link. */
   whatsapp: "",
   /** Shown as written, e.g. "06 12 34 56 78". */
   phoneDisplay: "",
   email: "",
   /** Handle without the @. */
-  instagram: "",
+  instagram: "clothsomnia",
+  /** Group invite — a room, not a private line. */
+  whatsappCommunity: WHATSAPP_COMMUNITY,
   /** e.g. "Every day, 10:00 — 20:00". */
   hours: "",
 };
@@ -48,5 +60,9 @@ export const RETURNS = {
 
 /** True when there is at least one way for a customer to reach you. */
 export const hasContact = Boolean(
-  CONTACT.whatsapp || CONTACT.phoneDisplay || CONTACT.email || CONTACT.instagram,
+  CONTACT.whatsapp ||
+    CONTACT.phoneDisplay ||
+    CONTACT.email ||
+    CONTACT.instagram ||
+    CONTACT.whatsappCommunity,
 );

@@ -115,6 +115,26 @@ export function HelpContent({ open }: { open: HelpSection }) {
                 </dd>
               </div>
             )}
+            {CONTACT.whatsappCommunity && (
+              <div className="flex flex-col gap-1 border-b border-bone/10 py-5 sm:flex-row sm:gap-8">
+                <dt className="label-wide w-full shrink-0 pt-1 text-smoke sm:w-52">
+                  WhatsApp community
+                </dt>
+                <dd>
+                  <a
+                    href={CONTACT.whatsappCommunity}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="text-base text-lime underline-offset-4 hover:underline"
+                  >
+                    Join the group
+                  </a>
+                  <p className="mt-1 text-sm text-smoke">
+                    Drop news and sizing questions land here first.
+                  </p>
+                </dd>
+              </div>
+            )}
             {CONTACT.instagram && (
               <div className="flex flex-col gap-1 border-b border-bone/10 py-5 sm:flex-row sm:gap-8">
                 <dt className="label-wide w-full shrink-0 pt-1 text-smoke sm:w-52">Instagram</dt>
