@@ -12,6 +12,7 @@ import { ScrollProgress } from "@/components/chrome/scroll-progress";
 import { SearchOverlay } from "@/components/chrome/search-overlay";
 import { Soundtrack } from "@/components/chrome/soundtrack";
 import { TypeField } from "@/components/chrome/type-field";
+import { WaitingBanner } from "@/components/chrome/waiting-banner";
 
 /**
  * Everything wrapped around the storefront — and nothing wrapped around the
@@ -21,6 +22,14 @@ import { TypeField } from "@/components/chrome/type-field";
  */
 export function SiteChrome({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
+
+  /*
+   * The waiting page has nowhere to navigate to, so it loses the announcement
+   * bar and the nav and gets a banner instead. Every other page keeps both —
+   * the shop is still built, still linked and still works, and stripping the
+   * header everywhere would strand anyone who reached it.
+   */
+  const waiting = pathname === "/";
 
   if (pathname?.startsWith("/admin")) {
     return <>{children}</>;
@@ -46,8 +55,14 @@ export function SiteChrome({ children }: { children: React.ReactNode }) {
       <TypeField />
 
       <div className="relative z-10">
-        <AnnouncementBar />
-        <Header />
+        {waiting ? (
+          <WaitingBanner />
+        ) : (
+          <>
+            <AnnouncementBar />
+            <Header />
+          </>
+        )}
 
         <main id="main">{children}</main>
 

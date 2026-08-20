@@ -55,10 +55,13 @@ export default function WaitingPage() {
             clock is the message; this only says what is being waited for.
           */}
           <SplitLines
-            lines={["Tsenna chwiya.", "Ça arrive."]}
-            className="display mb-12 text-center text-[clamp(1.75rem,4.6vw,3.25rem)] leading-[1.05]"
-            lineClassName="[&:nth-child(2)]:italic [&:nth-child(2)]:font-light [&:nth-child(2)]:text-silver"
+            lines={["Pas De Panic"]}
+            className="display text-center text-[clamp(2rem,5.5vw,4rem)] leading-[1.05]"
           />
+
+          <p className="mx-auto mt-6 mb-12 max-w-[42ch] text-center text-base leading-relaxed text-silver md:text-lg">
+            We&apos;re cooking something big f&apos;le lab. Coming very soon.
+          </p>
 
           {/* The board — the largest thing on the page, by a distance */}
           <Countdown size="large" label="L'drop kayji f" />
