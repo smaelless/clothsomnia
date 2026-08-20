@@ -1,7 +1,7 @@
 "use client";
 
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
-import { useEffect, useState } from "react";
+import { useEffect, useState, type ReactNode } from "react";
 import { cn } from "@/lib/utils";
 
 /**
@@ -47,7 +47,8 @@ export function Countdown({
   align = "center",
 }: {
   className?: string;
-  label?: string;
+  /** Free-form: the waiting page passes a whole sentence, not a tag. */
+  label?: ReactNode;
   compact?: boolean;
   size?: "default" | "large";
   align?: "center" | "left";
