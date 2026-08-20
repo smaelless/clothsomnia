@@ -44,11 +44,13 @@ export function Countdown({
   label = "Chapter 1 opens in",
   compact = false,
   size = "default",
+  align = "center",
 }: {
   className?: string;
   label?: string;
   compact?: boolean;
   size?: "default" | "large";
+  align?: "center" | "left";
 }) {
   const [left, setLeft] = useState<Left | null>(null);
   const [ready, setReady] = useState(false);
@@ -84,14 +86,14 @@ export function Countdown({
   const elapsed = Math.min(Math.max(1 - (LAUNCH_AT.getTime() - Date.now()) / total, 0), 1);
 
   return (
-    <div className={cn(compact ? "" : "text-center", className)}>
+    <div className={cn(compact || align === "left" ? "" : "text-center", className)}>
       <p className="label-wide mb-5 flex items-center gap-3 text-lime">
         <span aria-hidden className="inline-block size-1.5 rounded-full bg-lime animate-flicker" />
         {label}
       </p>
 
       <div
-        className={cn("flex items-end gap-3 sm:gap-5", !compact && "justify-center")}
+        className={cn("flex items-end gap-3 sm:gap-5", !compact && align === "center" && "justify-center")}
         // The row updates every second; announcing that would be hostile.
         aria-live="off"
       >
@@ -132,7 +134,7 @@ export function Countdown({
 
       {!compact && (
         <>
-          <div className="mx-auto mt-9 h-px w-full max-w-[420px] bg-bone/12">
+          <div className={cn("mt-9 h-px w-full max-w-[420px] bg-bone/12", align === "center" && "mx-auto")}>
             <div
               className="h-full bg-gradient-to-r from-pine via-lime to-lime transition-[width] duration-1000 ease-linear"
               style={{ width: `${elapsed * 100}%` }}

@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { Check } from "lucide-react";
+import { ArrowRight, Check } from "lucide-react";
 import { useState } from "react";
 import { EASE_OUT } from "@/lib/motion";
 import { cn } from "@/lib/utils";
@@ -10,18 +10,23 @@ import { cn } from "@/lib/utils";
  * THE LIST — a WhatsApp number, and nothing else.
  *
  * One field. Not a name, not an email, not a size: every extra box on a form
- * like this costs sign-ups, and the only thing actually needed to send someone
- * a message before the drop is the number to send it to.
+ * like this costs sign-ups, and the only thing needed to send someone a message
+ * before the drop is the number to send it to.
  *
- * The promise it makes has to be kept, so it is written narrowly: a message
- * before the drop, with a code. No number is named here — the code is created
- * in the admin, and copy that quotes a percentage the shop cannot honour is
- * worse than copy that says nothing.
+ * Drawn as a ruled line rather than a box, because it sits on the one pale
+ * panel on the site and a bordered input there looks like a browser default. A
+ * line with a word under it looks like something to fill in.
+ *
+ * The promise is written narrowly on purpose: a message before the drop, with a
+ * code. No percentage is named — the code is created in the admin, and copy
+ * quoting a number the shop cannot honour is worse than copy saying nothing.
  */
-export function WaitlistForm() {
+export function WaitlistForm({ tone = "dark" }: { tone?: "dark" | "light" }) {
   const [phone, setPhone] = useState("");
   const [state, setState] = useState<"idle" | "sending" | "done" | "already">("idle");
   const [error, setError] = useState<string | null>(null);
+
+  const light = tone === "light";
 
   async function submit(e: React.FormEvent) {
     e.preventDefault();
@@ -58,18 +63,31 @@ export function WaitlistForm() {
         initial={{ opacity: 0, y: 16 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6, ease: EASE_OUT }}
-        className="flex items-start gap-4 rounded-3xl border border-lime/40 bg-lime/10 p-6"
+        className="flex items-start gap-4"
       >
-        <span className="mt-0.5 grid size-8 shrink-0 place-items-center rounded-full bg-lime">
-          <Check className="size-4 text-ink" strokeWidth={3} />
+        <span
+          className={cn(
+            "mt-1 grid size-9 shrink-0 place-items-center rounded-full",
+            light ? "bg-ink" : "bg-lime",
+          )}
+        >
+          <Check className={cn("size-4", light ? "text-cream" : "text-ink")} strokeWidth={3} />
         </span>
         <div>
-          <p className="display text-2xl leading-tight">
+          <p className={cn("display text-3xl leading-tight", light ? "text-ink" : "text-bone")}>
             {state === "already" ? "Rak déjà f'liste." : "Rak f'liste."}
           </p>
-          <p className="mt-2 max-w-[42ch] text-sm leading-relaxed text-silver">
+          <p
+            className={cn(
+              "mt-3 max-w-[44ch] text-sm leading-relaxed",
+              light ? "text-ink/70" : "text-silver",
+            )}
+          >
             Ghadi tousslek message f&apos;WhatsApp qbel 27 September, m3a l&apos;code dialek.
-            Qbel kolchi. <span className="text-smoke">On te prévient avant tout le monde.</span>
+            Qbel kolchi.{" "}
+            <span className={light ? "text-ink/45" : "text-smoke"}>
+              On te prévient avant tout le monde.
+            </span>
           </p>
         </div>
       </motion.div>
@@ -78,11 +96,23 @@ export function WaitlistForm() {
 
   return (
     <form onSubmit={submit} noValidate>
-      <label htmlFor="waitlist-phone" className="label mb-3 block text-smoke">
+      <label
+        htmlFor="waitlist-phone"
+        className={cn("label-wide block", light ? "text-ink/50" : "text-smoke")}
+      >
         Numéro WhatsApp
       </label>
 
-      <div className="flex flex-col gap-3 sm:flex-row">
+      <div
+        className={cn(
+          "mt-4 flex items-center gap-4 border-b-2 pb-3 transition-colors",
+          error
+            ? "border-magenta"
+            : light
+              ? "border-ink/25 focus-within:border-ink"
+              : "border-bone/25 focus-within:border-lime",
+        )}
+      >
         <input
           id="waitlist-phone"
           name="phone"
@@ -100,29 +130,37 @@ export function WaitlistForm() {
           aria-invalid={Boolean(error)}
           aria-describedby={error ? "waitlist-error" : undefined}
           className={cn(
-            "w-full rounded-full border bg-transparent px-6 py-4 text-base text-bone outline-none transition-colors placeholder:text-smoke/60",
-            error ? "border-magenta" : "border-bone/20 focus:border-lime",
+            "display w-full min-w-0 bg-transparent text-[clamp(1.5rem,5vw,2.5rem)] leading-tight outline-none",
+            light
+              ? "text-ink placeholder:text-ink/25"
+              : "text-bone placeholder:text-bone/25",
           )}
         />
 
         <button
           type="submit"
           disabled={state === "sending"}
-          className="label shrink-0 rounded-full bg-lime px-8 py-4 text-ink transition-opacity hover:opacity-90 disabled:opacity-50"
+          aria-label="Zidni f'liste"
+          className={cn(
+            "grid size-14 shrink-0 place-items-center rounded-full transition-transform duration-300 hover:scale-105 disabled:opacity-40",
+            light ? "bg-ink text-cream" : "bg-lime text-ink",
+          )}
         >
-          {state === "sending" ? "Sift…" : "Zidni f'liste"}
+          <ArrowRight className={cn("size-5", state === "sending" && "animate-pulse")} strokeWidth={2} />
         </button>
       </div>
 
       {error && (
-        <p id="waitlist-error" role="alert" className="label mt-3 text-magenta">
+        <p id="waitlist-error" role="alert" className="label mt-4 text-magenta">
           {error}
         </p>
       )}
 
-      <p className="mt-4 text-xs leading-relaxed text-smoke">
+      <p className={cn("mt-5 text-xs leading-relaxed", light ? "text-ink/50" : "text-smoke")}>
         Ghir numéro. Bla spam, bla compte, bla walou.{" "}
-        <span className="text-smoke/70">Juste un message, avant le drop.</span>
+        <span className={light ? "text-ink/35" : "text-smoke/70"}>
+          Juste un message, avant le drop.
+        </span>
       </p>
     </form>
   );
