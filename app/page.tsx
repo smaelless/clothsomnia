@@ -1,24 +1,23 @@
 import { CountdownBand } from "@/components/home/countdown-band";
-import { Hero } from "@/components/home/hero";
 import { LookbookGallery } from "@/components/home/lookbook-gallery";
-import { NewDrop } from "@/components/home/new-drop";
+import { Opening } from "@/components/home/opening";
 
 /**
- * HOMEPAGE
+ * THE WAITING PAGE — temporary.
  *
- * Three sections and the footer: the opening frame, the drop, the lookbook.
- * A single-product launch does not need a runway, a product-page teaser and a
- * brand essay before it shows the thing it is selling — those pages still
- * exist and are still linked, they just are not in the way.
+ * Three things, in the order someone needs them: who this is, when it lands,
+ * and what it looks like. Nothing to buy, because until 27 September there is
+ * nothing to collect — the shop is still built, still linked and still works,
+ * it is simply not what the front door is for yet.
  *
- * The longer running order is preserved at app/_backup/home-full.tsx.
+ * The real homepage is saved whole at app/_backup/home-principal.tsx. Copy it
+ * back over this file on drop day; every component it needs is still here.
  */
-export default function HomePage() {
+export default function WaitingPage() {
   return (
     <>
-      <Hero />
+      <Opening />
       <CountdownBand />
-      <NewDrop />
       <LookbookGallery />
     </>
   );
