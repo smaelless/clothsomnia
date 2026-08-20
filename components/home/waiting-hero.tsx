@@ -81,12 +81,17 @@ export function WaitingHero() {
           />
 
           <div className="relative rounded-3xl border border-bone/12 bg-charcoal/70 p-6 md:p-8">
-            <p className="label-wide mb-6 flex items-center gap-3 text-lime">
+            {/* Not the label utility: at 0.45em tracking and all caps a whole
+                sentence stops being readable and starts being a puzzle. */}
+            <p className="mb-6 flex items-start gap-3 text-sm leading-relaxed text-silver md:text-base">
               <span
                 aria-hidden
-                className="inline-block size-1.5 rounded-full bg-lime animate-flicker"
+                className="mt-2 inline-block size-1.5 shrink-0 rounded-full bg-lime animate-flicker"
               />
-              Khod l&apos;code qbel kolchi
+              <span>
+                Ila bghiti takhed l&apos;hoodie qbel lancement{" "}
+                <span className="text-lime">with best price</span>…
+              </span>
             </p>
 
             <WaitlistForm />

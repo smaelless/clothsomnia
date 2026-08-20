@@ -100,7 +100,7 @@ export function WaitlistForm({ tone = "dark" }: { tone?: "dark" | "light" }) {
         htmlFor="waitlist-phone"
         className={cn("label-wide block", light ? "text-ink/50" : "text-smoke")}
       >
-        Numéro WhatsApp
+        Drop Your WhatsApp Hna
       </label>
 
       <div
