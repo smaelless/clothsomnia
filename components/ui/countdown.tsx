@@ -43,10 +43,12 @@ export function Countdown({
   className,
   label = "Chapter 1 opens in",
   compact = false,
+  size = "default",
 }: {
   className?: string;
   label?: string;
   compact?: boolean;
+  size?: "default" | "large";
 }) {
   const [left, setLeft] = useState<Left | null>(null);
   const [ready, setReady] = useState(false);
@@ -106,6 +108,7 @@ export function Countdown({
                       digit={digit}
                       reduced={Boolean(reduced)}
                       compact={compact}
+                      size={size}
                     />
                   ))}
               </div>
@@ -150,10 +153,12 @@ function Flap({
   digit,
   reduced,
   compact,
+  size = "default",
 }: {
   digit: string;
   reduced: boolean;
   compact: boolean;
+  size?: "default" | "large";
 }) {
   return (
     <span
@@ -161,7 +166,10 @@ function Flap({
         "relative block overflow-hidden rounded-md border border-bone/12 bg-charcoal/70 tabular-nums",
         compact
           ? "h-9 w-6 text-xl leading-9"
-          : "h-[clamp(3rem,9vw,5.5rem)] w-[clamp(2rem,6vw,3.75rem)] text-[clamp(1.75rem,5.5vw,3.5rem)] leading-[clamp(3rem,9vw,5.5rem)]",
+          : size === "large"
+            ? // Fills a phone across four pairs of digits, with room left on a laptop.
+              "h-[clamp(4rem,15vw,8.5rem)] w-[clamp(2.6rem,10vw,5.75rem)] text-[clamp(2.25rem,9vw,5.5rem)] leading-[clamp(4rem,15vw,8.5rem)]"
+            : "h-[clamp(3rem,9vw,5.5rem)] w-[clamp(2rem,6vw,3.75rem)] text-[clamp(1.75rem,5.5vw,3.5rem)] leading-[clamp(3rem,9vw,5.5rem)]",
       )}
     >
       {/* The hinge line across the middle of the flap */}
