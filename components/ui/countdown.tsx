@@ -39,19 +39,14 @@ function remaining(to: Date): Left | null {
  * Renders nothing until mounted. The remaining time differs between server and
  * client, so rendering it during hydration would mismatch.
  */
-/** `compact` is the inline board on the product page; the rest are the big one. */
-export type CountdownSize = "default" | "large";
-
 export function Countdown({
   className,
   label = "Chapter 1 opens in",
   compact = false,
-  size = "default",
 }: {
   className?: string;
   label?: string;
   compact?: boolean;
-  size?: CountdownSize;
 }) {
   const [left, setLeft] = useState<Left | null>(null);
   const [ready, setReady] = useState(false);
@@ -111,8 +106,6 @@ export function Countdown({
                       digit={digit}
                       reduced={Boolean(reduced)}
                       compact={compact}
-
-                      size={size}
                     />
                   ))}
               </div>
@@ -157,30 +150,18 @@ function Flap({
   digit,
   reduced,
   compact,
-  size,
 }: {
   digit: string;
   reduced: boolean;
   compact: boolean;
-  size: CountdownSize;
 }) {
   return (
     <span
       className={cn(
         "relative block overflow-hidden rounded-md border border-bone/12 bg-charcoal/70 tabular-nums",
-        // compact wins outright — it is a different board, not a smaller one.
-        compact && "h-9 w-6 text-xl leading-9",
-        !compact && size === "default" &&
-          "h-[clamp(3rem,9vw,5.5rem)] w-[clamp(2rem,6vw,3.75rem)] text-[clamp(1.75rem,5.5vw,3.5rem)] leading-[clamp(3rem,9vw,5.5rem)]",
-        /*
-          The waiting page has nothing else competing for the eye, so the board
-          can be the thing you see from across the room — but only from md up.
-          Eight cells at that width measured 477px on a 375px phone and ran off
-          both edges, so small screens keep the ordinary size.
-        */
-        !compact &&
-          size === "large" &&
-          "h-[clamp(3rem,9vw,5.5rem)] w-[clamp(2rem,6vw,3.75rem)] text-[clamp(1.75rem,5.5vw,3.5rem)] leading-[clamp(3rem,9vw,5.5rem)] md:h-[clamp(5rem,11vw,8.5rem)] md:w-[clamp(3.4rem,7.4vw,5.75rem)] md:text-[clamp(3rem,7vw,5.5rem)] md:leading-[clamp(5rem,11vw,8.5rem)]",
+        compact
+          ? "h-9 w-6 text-xl leading-9"
+          : "h-[clamp(3rem,9vw,5.5rem)] w-[clamp(2rem,6vw,3.75rem)] text-[clamp(1.75rem,5.5vw,3.5rem)] leading-[clamp(3rem,9vw,5.5rem)]",
       )}
     >
       {/* The hinge line across the middle of the flap */}

@@ -91,10 +91,6 @@ function StackFrame({
           seed={frame.id}
           src={frame.src}
           alt={frame.caption}
-          /* The frame prints its own caption below; without this each
-             photograph carried two — a random teaser line burnt into the
-             image and the deliberate one under it. */
-          caption={null}
           priority={index === 0}
           sizes="100vw"
           className="h-full w-full transition-transform duration-[1600ms] ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:scale-[1.03]"

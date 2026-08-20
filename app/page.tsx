@@ -1,176 +1,25 @@
+import { CountdownBand } from "@/components/home/countdown-band";
+import { Hero } from "@/components/home/hero";
 import { LookbookGallery } from "@/components/home/lookbook-gallery";
-import { Countdown } from "@/components/ui/countdown";
-import { Marquee } from "@/components/ui/marquee";
-import { Plate } from "@/components/ui/plate";
-import { SplitLines } from "@/components/ui/reveal";
+import { NewDrop } from "@/components/home/new-drop";
 
 /**
- * THE WAITING PAGE
+ * HOMEPAGE
  *
- * A holding page for the run-up to 27 September: the clock, the hoodie out of
- * focus, and the lines. Nothing to buy, nothing to browse — the product pages
- * still exist and still work, they are simply not what the front door is for
- * while there is nothing to collect yet.
+ * Three sections and the footer: the opening frame, the drop, the lookbook.
+ * A single-product launch does not need a runway, a product-page teaser and a
+ * brand essay before it shows the thing it is selling — those pages still
+ * exist and are still linked, they just are not in the way.
  *
- * The real homepage is parked at app/_backup/home-launch.tsx. Copy it back over
- * this file on drop day; every component it needs is still in the tree.
+ * The longer running order is preserved at app/_backup/home-full.tsx.
  */
-
-/** Kept few and far apart. A wall of blurred photographs stops being a tease. */
-const FRAMES = [
-  { src: "/chapter1/pine-front.jpg", line: "Wear it once, they talk about it saison kamla.", ratio: "aspect-[3/4]" },
-  { src: "/chapter1/wine-three.jpg", line: "Ila 3reftini, 3reftini.", ratio: "aspect-[4/5]" },
-  { src: "/chapter1/detail-pine-seam.jpg", line: "The seam does the talking. Nta ghir lbess.", ratio: "aspect-[16/10]" },
-  { src: "/chapter1/wine-full.jpg", line: "Dress like you already made it.", ratio: "aspect-[3/4]" },
-];
-
-export default function WaitingPage() {
+export default function HomePage() {
   return (
     <>
-      {/* The clock — the only thing anyone is here for */}
-      <section
-        /* Sits straight under the header. The eyebrow was the first thing on
-           the page and had a whole band of empty above it. */
-        className="relative overflow-hidden pb-16 pt-2 md:pb-24 md:pt-3"
-        aria-label="Time until the drop"
-      >
-        <div
-          aria-hidden
-          className="bloom left-1/2 top-1/2 size-[34rem] -translate-x-1/2 -translate-y-1/2 bg-pine/20"
-        />
-
-        <Marquee
-          duration={54}
-          className="pointer-events-none absolute inset-x-0 top-1/2 -translate-y-1/2 select-none opacity-[0.045]"
-        >
-          <span className="display whitespace-nowrap pr-10 text-[clamp(4rem,15vw,13rem)] leading-none">
-            27 SEPTEMBER — 00:00 — 27 SEPTEMBER — 00:00 —
-          </span>
-        </Marquee>
-
-        <div className="relative mx-auto max-w-[1600px] px-4 md:px-8">
-          <p className="label-wide mb-6 text-center text-lime">
-            It&apos;s not necessary tlbess qadek iwatik, sometimes khassek
-          </p>
-
-          {/* Deliberately below the board in weight now: the headline sets the
-              tone, the clock is the message. */}
-          <SplitLines
-            lines={["T'lbess what", "they'll remember"]}
-            className="display mb-10 text-center text-[clamp(1.5rem,4.2vw,3rem)] leading-[1.05]"
-            lineClassName="[&:nth-child(2)]:italic [&:nth-child(2)]:font-light [&:nth-child(2)]:text-silver"
-          />
-
-          {/*
-            The board, with a colourway standing at each shoulder.
-
-            Laid out as three columns first, the hoodies were squeezed to 180px
-            slivers on a laptop — the board is deliberately huge and takes the
-            width it needs. So they sit behind it instead, bleeding off both
-            edges at a size worth looking at, dimmed enough that the digits
-            still read cleanly over them. The cells are opaque and bordered, so
-            where they do overlap the clock still wins.
-
-            Below lg they are gone: a hoodie peering out from behind a clock on
-            a phone is clutter, not a composition.
-          */}
-          <div className="relative">
-            <div
-              aria-hidden
-              className="pointer-events-none absolute inset-y-0 left-0 z-0 hidden w-[24vw] max-w-[24rem] -translate-x-[18%] items-center opacity-50 lg:flex"
-            >
-              <Plate
-                seed="/chapter1/pine-front.jpg"
-                src="/chapter1/pine-front.jpg"
-                tone="pine"
-                alt=""
-                caption={null}
-                sizes="24vw"
-                className="aspect-[3/4] w-full"
-              />
-            </div>
-
-            <div
-              aria-hidden
-              className="pointer-events-none absolute inset-y-0 right-0 z-0 hidden w-[24vw] max-w-[24rem] translate-x-[18%] items-center opacity-50 lg:flex"
-            >
-              <Plate
-                seed="/chapter1/wine-front.jpg"
-                src="/chapter1/wine-front.jpg"
-                tone="wine"
-                alt=""
-                caption={null}
-                sizes="24vw"
-                className="aspect-[3/4] w-full"
-              />
-            </div>
-
-            <div className="relative z-10 py-4">
-              <Countdown size="large" />
-            </div>
-          </div>
-
-          <p className="mx-auto mt-10 max-w-[46ch] text-center text-sm leading-relaxed text-smoke">
-            Kolchi kaylbes. Machi kolchi kay3ref ykhtar. Fifty pieces per size, per colour.
-            Nothing restocked.
-          </p>
-        </div>
-      </section>
-
-      {/* Out of focus on purpose */}
-      <section className="py-6 md:py-10" aria-label="Chapter 1, out of focus">
-        <div className="mx-auto grid max-w-[1100px] gap-16 px-4 md:gap-24 md:px-8">
-          {FRAMES.map((frame, i) => (
-            <figure
-              key={frame.src}
-              /* Alternating, and never full width: a centred column of
-                 identical blocks reads as a catalogue, which is the one thing
-                 this page must not look like. */
-              className={
-                i % 2 === 0
-                  ? "md:ml-0 md:mr-auto md:w-[68%]"
-                  : "md:ml-auto md:mr-0 md:w-[58%]"
-              }
-            >
-              <Plate
-                seed={frame.src}
-                src={frame.src}
-                tone={i % 2 === 0 ? "pine" : "wine"}
-                alt=""
-                /* The line lives under the frame, not burnt across it. */
-                caption={null}
-                priority={i === 0}
-                sizes="(max-width: 768px) 92vw, 60vw"
-                className={`w-full ${frame.ratio}`}
-              />
-              <figcaption className="display mt-6 max-w-[24ch] text-2xl leading-tight md:text-3xl">
-                {frame.line}
-              </figcaption>
-            </figure>
-          ))}
-        </div>
-      </section>
-
-      {/*
-        The stack. Six frames, each pinning to the top while the next slides up
-        over it — the one piece of the real homepage worth keeping on the front
-        door, because it is the only thing here that shows the garment moving
-        rather than sitting still.
-      */}
+      <Hero />
+      <CountdownBand />
+      <NewDrop />
       <LookbookGallery />
-
-      {/* The last word */}
-      <section className="border-t border-bone/10 py-20 md:py-28" aria-label="Chapter 1">
-        <div className="mx-auto max-w-[1600px] px-4 text-center md:px-8">
-          <p className="display text-giant leading-[0.9]">
-            Kolchi kaylbes.
-            <span className="block italic font-light text-silver">
-              Machi kolchi kay3ref ykhtar.
-            </span>
-          </p>
-          <p className="label-wide mt-10 text-lime">Chapter 1 — Dreams — 27 September</p>
-        </div>
-      </section>
     </>
   );
 }
