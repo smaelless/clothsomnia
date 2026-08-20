@@ -1,3 +1,4 @@
+import { LookbookGallery } from "@/components/home/lookbook-gallery";
 import { Countdown } from "@/components/ui/countdown";
 import { Marquee } from "@/components/ui/marquee";
 import { Plate } from "@/components/ui/plate";
@@ -149,6 +150,14 @@ export default function WaitingPage() {
           ))}
         </div>
       </section>
+
+      {/*
+        The stack. Six frames, each pinning to the top while the next slides up
+        over it — the one piece of the real homepage worth keeping on the front
+        door, because it is the only thing here that shows the garment moving
+        rather than sitting still.
+      */}
+      <LookbookGallery />
 
       {/* The last word */}
       <section className="border-t border-bone/10 py-20 md:py-28" aria-label="Chapter 1">

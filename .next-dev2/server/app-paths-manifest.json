@@ -1,0 +1,6 @@
+{
+  "/page": "app/page.js",
+  "/lookbook/page": "app/lookbook/page.js",
+  "/collections/[slug]/page": "app/collections/[slug]/page.js",
+  "/product/[slug]/page": "app/product/[slug]/page.js"
+}
