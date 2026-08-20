@@ -157,10 +157,10 @@ export function WaitlistForm({ tone = "dark" }: { tone?: "dark" | "light" }) {
       )}
 
       <p className={cn("mt-5 text-xs leading-relaxed", light ? "text-ink/50" : "text-smoke")}>
-        Ghir numéro. Bla spam, bla compte, bla walou.{" "}
-        <span className={light ? "text-ink/35" : "text-smoke/70"}>
-          Juste un message, avant le drop.
-        </span>
+        Sois le premier informé avant kolchi.{" "}
+        {/* Brighter, not lime: "with best price" above already owns the accent
+            in this card, and two of them in one box cancel each other out. */}
+        <span className={light ? "text-ink" : "text-silver"}>VIP access only</span>
       </p>
     </form>
   );
