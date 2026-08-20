@@ -43,17 +43,24 @@ export function WaitingBanner() {
     return () => window.clearInterval(id);
   }, []);
 
+  /*
+   * Markup rather than a string: inchaAllah is set in lime, which a plain
+   * template literal cannot do.
+   */
   const line =
-    days === null
-      ? "Clothsomnia"
-      : days === 0
-        ? "Today — Clothsomnia, inchaAllah"
-        : `${days} ${days === 1 ? "day" : "days"} to the Clothsomnia, inchaAllah`;
+    days === null ? (
+      "Clothsomnia"
+    ) : (
+      <>
+        {days === 0 ? "Today — the Drop, " : `${days} ${days === 1 ? "day" : "days"} to the Drop, `}
+        <span className="text-lime">inchaAllah</span>
+      </>
+    );
 
   return (
     <header className="relative z-50 overflow-hidden border-b border-bone/10 bg-ink">
       {/* Upper rail — fine type, travelling */}
-      <div className="border-b border-bone/[0.07] py-2">
+      <div className="border-b border-bone/[0.07] py-1.5">
         <Marquee duration={18}>
           <span className="label flex shrink-0 items-center gap-5 whitespace-nowrap pr-5 text-[9px] tracking-[0.34em] text-smoke">
             CHAPTER 1 — DREAMS
@@ -73,7 +80,7 @@ export function WaitingBanner() {
         initial={{ opacity: 0, y: 8 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.9, ease: EASE_OUT }}
-        className="relative mx-auto flex max-w-[1600px] flex-wrap items-center justify-between gap-x-8 gap-y-2 px-4 py-3.5 md:px-8 md:py-5"
+        className="relative mx-auto flex max-w-[1600px] flex-wrap items-center justify-between gap-x-8 gap-y-1 px-4 py-2 md:px-8 md:py-3"
       >
         {/* The one moving thing left on this row: a light crossing the name. */}
         <span
@@ -81,7 +88,7 @@ export function WaitingBanner() {
           className="pointer-events-none absolute inset-y-0 left-0 z-10 w-1/4 -skew-x-12 bg-gradient-to-r from-transparent via-bone/[0.08] to-transparent animate-sweep [animation-duration:4.5s]"
         />
 
-        <Wordmark className="relative text-[clamp(1.5rem,5vw,2.75rem)]" />
+        <Wordmark className="relative text-[clamp(1.25rem,4vw,2.1rem)]" />
 
         <p className="display relative ml-auto text-right text-[clamp(0.95rem,2.6vw,1.6rem)] leading-tight text-bone">
           {line}
