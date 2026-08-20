@@ -13,3 +13,6 @@ next-env.d.ts
 .vercel
 .env*
 .next-build
+
+# Any dist dir used to build while a dev server holds .next
+.next-*
