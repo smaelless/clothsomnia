@@ -53,7 +53,7 @@ export function WaitingBanner() {
   return (
     <header className="relative z-50 overflow-hidden border-b border-bone/10 bg-ink">
       {/* Upper rail — fine type, travelling */}
-      <div className="border-b border-bone/[0.07] py-2.5">
+      <div className="border-b border-bone/[0.07] py-2">
         <Marquee duration={18}>
           <span className="label flex shrink-0 items-center gap-5 whitespace-nowrap pr-5 text-[9px] tracking-[0.34em] text-smoke">
             CHAPTER 1 — DREAMS
@@ -73,7 +73,7 @@ export function WaitingBanner() {
         initial={{ opacity: 0, y: 8 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.9, ease: EASE_OUT }}
-        className="relative mx-auto flex max-w-[1600px] flex-wrap items-center justify-between gap-x-8 gap-y-3 px-4 py-5 md:px-8 md:py-7"
+        className="relative mx-auto flex max-w-[1600px] flex-wrap items-center justify-between gap-x-8 gap-y-2 px-4 py-3.5 md:px-8 md:py-5"
       >
         {/* The one moving thing left on this row: a light crossing the name. */}
         <span

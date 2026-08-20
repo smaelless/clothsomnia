@@ -88,7 +88,13 @@ export function Countdown({
 
   return (
     <div className={cn(compact || align === "left" ? "" : "text-center", className)}>
-      <p className="label-wide mb-5 flex items-center gap-3 text-lime">
+      <p
+        className={cn(
+          "label-wide flex items-center gap-3 text-lime",
+          size === "large" ? "mb-4" : "mb-5",
+          align === "center" && "justify-center",
+        )}
+      >
         <span aria-hidden className="inline-block size-1.5 rounded-full bg-lime animate-flicker" />
         {label}
       </p>
@@ -135,14 +141,20 @@ export function Countdown({
 
       {!compact && (
         <>
-          <div className={cn("mt-9 h-px w-full max-w-[420px] bg-bone/12", align === "center" && "mx-auto")}>
+          <div className={cn(
+              /* Tighter under the large board: at that scale the default gap
+                 leaves a dead band between the digits and the date. */
+              size === "large" ? "mt-6" : "mt-9",
+              "h-px w-full max-w-[420px] bg-bone/12",
+              align === "center" && "mx-auto",
+            )}>
             <div
               className="h-full bg-gradient-to-r from-pine via-lime to-lime transition-[width] duration-1000 ease-linear"
               style={{ width: `${elapsed * 100}%` }}
             />
           </div>
 
-          <p className="label-wide mt-6 text-smoke">
+          <p className={cn("label-wide text-smoke", size === "large" ? "mt-4" : "mt-6")}>
             27 September — <span className="text-lime">inchaAllah</span>
           </p>
         </>

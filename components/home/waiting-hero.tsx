@@ -22,7 +22,7 @@ export function WaitingHero() {
 
   return (
     <section
-      className="relative overflow-hidden pt-14 pb-24 md:pt-20 md:pb-32"
+      className="relative overflow-hidden pt-5 pb-14 md:pt-8 md:pb-20"
       aria-label="The wait"
     >
       {/* Atmosphere. Two lights, drifting, and nothing else behind the clock. */}
@@ -69,7 +69,7 @@ export function WaitingHero() {
           initial={{ opacity: 0, y: 28 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 1, ease: EASE_OUT, delay: 0.9 }}
-          className="relative mx-auto mt-14 max-w-[640px] md:mt-16"
+          className="relative mx-auto mt-8 max-w-[640px] md:mt-10"
         >
           {/* A slow lime breath around the frame, so the eye comes back to it */}
           <span
