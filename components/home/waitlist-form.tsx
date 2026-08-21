@@ -3,6 +3,7 @@
 import { motion } from "framer-motion";
 import { ArrowRight, Check } from "lucide-react";
 import { useState } from "react";
+import { WaitlistThanks } from "@/components/home/waitlist-thanks";
 import { EASE_OUT } from "@/lib/motion";
 import { cn } from "@/lib/utils";
 
@@ -25,6 +26,7 @@ export function WaitlistForm({ tone = "dark" }: { tone?: "dark" | "light" }) {
   const [phone, setPhone] = useState("");
   const [state, setState] = useState<"idle" | "sending" | "done" | "already">("idle");
   const [error, setError] = useState<string | null>(null);
+  const [position, setPosition] = useState(0);
 
   const light = tone === "light";
 
@@ -42,7 +44,7 @@ export function WaitlistForm({ tone = "dark" }: { tone?: "dark" | "light" }) {
         body: JSON.stringify({ phone }),
       });
       const data = (await res.json()) as
-        | { ok: true; already: boolean }
+        | { ok: true; already: boolean; position: number }
         | { ok: false; error: string };
 
       if (!data.ok) {
@@ -50,6 +52,7 @@ export function WaitlistForm({ tone = "dark" }: { tone?: "dark" | "light" }) {
         setState("idle");
         return;
       }
+      setPosition(data.position ?? 0);
       setState(data.already ? "already" : "done");
     } catch {
       setError("Ma kayn ta réseau. 3awd jarreb.");
@@ -58,40 +61,7 @@ export function WaitlistForm({ tone = "dark" }: { tone?: "dark" | "light" }) {
   }
 
   if (state === "done" || state === "already") {
-    return (
-      <motion.div
-        initial={{ opacity: 0, y: 16 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6, ease: EASE_OUT }}
-        className="flex items-start gap-4"
-      >
-        <span
-          className={cn(
-            "mt-1 grid size-9 shrink-0 place-items-center rounded-full",
-            light ? "bg-ink" : "bg-lime",
-          )}
-        >
-          <Check className={cn("size-4", light ? "text-cream" : "text-ink")} strokeWidth={3} />
-        </span>
-        <div>
-          <p className={cn("display text-3xl leading-tight", light ? "text-ink" : "text-bone")}>
-            {state === "already" ? "Rak déjà f'liste." : "Rak f'liste."}
-          </p>
-          <p
-            className={cn(
-              "mt-3 max-w-[44ch] text-sm leading-relaxed",
-              light ? "text-ink/70" : "text-silver",
-            )}
-          >
-            Ghadi tousslek message f&apos;WhatsApp qbel 27 September, m3a l&apos;code dialek.
-            Qbel kolchi.{" "}
-            <span className={light ? "text-ink/45" : "text-smoke"}>
-              On te prévient avant tout le monde.
-            </span>
-          </p>
-        </div>
-      </motion.div>
-    );
+    return <WaitlistThanks position={position} already={state === "already"} light={light} />;
   }
 
   return (

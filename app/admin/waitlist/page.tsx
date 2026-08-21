@@ -1,14 +1,11 @@
-import { NotConfigured, Panel, when } from "@/components/admin/bits";
-import { CopyButton } from "@/components/admin/copy-button";
+import { Download } from "lucide-react";
+import { NotConfigured, Stat, when } from "@/components/admin/bits";
+import { WaitlistTable } from "@/components/admin/waitlist-table";
 import { requireAdmin } from "@/lib/admin";
 import { isConfigured, listSignups } from "@/lib/waitlist";
 
 /**
- * THE LIST
- *
- * Who is waiting, and their numbers in one block ready to paste into a
- * WhatsApp broadcast — which is how this list will actually be used, rather
- * than one row at a time.
+ * THE LIST — who is waiting, and whether they have been told.
  */
 export default async function WaitlistPage() {
   await requireAdmin();
@@ -17,55 +14,61 @@ export default async function WaitlistPage() {
   const signups = await listSignups();
 
   const day = 24 * 60 * 60 * 1000;
-  const today = signups.filter((s) => Date.now() - Date.parse(s.created_at) < day).length;
-  const week = signups.filter((s) => Date.now() - Date.parse(s.created_at) < 7 * day).length;
+  const since = (ms: number) =>
+    signups.filter((s) => Date.now() - Date.parse(s.created_at) < ms).length;
 
-  /* Comma separated: what WhatsApp Business and every broadcast tool expects. */
-  const allNumbers = signups.map((s) => s.phone).join(", ");
+  const told = signups.filter((s) => s.notified_at).length;
 
   return (
     <>
-      <h1 className="display text-4xl leading-none md:text-5xl">The list</h1>
-      <p className="mt-3 text-sm text-smoke">
-        {signups.length} waiting — {today} today, {week} this week.
-      </p>
+      <div className="flex flex-wrap items-end justify-between gap-4">
+        <div>
+          <h1 className="display text-4xl leading-none md:text-5xl">The list</h1>
+          <p className="mt-3 text-sm text-smoke">
+            Every WhatsApp number left on the waiting page, newest first.
+          </p>
+        </div>
+
+        {signups.length > 0 && (
+          <a
+            href="/admin/waitlist/export"
+            className="label flex items-center gap-2 rounded-full border border-bone/20 px-5 py-3 text-smoke transition-colors hover:border-lime hover:text-lime"
+          >
+            <Download className="size-4" strokeWidth={1.75} />
+            Export CSV
+          </a>
+        )}
+      </div>
+
+      <div className="mt-8 grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
+        <Stat label="Waiting" value={String(signups.length)} accent />
+        <Stat label="Today" value={String(since(day))} hint={`${since(7 * day)} this week`} />
+        <Stat label="Told" value={String(told)} hint="Message already sent" />
+        <Stat
+          label="Still to tell"
+          value={String(signups.length - told)}
+          hint="Before 27 September"
+        />
+      </div>
 
       {signups.length === 0 ? (
         <div className="mt-8 rounded-3xl border border-dashed border-bone/15 px-6 py-16 text-center">
           <p className="display text-2xl">Nobody yet.</p>
           <p className="mx-auto mt-3 max-w-[42ch] text-sm leading-relaxed text-smoke">
-            Numbers land here the moment someone leaves one on the waiting page.
+            Numbers land here the moment someone leaves one on the waiting page — and a
+            message reaches your Telegram at the same time.
           </p>
         </div>
       ) : (
-        <>
-          <Panel
-            title="Every number"
-            action={<CopyButton value={allNumbers} label="Copy all" />}
-            className="mt-8"
-          >
-            <p className="text-sm leading-relaxed break-words text-silver">{allNumbers}</p>
-            <p className="mt-4 text-xs text-smoke">
-              Paste straight into a WhatsApp broadcast. Send the code once, to everyone.
-            </p>
-          </Panel>
-
-          <Panel title="Who and when" className="mt-3">
-            <ul>
-              {signups.map((s) => (
-                <li
-                  key={s.id}
-                  className="flex flex-wrap items-center gap-x-4 gap-y-1 border-b border-bone/10 py-3 last:border-0"
-                >
-                  <span className="label tabular-nums text-bone">{s.phone}</span>
-                  {s.name && <span className="text-sm text-silver">{s.name}</span>}
-                  <span className="ml-auto text-xs text-smoke">{when(s.created_at)}</span>
-                  {s.notified_at && <span className="label text-lime">told</span>}
-                </li>
-              ))}
-            </ul>
-          </Panel>
-        </>
+        <WaitlistTable
+          rows={signups.map((s) => ({
+            id: s.id,
+            phone: s.phone,
+            name: s.name,
+            when: when(s.created_at),
+            notified: Boolean(s.notified_at),
+          }))}
+        />
       )}
     </>
   );
