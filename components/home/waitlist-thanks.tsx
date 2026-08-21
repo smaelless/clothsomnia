@@ -38,7 +38,7 @@ export function WaitlistThanks({
     >
       {/* Sparks. Cheap, brief, and gone — eight transforms that never repeat,
           so nothing is left running behind the message afterwards. */}
-      {!reduced && <Sparks />}
+      {!reduced && <Sparks light={light} />}
 
       <div className="relative flex flex-col items-center gap-6 py-2 text-center sm:flex-row sm:items-start sm:gap-7 sm:text-left">
         <Seal reduced={Boolean(reduced)} light={light} />
@@ -54,7 +54,7 @@ export function WaitlistThanks({
                 light ? "text-ink" : "text-bone",
               )}
             >
-              <span className={light ? "text-ink/35" : "text-lime"}>#</span>
+              <span className={light ? "text-gold" : "text-lime"}>#</span>
               {shown}
             </motion.p>
           )}
@@ -91,7 +91,7 @@ export function WaitlistThanks({
             className={cn("mt-4 text-xs", light ? "text-ink/45" : "text-smoke")}
           >
             Merci. On te prévient avant tout le monde.{" "}
-            <span className={light ? "text-ink/70" : "text-silver"}>VIP access only</span>
+            <span className={light ? "font-medium text-gold" : "text-silver"}>VIP access only</span>
           </motion.p>
         </div>
       </div>
@@ -154,7 +154,7 @@ function Seal({ reduced, light }: { reduced: boolean; light: boolean }) {
           r="30"
           fill="none"
           strokeWidth="2"
-          className={light ? "stroke-ink" : "stroke-lime"}
+          className={light ? "stroke-gold" : "stroke-lime"}
           initial={reduced ? { pathLength: 1 } : { pathLength: 0 }}
           animate={{ pathLength: 1 }}
           transition={{ duration: 0.9, ease: EASE_OUT, delay: 0.1 }}
@@ -168,7 +168,7 @@ function Seal({ reduced, light }: { reduced: boolean; light: boolean }) {
           strokeWidth="3"
           strokeLinecap="round"
           strokeLinejoin="round"
-          className={light ? "stroke-ink" : "stroke-lime"}
+          className={light ? "stroke-gold" : "stroke-lime"}
           initial={reduced ? { pathLength: 1 } : { pathLength: 0 }}
           animate={{ pathLength: 1 }}
           transition={{ duration: 0.45, ease: EASE_OUT, delay: 0.55 }}
@@ -179,7 +179,7 @@ function Seal({ reduced, light }: { reduced: boolean; light: boolean }) {
 }
 
 /** Eight lime specks thrown outward once, then gone. */
-function Sparks() {
+function Sparks({ light }: { light: boolean }) {
   return (
     <span aria-hidden className="pointer-events-none absolute left-8 top-8 z-0">
       {Array.from({ length: 8 }).map((_, i) => {
@@ -187,7 +187,7 @@ function Sparks() {
         return (
           <motion.span
             key={i}
-            className="absolute block size-1 rounded-full bg-lime"
+            className={cn("absolute block size-1 rounded-full", light ? "bg-gold" : "bg-lime")}
             initial={{ opacity: 0, x: 0, y: 0, scale: 0.6 }}
             animate={{
               opacity: [0, 1, 0],

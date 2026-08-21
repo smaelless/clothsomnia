@@ -75,26 +75,26 @@ export function WaitingHero() {
           <span
             aria-hidden
             className={cn(
-              "pointer-events-none absolute -inset-px rounded-[calc(1.5rem+1px)] bg-gradient-to-r from-lime/0 via-lime/30 to-lime/0",
+              "pointer-events-none absolute -inset-px rounded-[calc(1.5rem+1px)] bg-gradient-to-r from-gold/0 via-gold/40 to-gold/0",
               !reduced && "animate-breathe",
             )}
           />
 
-          <div className="relative rounded-3xl border border-bone/12 bg-charcoal/70 p-6 md:p-8">
+          <div className="relative rounded-3xl bg-honey p-6 text-ink md:p-8">
             {/* Not the label utility: at 0.45em tracking and all caps a whole
                 sentence stops being readable and starts being a puzzle. */}
-            <p className="mb-6 flex items-start gap-3 text-sm leading-relaxed text-silver md:text-base">
+            <p className="mb-7 flex items-start gap-3 text-sm leading-relaxed text-ink/70 md:text-base">
               <span
                 aria-hidden
-                className="mt-2 inline-block size-1.5 shrink-0 rounded-full bg-lime animate-flicker"
+                className="mt-2 inline-block size-1.5 shrink-0 rounded-full bg-gold animate-flicker"
               />
               <span>
                 Ila bghiti takhed l&apos;hoodie qbel lancement{" "}
-                <span className="text-lime">with best price</span>…
+                <span className="font-medium text-gold">with best price</span>…
               </span>
             </p>
 
-            <WaitlistForm />
+            <WaitlistForm tone="light" />
           </div>
         </motion.div>
       </div>

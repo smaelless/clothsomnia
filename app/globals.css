@@ -20,6 +20,14 @@
   --color-wine: #5c1f2b; /* the hoodie's burgundy */
   --color-cream: #e8e2d6; /* the panel cream */
 
+  /* ---- The list panel ----
+     A matte, unlit yellow. Acid lime is the signal colour and it is loud on
+     purpose; a panel that has to feel expensive cannot be. Honey is paper in
+     warm light, gold is the ink on it — deep enough to read at a glance and
+     dull enough never to glare. */
+  --color-honey: #e8dca8;
+  --color-gold: #8a6e2f;
+
   /* ---- Accents ----
      Lime stays as the single signal colour: it is a near neighbour of pine and
      a clean complement to wine, so it reads sharp against both. Violet, cobalt

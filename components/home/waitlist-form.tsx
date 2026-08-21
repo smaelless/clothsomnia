@@ -79,7 +79,7 @@ export function WaitlistForm({ tone = "dark" }: { tone?: "dark" | "light" }) {
           error
             ? "border-magenta"
             : light
-              ? "border-ink/25 focus-within:border-ink"
+              ? "border-ink/20 focus-within:border-gold"
               : "border-bone/25 focus-within:border-lime",
         )}
       >
@@ -113,7 +113,7 @@ export function WaitlistForm({ tone = "dark" }: { tone?: "dark" | "light" }) {
           aria-label="Zidni f'liste"
           className={cn(
             "grid size-14 shrink-0 place-items-center rounded-full transition-transform duration-300 hover:scale-105 disabled:opacity-40",
-            light ? "bg-ink text-cream" : "bg-lime text-ink",
+            light ? "bg-ink text-honey" : "bg-lime text-ink",
           )}
         >
           <ArrowRight className={cn("size-5", state === "sending" && "animate-pulse")} strokeWidth={2} />
@@ -130,7 +130,7 @@ export function WaitlistForm({ tone = "dark" }: { tone?: "dark" | "light" }) {
         Sois le premier informé avant kolchi.{" "}
         {/* Brighter, not lime: "with best price" above already owns the accent
             in this card, and two of them in one box cancel each other out. */}
-        <span className={light ? "text-ink" : "text-silver"}>VIP access only</span>
+        <span className={light ? "font-medium text-gold" : "text-silver"}>VIP access only</span>
       </p>
     </form>
   );
