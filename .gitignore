@@ -16,3 +16,7 @@ next-env.d.ts
 
 # Any dist dir used to build while a dev server holds .next
 .next-*
+
+# Font files pulled down to convert the wordmark to outlines — reproducible
+# by rerunning scripts/wordmark-paths.mjs, so not worth committing.
+.fontcache/
